@@ -5,6 +5,8 @@ export default class Scene1 extends Phaser.Scene
 	constructor()
 	{
 		super('scene-1')
+
+        var isClicked = false;
 	}
 
 	preload()
@@ -44,7 +46,7 @@ export default class Scene1 extends Phaser.Scene
             key: 'dead',
             frames: this.anims.generateFrameNames('flatboy', {start: 1, end: 15, zeroPad: 0, prefix: 'Dead (', suffix: ').png'}),
             frameRate: 15,
-            repeat: -1
+            repeat: 0
         })
 
         // Create Animation for - Idle
@@ -80,5 +82,16 @@ export default class Scene1 extends Phaser.Scene
         })
 
         this.flatboy.play("run")
+    }
+
+    update() {
+        if (this.input.activePointer.isDown) {
+            this.isClicked = true;
+        }
+        
+        if (this.isClicked) {
+            this.flatboy.play("dead")
+            this.isClicked = false;
+        }
     }
 }
