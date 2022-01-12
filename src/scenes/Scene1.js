@@ -1,12 +1,13 @@
 import Phaser from 'phaser'
 
+const WorldProperties = {
+    velocity: 6
+}
 export default class Scene1 extends Phaser.Scene
 {
 	constructor()
 	{
 		super('scene-1')
-
-        var isClicked = false;
 	}
 
 	preload()
@@ -32,9 +33,6 @@ export default class Scene1 extends Phaser.Scene
         
         map.createLayer('Ground', [hyptosisTileset1, hyptosisTileset2])
         map.createLayer('Objects', [hyptosisTileset1, hyptosisTileset2])
-
-        // Create Character
-        this.flatboy = this.add.sprite(300, 300, 'flatboy')
 
         /* Use these commands to get exact frame names for animations
         var frameNames = this.textures.get('flatboy').getFrameNames();
@@ -81,17 +79,31 @@ export default class Scene1 extends Phaser.Scene
             repeat: -1
         })
 
-        this.flatboy.play("run")
+        // Create Character
+        this.flatboy = this.add.sprite(300, 300, 'flatboy')
+        this.flatboy.play("idle")
+
+        // Create key inputs
+        this.keys = this.input.keyboard.createCursorKeys();
     }
 
     update() {
-        if (this.input.activePointer.isDown) {
-            this.isClicked = true;
-        }
-        
-        if (this.isClicked) {
-            this.flatboy.play("dead")
-            this.isClicked = false;
+        if (this.keys.left.isDown) {
+            this.flatboy.anims.play('run', true)
+            this.flatboy.flipX = true
+            this.flatboy.x -= WorldProperties.velocity;
+        } else if (this.keys.right.isDown) {
+            this.flatboy.anims.play('run', true)
+            this.flatboy.flipX = false
+            this.flatboy.x += WorldProperties.velocity;
+        } else if (this.keys.up.isDown) {
+            this.flatboy.anims.play('run', true)
+            this.flatboy.y -= WorldProperties.velocity;
+        } else if (this.keys.down.isDown) {
+            this.flatboy.anims.play('run', true)
+            this.flatboy.y += WorldProperties.velocity;
+        } else {
+            this.flatboy.anims.play('idle', true)
         }
     }
 }
