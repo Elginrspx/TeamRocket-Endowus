@@ -42,105 +42,15 @@ export default class Scene1 extends Phaser.Scene
         // Create Animation for - Dead
         this.anims.create({
             key: 'dead',
-            frames: [{
-                key: 'flatboy',
-                frame: 'Dead (1).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Dead (2).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Dead (3).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Dead (4).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Dead (5).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Dead (6).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Dead (7).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Dead (8).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Dead (9).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Dead (10).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Dead (11).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Dead (12).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Dead (13).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Dead (14).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Dead (15).png'
-            }, ],
+            frames: this.anims.generateFrameNames('flatboy', {start: 1, end: 15, zeroPad: 0, prefix: 'Dead (', suffix: ').png'}),
             frameRate: 15,
-            repeat: 0
+            repeat: -1
         })
 
         // Create Animation for - Idle
         this.anims.create({
             key: 'idle',
-            frames: [{
-                key: 'flatboy',
-                frame: 'Idle (1).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Idle (2).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Idle (3).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Idle (4).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Idle (5).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Idle (6).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Idle (7).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Idle (8).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Idle (9).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Idle (10).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Idle (11).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Idle (12).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Idle (13).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Idle (14).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Idle (15).png'
-            }, ],
+            frames: this.anims.generateFrameNames('flatboy', {start: 1, end: 15, zeroPad: 0, prefix: 'Idle (', suffix: ').png'}),
             frameRate: 15,
             repeat: -1
         })
@@ -148,52 +58,7 @@ export default class Scene1 extends Phaser.Scene
         // Create Animation for - Jump
         this.anims.create({
             key: 'jump',
-            frames: [{
-                key: 'flatboy',
-                frame: 'Jump (1).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Jump (2).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Jump (3).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Jump (4).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Jump (5).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Jump (6).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Jump (7).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Jump (8).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Jump (9).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Jump (10).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Jump (11).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Jump (12).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Jump (13).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Jump (14).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Jump (15).png'
-            }, ],
+            frames: this.anims.generateFrameNames('flatboy', {start: 1, end: 15, zeroPad: 0, prefix: 'Jump (', suffix: ').png'}),
             frameRate: 15,
             repeat: -1
         })
@@ -201,52 +66,7 @@ export default class Scene1 extends Phaser.Scene
         // Create Animation for - Run
         this.anims.create({
             key: 'run',
-            frames: [{
-                key: 'flatboy',
-                frame: 'Run (1).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Run (2).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Run (3).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Run (4).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Run (5).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Run (6).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Run (7).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Run (8).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Run (9).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Run (10).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Run (11).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Run (12).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Run (13).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Run (14).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Run (15).png'
-            }, ],
+            frames: this.anims.generateFrameNames('flatboy', {start: 1, end: 15, zeroPad: 0, prefix: 'Run (', suffix: ').png'}),
             frameRate: 15,
             repeat: -1
         })
@@ -254,52 +74,7 @@ export default class Scene1 extends Phaser.Scene
         // Create Animation for - Walk
         this.anims.create({
             key: 'walk',
-            frames: [{
-                key: 'flatboy',
-                frame: 'Walk (1).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Walk (2).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Walk (3).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Walk (4).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Walk (5).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Walk (6).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Walk (7).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Walk (8).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Walk (9).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Walk (10).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Walk (11).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Walk (12).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Walk (13).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Walk (14).png'
-            }, {
-                key: 'flatboy',
-                frame: 'Walk (15).png'
-            }, ],
+            frames: this.anims.generateFrameNames('flatboy', {start: 1, end: 15, zeroPad: 0, prefix: 'Walk (', suffix: ').png'}),
             frameRate: 15,
             repeat: -1
         })
