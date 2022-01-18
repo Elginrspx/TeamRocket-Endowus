@@ -5,10 +5,10 @@ const WorldProperties = {
 }
 export default class Scene1 extends Phaser.Scene
 {
-	constructor()
-	{
-		super('scene-1')
-	}
+	// constructor()
+	// {
+	// 	super('scene-1')
+	// }
 
 	preload()
     {
@@ -16,7 +16,7 @@ export default class Scene1 extends Phaser.Scene
 
         // Preload Map
         this.load.image('hyptosis_tile-art-batch-1', 'tilemaps/hyptosis_tile-art-batch-1.png')
-        this.load.image('hyptosis_tile-art-batch-2', 'tilemaps/hyptosis_tile-art-batch-2.png')
+        // this.load.image('hyptosis_tile-art-batch-2', 'tilemaps/hyptosis_tile-art-batch-2.png')
 
         this.load.tilemapTiledJSON('tilemap', 'tilemaps/level-1.json')
 
@@ -27,13 +27,40 @@ export default class Scene1 extends Phaser.Scene
     create()
     {
         // Create Map
-        var map = this.make.tilemap({ key: 'tilemap' })
-        var hyptosisTileset1 = map.addTilesetImage('hyptosis_tile-art-batch-1', 'hyptosis_tile-art-batch-1')
-        var hyptosisTileset2 = map.addTilesetImage('hyptosis_tile-art-batch-2', 'hyptosis_tile-art-batch-2')
+        const map = this.make.tilemap({ key: 'tilemap', tileWidth: 16, tileHeight: 16 })
+        const hyptosisTileset1 = map.addTilesetImage('hyptosis_tile-art-batch-1', 'hyptosis_tile-art-batch-1')
+        // var hyptosisTileset2 = map.addTilesetImage('hyptosis_tile-art-batch-2', 'hyptosis_tile-art-batch-2')
         
-        map.createLayer('Ground', [hyptosisTileset1, hyptosisTileset2])
-        map.createLayer('Objects', [hyptosisTileset1, hyptosisTileset2])
+        const mapGroundLayer = map.createLayer('Ground', hyptosisTileset1)
+        const mapObjectsLayer = map.createLayer('Objects', hyptosisTileset1)
+        // map.createLayer('Ground', [hyptosisTileset1, hyptosisTileset2])
+        // map.createLayer('Objects', [hyptosisTileset1, hyptosisTileset2])
 
+        this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels, true, true, true, true)
+
+        // Create Character
+        this.player = this.physics.add.sprite(300, 300, 'flatboy')
+        // this.player.play("idle")
+
+        this.player.body.setCollideWorldBounds(true)
+        this.player.body.onWorldBounds = true
+        this.physics.world.on('worldbounds', function(body){
+            console.log('hello from the edge of the world', body);
+        },this);
+
+        // Create key inputs
+        this.keys = this.input.keyboard.createCursorKeys();
+
+        mapObjectsLayer.setCollisionByProperty({ collides: true })
+        // mapObjectsLayer.setCollisionBetween(1,5000)
+        this.physics.add.collider(this.player, mapObjectsLayer)
+
+        const debugGraphics = this.add.graphics().setAlpha(0.7);
+        mapObjectsLayer.renderDebug(debugGraphics, {
+            tileColor: null,
+            collidingTileColor: new Phaser.Display.Color(243, 234, 48, 255),
+        })
+        
         /* Use these commands to get exact frame names for animations
         var frameNames = this.textures.get('flatboy').getFrameNames();
         console.log(frameNames)
@@ -78,32 +105,25 @@ export default class Scene1 extends Phaser.Scene
             frameRate: 15,
             repeat: -1
         })
-
-        // Create Character
-        this.flatboy = this.add.sprite(300, 300, 'flatboy')
-        this.flatboy.play("idle")
-
-        // Create key inputs
-        this.keys = this.input.keyboard.createCursorKeys();
     }
 
     update() {
         if (this.keys.left.isDown) {
-            this.flatboy.anims.play('run', true)
-            this.flatboy.flipX = true
-            this.flatboy.x -= WorldProperties.velocity;
+            this.player.anims.play('run', true)
+            this.player.flipX = true
+            this.player.x -= WorldProperties.velocity;
         } else if (this.keys.right.isDown) {
-            this.flatboy.anims.play('run', true)
-            this.flatboy.flipX = false
-            this.flatboy.x += WorldProperties.velocity;
+            this.player.anims.play('run', true)
+            this.player.flipX = false
+            this.player.x += WorldProperties.velocity;
         } else if (this.keys.up.isDown) {
-            this.flatboy.anims.play('run', true)
-            this.flatboy.y -= WorldProperties.velocity;
+            this.player.anims.play('run', true)
+            this.player.y -= WorldProperties.velocity;
         } else if (this.keys.down.isDown) {
-            this.flatboy.anims.play('run', true)
-            this.flatboy.y += WorldProperties.velocity;
+            this.player.anims.play('run', true)
+            this.player.y += WorldProperties.velocity;
         } else {
-            this.flatboy.anims.play('idle', true)
+            this.player.anims.play('idle', true)
         }
     }
 }
