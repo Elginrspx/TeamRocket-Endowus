@@ -5,10 +5,10 @@ const WorldProperties = {
 }
 export default class Scene1 extends Phaser.Scene
 {
-	// constructor()
-	// {
-	// 	super('scene-1')
-	// }
+	constructor()
+	{
+		super('scene-1')
+	}
 
 	preload()
     {
@@ -41,7 +41,7 @@ export default class Scene1 extends Phaser.Scene
         this.player.body.setOffset(0,8)
 
         // Set Collision with World Bounds
-        this.physics.world.setBounds(0, 0, 800, 600)
+        this.physics.world.setBounds(0, 0, 1600, 1200)
         this.player.body.setCollideWorldBounds(true)
 
         // Set Collision with <Objects> Layers
@@ -60,10 +60,9 @@ export default class Scene1 extends Phaser.Scene
         // var frameNames = this.textures.get('player').getFrameNames();
         // console.log(frameNames)
 
-        // camera
-        // this.camera = this.cameras.main;
-        // this.camera.startFollow(this.player);
-        // this.camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+        // Set Bounds of the Camera, Follow Movement of Player
+        this.cameras.main.setBounds(0, 0, 1600, 1200)
+        this.cameras.main.startFollow(this.player)
 
         // Create key inputs for movement
         this.keys = this.input.keyboard.createCursorKeys();
