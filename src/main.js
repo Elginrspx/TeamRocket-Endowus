@@ -1,11 +1,12 @@
 import Phaser from 'phaser'
+import { WorldProperties } from './worldProperties'
 
 import Scene1 from './scenes/Scene1'
 
 const config = {
 	type: Phaser.AUTO,
-	width: 800,
-	height: 600,
+	width: WorldProperties.width,
+	height: WorldProperties.height,
 	physics: {
 		default: 'arcade',
 		arcade: {

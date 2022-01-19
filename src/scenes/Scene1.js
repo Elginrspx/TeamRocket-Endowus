@@ -1,8 +1,6 @@
 import Phaser from 'phaser'
+import { WorldProperties } from '../worldProperties'
 
-const WorldProperties = {
-    velocity: 200
-}
 export default class Scene1 extends Phaser.Scene
 {
 	constructor()
@@ -26,23 +24,23 @@ export default class Scene1 extends Phaser.Scene
     create()
     {
         // Create Map
-        const map = this.make.tilemap({ key: 'tilemap', tileWidth: 16, tileHeight: 16 })
-        const hyptosisTileset1 = map.addTilesetImage('hyptosis_tile-art-batch-1', 'hyptosis_tile-art-batch-1')
-        const hyptosisTileset2 = map.addTilesetImage('hyptosis_tile-art-batch-2', 'hyptosis_tile-art-batch-2')
+        this.map = this.make.tilemap({ key: 'tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
+        const hyptosisTileset1 = this.map.addTilesetImage('hyptosis_tile-art-batch-1', 'hyptosis_tile-art-batch-1')
+        const hyptosisTileset2 = this.map.addTilesetImage('hyptosis_tile-art-batch-2', 'hyptosis_tile-art-batch-2')
 
         // Layers on Tiled to be referenced here
-        const mapGroundLayer = map.createLayer('Ground', [hyptosisTileset1, hyptosisTileset2])
-        const mapObjectsLayer = map.createLayer('Objects', [hyptosisTileset1, hyptosisTileset2])
+        const mapGroundLayer = this.map.createLayer('Ground', [hyptosisTileset1, hyptosisTileset2])
+        const mapObjectsLayer = this.map.createLayer('Objects', [hyptosisTileset1, hyptosisTileset2])
 
-        // Create Character, set body box correctly
+        // Create Character
         this.player = this.physics.add.sprite(300, 300, 'player')
-        this.player.setScale(1.25)
-        this.player.body.setSize(16,25)
-        this.player.body.setOffset(0,8)
+        this.player.setScale(1.25) // Make Player slightly bigger
+        this.player.body.setSize(16,25) // Set Hitbox Size to match Player Size
+        this.player.body.setOffset(0,8) // Offset Hitbox to match Player
 
         // Set Collision with World Bounds
-        this.physics.world.setBounds(0, 0, 1600, 1200)
-        this.player.body.setCollideWorldBounds(true)
+        // this.physics.world.setBounds(0, 0, this.map.widthInPixels*2, this.map.heightInPixels*2)
+        // this.player.body.setCollideWorldBounds(true)
 
         // Set Collision with <Objects> Layers
         mapObjectsLayer.setCollisionByProperty({ collides: true })
@@ -55,17 +53,10 @@ export default class Scene1 extends Phaser.Scene
             collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
             faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
         })
-        
+
         /* Use these commands to get exact frame names for animations, to be deleted */
         // var frameNames = this.textures.get('player').getFrameNames();
         // console.log(frameNames)
-
-        // Set Bounds of the Camera, Follow Movement of Player
-        this.cameras.main.setBounds(0, 0, 1600, 1200)
-        this.cameras.main.startFollow(this.player)
-
-        // Create key inputs for movement
-        this.keys = this.input.keyboard.createCursorKeys();
 
         // Create Animation for - Idle Right
         this.anims.create({
@@ -131,11 +122,20 @@ export default class Scene1 extends Phaser.Scene
             repeat: 0
         })
 
+        // Set Bounds of the Camera, Follow Movement of Player
+        this.cameras.main.startFollow(this.player)
+
+        // Create key inputs for movement
+        this.keys = this.input.keyboard.createCursorKeys();
+
         // Set Starting Animation
         this.player.play("idleDown")
     }
 
+    // Update polls at 60 times a second
     update() {
+        this.cameras.main.setBounds(this.player.x - WorldProperties.width/2, this.player.y - WorldProperties.height/2, WorldProperties.width, WorldProperties.height)
+        
         // Set Velocity to 0 whenever no key is being pressed
         this.player.body.velocity.x = 0
         this.player.body.velocity.y = 0
@@ -144,22 +144,18 @@ export default class Scene1 extends Phaser.Scene
         if (this.keys.right.isDown) {
             this.player.anims.play('runRight', true)
             this.player.body.velocity.x = WorldProperties.velocity;
-
             this.keyLastPressed = "right"
         } else if (this.keys.up.isDown) {
             this.player.anims.play('runUp', true)
             this.player.body.velocity.y = -WorldProperties.velocity;
-
             this.keyLastPressed = "up"
         } else if (this.keys.left.isDown) {
             this.player.anims.play('runLeft', true)
             this.player.body.velocity.x = -WorldProperties.velocity;
-
             this.keyLastPressed = "left"
         } else if (this.keys.down.isDown) {
             this.player.anims.play('runDown', true)
             this.player.body.velocity.y = WorldProperties.velocity;
-
             this.keyLastPressed = "down"
         } else {
             // Animation to play during idle
