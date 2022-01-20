@@ -19,6 +19,8 @@ export default class Scene1 extends Phaser.Scene
 
         // Preload Character
         this.load.atlas('player', 'characters/player.png', 'characters/player.json')
+
+        this.load.image('background', 'tilemaps/background.png');
     }
 
     create()
@@ -27,6 +29,11 @@ export default class Scene1 extends Phaser.Scene
         this.map = this.make.tilemap({ key: 'tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
         const hyptosisTileset1 = this.map.addTilesetImage('hyptosis_tile-art-batch-1', 'hyptosis_tile-art-batch-1')
         const hyptosisTileset2 = this.map.addTilesetImage('hyptosis_tile-art-batch-2', 'hyptosis_tile-art-batch-2')
+
+        // Create Scrolling Background
+        this.background = this.add.tileSprite(0, 0, WorldProperties.width, WorldProperties.height, 'background')
+            .setOrigin(0)
+            .setScrollFactor(0,0);
 
         // Layers on Tiled to be referenced here
         const mapGroundLayer = this.map.createLayer('Ground', [hyptosisTileset1, hyptosisTileset2])
