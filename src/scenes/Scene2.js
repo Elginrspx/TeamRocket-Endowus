@@ -1,12 +1,11 @@
-import Phaser, { GameObjects } from 'phaser'
+import Phaser from 'phaser'
 import { WorldProperties } from '../worldProperties'
 
-export default class Scene1 extends Phaser.Scene
+export default class Scene2 extends Phaser.Scene
 {
 	constructor()
 	{
-		super('scene-1')
-        this.enteredPortal = false
+		super('scene-2')
 	}
 
 	preload()
@@ -16,7 +15,7 @@ export default class Scene1 extends Phaser.Scene
         // Preload Map
         this.load.image('hyptosis_tile-art-batch-1', 'tilemaps/hyptosis_tile-art-batch-1.png')
         this.load.image('hyptosis_tile-art-batch-2', 'tilemaps/hyptosis_tile-art-batch-2.png')
-        this.load.tilemapTiledJSON('scene1Tilemap', 'tilemaps/scene-1.json')
+        this.load.tilemapTiledJSON('scene2Tilemap', 'tilemaps/scene-2.json')
 
         // Preload Character
         this.load.atlas('player', 'characters/player.png', 'characters/player.json')
@@ -27,9 +26,9 @@ export default class Scene1 extends Phaser.Scene
     create()
     {
         // Create Map
-        this.map = this.make.tilemap({ key: 'scene1Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
-        const HyptosisTileset1 = this.map.addTilesetImage('hyptosis_tile-art-batch-1', 'hyptosis_tile-art-batch-1')
-        const HyptosisTileset2 = this.map.addTilesetImage('hyptosis_tile-art-batch-2', 'hyptosis_tile-art-batch-2')
+        this.map = this.make.tilemap({ key: 'scene2Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
+        const hyptosisTileset1 = this.map.addTilesetImage('hyptosis_tile-art-batch-1', 'hyptosis_tile-art-batch-1')
+        const hyptosisTileset2 = this.map.addTilesetImage('hyptosis_tile-art-batch-2', 'hyptosis_tile-art-batch-2')
 
         // Create Scrolling Background
         this.background = this.add.tileSprite(0, 0, WorldProperties.width, WorldProperties.height, 'background')
@@ -37,55 +36,26 @@ export default class Scene1 extends Phaser.Scene
             .setScrollFactor(0,0);
 
         // Layers on Tiled to be referenced here
-        const MapGroundLayer = this.map.createLayer('Ground', [HyptosisTileset1, HyptosisTileset2])
-        const MapObjectsLayer = this.map.createLayer('Objects', [HyptosisTileset1, HyptosisTileset2])
-        const MapDepthLayer = this.map.createLayer('Depth', [HyptosisTileset1, HyptosisTileset2])
-
-        // Set Collision with <Objects> Layers
-        MapObjectsLayer.setCollisionByProperty({ collides: true })
-
-        // Set Layer for Depth Perception
-        MapDepthLayer.setDepth(1);
+        const mapGroundLayer = this.map.createLayer('Ground', [hyptosisTileset1, hyptosisTileset2])
+        const mapObjectsLayer = this.map.createLayer('Objects', [hyptosisTileset1, hyptosisTileset2])
 
         // Create Character
-        const SpawnPoint = this.map.findObject('GameObjects', obj => obj.name === 'spawn-point')
-        this.player = this.physics.add.sprite(SpawnPoint.x, SpawnPoint.y, 'player')
+        this.player = this.physics.add.sprite(300, 300, 'player')
         this.player.setScale(1.25) // Make Player slightly bigger
         this.player.body.setSize(16,25) // Set Hitbox Size to match Player Size
         this.player.body.setOffset(0,8) // Offset Hitbox to match Player
 
-        // const MapGameObjectsLayer = this.map.getObjectLayer('GameObjects')
-
-        const GameObjects = this.map.createFromObjects('GameObjects', null)
-
-        GameObjects.forEach(object => {
-            if (object.name === 'scene-2' || object.name === 'scene-3') {
-                // Not sure why but it offsets itself
-                object.y += 50
-                this.physics.world.enable(object)
-                this.physics.add.overlap(this.player, object, this.enterPortal, null , this)
-            }
-        })
-
-        // this.physics.add.overlap(this.player, portals, this.enterPortal)
-
-        // this.physics.add.overlap(this.player, portal, this.enterPortal)
-
-        // this.map.findObject('GameObjects', function(object) {
-        //     if (object.name === 'Portal') {
-        //         this.physics.add.sprite(object.x, object.y, 'player')
-        //     }
-        // })
-
         // Set Collision with World Bounds
         // this.physics.world.setBounds(0, 0, this.map.widthInPixels*2, this.map.heightInPixels*2)
         // this.player.body.setCollideWorldBounds(true)
-        
-        this.physics.add.collider(this.player, MapObjectsLayer)
+
+        // Set Collision with <Objects> Layers
+        mapObjectsLayer.setCollisionByProperty({ collides: true })
+        this.physics.add.collider(this.player, mapObjectsLayer)
 
         /* For Debug Purposes, to be deleted */
         const debugGraphics = this.add.graphics().setAlpha(0.7);
-        MapObjectsLayer.renderDebug(debugGraphics, {
+        mapObjectsLayer.renderDebug(debugGraphics, {
             tileColor: null,
             collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
             faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
@@ -210,17 +180,6 @@ export default class Scene1 extends Phaser.Scene
                     this.player.anims.play('idleDown', true)
                     break;
             }
-        }
-    }
-    enterPortal(obj1, obj2) {
-        if (!this.enteredPortal) {
-            // console.log(obj1)
-            // console.log(obj2)
-            this.enteredPortal = true;
-            this.cameras.main.fadeOut(1000, 0, 0, 0)
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                this.scene.start(obj2.name)
-            })
         }
     }
 }
