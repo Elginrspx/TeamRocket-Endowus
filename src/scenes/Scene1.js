@@ -54,29 +54,16 @@ export default class Scene1 extends Phaser.Scene
         this.player.body.setSize(16,25) // Set Hitbox Size to match Player Size
         this.player.body.setOffset(0,8) // Offset Hitbox to match Player
 
-        // const MapGameObjectsLayer = this.map.getObjectLayer('GameObjects')
-
         const GameObjects = this.map.createFromObjects('GameObjects', null)
 
         GameObjects.forEach(object => {
             if (object.name === 'scene-2' || object.name === 'scene-3') {
-                // Not sure why but it offsets itself
+                // Offset Y axis by 50 as correction
                 object.y += 50
                 this.physics.world.enable(object)
                 this.physics.add.overlap(this.player, object, this.enterPortal, null , this)
             }
         })
-
-        // this.physics.add.overlap(this.player, portals, this.enterPortal)
-
-        // this.physics.add.overlap(this.player, portal, this.enterPortal)
-
-        // this.map.findObject('GameObjects', function(object) {
-        //     if (object.name === 'Portal') {
-        //         this.physics.add.sprite(object.x, object.y, 'player')
-        //     }
-        // })
-
         // Set Collision with World Bounds
         // this.physics.world.setBounds(0, 0, this.map.widthInPixels*2, this.map.heightInPixels*2)
         // this.player.body.setCollideWorldBounds(true)
@@ -224,3 +211,11 @@ export default class Scene1 extends Phaser.Scene
         }
     }
 }
+
+        // const MapGameObjectsLayer = this.map.getObjectLayer('GameObjects')
+        
+        // this.map.findObject('GameObjects', function(object) {
+        //     if (object.name === 'Portal') {
+        //         this.physics.add.sprite(object.x, object.y, 'player')
+        //     }
+        // })
