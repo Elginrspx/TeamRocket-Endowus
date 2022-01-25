@@ -6,12 +6,16 @@ export default class Scene1 extends Phaser.Scene
 	constructor()
 	{
 		super('scene-1')
-        this.enteredPortal = false
+        this.walletAmount = 50
+        this.endowusWalletAmount = 600
 	}
 
 	preload()
     {
         this.load.baseURL = "../assets/"
+
+        // Preload Scene Background
+        this.load.image('background', 'tilemaps/background.png');
 
         // Preload Map
         this.load.image('hyptosis_tile-art-batch-1', 'tilemaps/hyptosis_tile-art-batch-1.png')
@@ -21,54 +25,97 @@ export default class Scene1 extends Phaser.Scene
         // Preload Character
         this.load.atlas('player', 'characters/player.png', 'characters/player.json')
 
-        this.load.image('background', 'tilemaps/background.png');
+        // Preload Miscellaneous Assets
+        this.load.image('wallet', 'images/money.png')
     }
 
     create()
     {
         // Create Map
-        this.map = this.make.tilemap({ key: 'scene1Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
-        const HyptosisTileset1 = this.map.addTilesetImage('hyptosis_tile-art-batch-1', 'hyptosis_tile-art-batch-1')
-        const HyptosisTileset2 = this.map.addTilesetImage('hyptosis_tile-art-batch-2', 'hyptosis_tile-art-batch-2')
+        var map = this.make.tilemap({ key: 'scene1Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
+        const HyptosisTileset1 = map.addTilesetImage('hyptosis_tile-art-batch-1', 'hyptosis_tile-art-batch-1')
+        const HyptosisTileset2 = map.addTilesetImage('hyptosis_tile-art-batch-2', 'hyptosis_tile-art-batch-2')
 
         // Create Scrolling Background
-        this.background = this.add.tileSprite(0, 0, WorldProperties.width, WorldProperties.height, 'background')
+        this.add.tileSprite(0, 0, WorldProperties.width, WorldProperties.height, 'background')
             .setOrigin(0)
             .setScrollFactor(0,0);
 
         // Layers on Tiled to be referenced here
-        const MapGroundLayer = this.map.createLayer('Ground', [HyptosisTileset1, HyptosisTileset2])
-        const MapObjectsLayer = this.map.createLayer('Objects', [HyptosisTileset1, HyptosisTileset2])
-        const MapDepthLayer = this.map.createLayer('Depth', [HyptosisTileset1, HyptosisTileset2])
-
-        // Set Collision with <Objects> Layers
-        MapObjectsLayer.setCollisionByProperty({ collides: true })
-
-        // Set Layer for Depth Perception
-        MapDepthLayer.setDepth(1);
+        const MapGroundLayer = map.createLayer('Ground', [HyptosisTileset1, HyptosisTileset2])
+        const MapObjectsLayer = map.createLayer('Objects', [HyptosisTileset1, HyptosisTileset2])
+        const MapDepthLayer = map.createLayer('Depth', [HyptosisTileset1, HyptosisTileset2])
 
         // Create Character
-        const SpawnPoint = this.map.findObject('GameObjects', obj => obj.name === 'spawn-point')
+        const SpawnPoint = map.findObject('GameObjects', obj => obj.name === 'spawn-point')
         this.player = this.physics.add.sprite(SpawnPoint.x, SpawnPoint.y, 'player')
         this.player.setScale(1.25) // Make Player slightly bigger
         this.player.body.setSize(16,25) // Set Hitbox Size to match Player Size
         this.player.body.setOffset(0,8) // Offset Hitbox to match Player
 
-        const GameObjects = this.map.createFromObjects('GameObjects', null)
+        // Set Bounds of the Camera, Follow Movement of Player
+        this.cameras.main.startFollow(this.player)
+
+        const GameObjects = map.createFromObjects('GameObjects', null)
 
         GameObjects.forEach(object => {
-            if (object.name === 'scene-2' || object.name === 'scene-3') {
+            if (object.name === 'scene-2') {
                 // Offset Y axis by 50 as correction
                 object.y += 50
                 this.physics.world.enable(object)
-                this.physics.add.overlap(this.player, object, this.enterPortal, null , this)
+                this.physics.add.overlap(this.player, object, () => {
+                    this.enterPortal('scene-2')
+                })
+            }
+
+            if (object.name === 'scene-3') {
+                // Offset Y axis by 50 as correction
+                object.y += 50
+                this.physics.world.enable(object)
+                this.physics.add.overlap(this.player, object, () => {
+                    this.enterPortal('scene-3')
+                })
             }
         })
+
         // Set Collision with World Bounds
-        // this.physics.world.setBounds(0, 0, this.map.widthInPixels*2, this.map.heightInPixels*2)
+        // this.physics.world.setBounds(0, 0, map.widthInPixels*2, map.heightInPixels*2)
         // this.player.body.setCollideWorldBounds(true)
         
+        // Set Collision with <Objects> Layers
+        MapObjectsLayer.setCollisionByProperty({ collides: true })
         this.physics.add.collider(this.player, MapObjectsLayer)
+
+        // Set Layer for Depth Perception
+        MapDepthLayer.setDepth(1);
+
+        // Create Wallet
+        this.wallet = this.add.image(this.player.x + 250, this.player.y - 435, 'wallet')
+        this.wallet.setDisplaySize(48, 48)
+        this.wallet.setScrollFactor(0, 0)
+        this.wallet.setDepth(10)
+
+        this.wallet.setDataEnabled()
+        this.wallet.data.set('amount', this.walletAmount)
+
+        this.walletText = this.add.text(this.player.x + 270, this.player.y - 450, '', { font: '24px Arial' })
+        this.walletText.setScrollFactor(0, 0)
+        this.walletText.setDepth(10)
+        this.walletText.setText(this.wallet.data.get('amount'))
+
+        // Create EndowusWallet
+        this.endowusWallet = this.add.image(this.player.x + 250, this.player.y - 400, 'wallet')
+        this.endowusWallet.setDisplaySize(48, 48)
+        this.endowusWallet.setScrollFactor(0, 0)
+        this.endowusWallet.setDepth(10)
+
+        this.endowusWallet.setDataEnabled()
+        this.endowusWallet.data.set('amount', this.endowusWalletAmount)
+
+        this.endowusWalletText = this.add.text(this.player.x + 270, this.player.y - 415, '', { font: '24px Arial' })
+        this.endowusWalletText.setScrollFactor(0, 0)
+        this.endowusWalletText.setDepth(10)
+        this.endowusWalletText.setText(this.endowusWallet.data.get('amount'))
 
         /* For Debug Purposes, to be deleted */
         const debugGraphics = this.add.graphics().setAlpha(0.7);
@@ -146,9 +193,6 @@ export default class Scene1 extends Phaser.Scene
             repeat: 0
         })
 
-        // Set Bounds of the Camera, Follow Movement of Player
-        this.cameras.main.startFollow(this.player)
-
         // Create key inputs for movement
         this.keys = this.input.keyboard.createCursorKeys();
 
@@ -158,7 +202,7 @@ export default class Scene1 extends Phaser.Scene
 
     // Update polls at 60 times a second
     update() {
-        this.cameras.main.setBounds(this.player.x - WorldProperties.width/2, this.player.y - WorldProperties.height/2, WorldProperties.width, WorldProperties.height)
+        // this.cameras.main.setBounds(this.player.x - WorldProperties.width/2, this.player.y - WorldProperties.height/2, WorldProperties.width, WorldProperties.height)
         
         // Set Velocity to 0 whenever no key is being pressed
         this.player.body.velocity.x = 0
@@ -166,6 +210,9 @@ export default class Scene1 extends Phaser.Scene
 
         // On Arrow Key Press, Move in Direction + Animation
         if (this.keys.right.isDown) {
+            // To be removed section
+            this.walletManager(this.wallet, this.walletText, 50)
+            // Up to here
             this.player.anims.play('runRight', true)
             this.player.body.velocity.x = WorldProperties.velocity;
             this.keyLastPressed = "right"
@@ -199,22 +246,26 @@ export default class Scene1 extends Phaser.Scene
             }
         }
     }
-    enterPortal(obj1, obj2) {
-        if (!this.enteredPortal) {
-            // console.log(obj1)
-            // console.log(obj2)
-            this.enteredPortal = true;
-            this.cameras.main.fadeOut(1000, 0, 0, 0)
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                this.scene.start(obj2.name)
-            })
-        }
+    enterPortal(sceneName) {
+        // Destroy all colliders to prevent repeated calls
+        this.physics.world.colliders.destroy()
+
+        // Camera Transitions, Start New Scene
+        this.cameras.main.fadeOut(1000, 0, 0, 0)
+        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+            this.scene.start(sceneName)
+        })
+    }
+
+    walletManager(wallet, text, amount) {
+        wallet.data.values.amount += amount
+        text.setText(wallet.data.get('amount'))
     }
 }
 
-        // const MapGameObjectsLayer = this.map.getObjectLayer('GameObjects')
+        // const MapGameObjectsLayer = map.getObjectLayer('GameObjects')
         
-        // this.map.findObject('GameObjects', function(object) {
+        // map.findObject('GameObjects', function(object) {
         //     if (object.name === 'Portal') {
         //         this.physics.add.sprite(object.x, object.y, 'player')
         //     }

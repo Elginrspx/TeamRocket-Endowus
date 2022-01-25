@@ -832,8 +832,8 @@
                  "type":"spawn",
                  "visible":true,
                  "width":32,
-                 "x":473,
-                 "y":450
+                 "x":447,
+                 "y":478
                 }],
          "opacity":1,
          "type":"objectgroup",
