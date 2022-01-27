@@ -1,4 +1,4 @@
-import Phaser, { GameObjects } from 'phaser'
+import Phaser from 'phaser'
 import { WorldProperties } from '../worldProperties'
 
 export default class Scene1 extends Phaser.Scene
@@ -6,6 +6,7 @@ export default class Scene1 extends Phaser.Scene
 	constructor()
 	{
 		super('scene-1')
+        // Can call from backend to update the wallet amount here
         this.walletAmount = 50
         this.endowusWalletAmount = 600
 	}
@@ -18,8 +19,7 @@ export default class Scene1 extends Phaser.Scene
         this.load.image('background', 'tilemaps/background.png');
 
         // Preload Map
-        this.load.image('hyptosis_tile-art-batch-1', 'tilemaps/hyptosis_tile-art-batch-1.png')
-        this.load.image('hyptosis_tile-art-batch-2', 'tilemaps/hyptosis_tile-art-batch-2.png')
+        this.load.image('World Of Solaria', 'tilemaps/World Of Solaria.png')
         this.load.tilemapTiledJSON('scene1Tilemap', 'tilemaps/scene-1.json')
 
         // Preload Character
@@ -33,8 +33,7 @@ export default class Scene1 extends Phaser.Scene
     {
         // Create Map
         var map = this.make.tilemap({ key: 'scene1Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
-        const HyptosisTileset1 = map.addTilesetImage('hyptosis_tile-art-batch-1', 'hyptosis_tile-art-batch-1')
-        const HyptosisTileset2 = map.addTilesetImage('hyptosis_tile-art-batch-2', 'hyptosis_tile-art-batch-2')
+        const WorldOfSolaria = map.addTilesetImage('World Of Solaria', 'World Of Solaria')
 
         // Create Scrolling Background
         this.add.tileSprite(0, 0, WorldProperties.width, WorldProperties.height, 'background')
@@ -42,9 +41,9 @@ export default class Scene1 extends Phaser.Scene
             .setScrollFactor(0,0);
 
         // Layers on Tiled to be referenced here
-        const MapGroundLayer = map.createLayer('Ground', [HyptosisTileset1, HyptosisTileset2])
-        const MapObjectsLayer = map.createLayer('Objects', [HyptosisTileset1, HyptosisTileset2])
-        const MapDepthLayer = map.createLayer('Depth', [HyptosisTileset1, HyptosisTileset2])
+        const MapGroundLayer = map.createLayer('Ground', [WorldOfSolaria])
+        const MapObjectsLayer = map.createLayer('Objects', [WorldOfSolaria])
+        const MapDepthLayer = map.createLayer('Depth', [WorldOfSolaria])
 
         // Create Character
         const SpawnPoint = map.findObject('GameObjects', obj => obj.name === 'spawn-point')
@@ -61,26 +60,20 @@ export default class Scene1 extends Phaser.Scene
         GameObjects.forEach(object => {
             if (object.name === 'scene-2') {
                 // Offset Y axis by 50 as correction
-                object.y += 50
                 this.physics.world.enable(object)
                 this.physics.add.overlap(this.player, object, () => {
-                    this.enterPortal('scene-2')
+                    this.enterPortal(object.name)
                 })
             }
 
             if (object.name === 'scene-3') {
                 // Offset Y axis by 50 as correction
-                object.y += 50
                 this.physics.world.enable(object)
                 this.physics.add.overlap(this.player, object, () => {
                     this.enterPortal('scene-3')
                 })
             }
         })
-
-        // Set Collision with World Bounds
-        // this.physics.world.setBounds(0, 0, map.widthInPixels*2, map.heightInPixels*2)
-        // this.player.body.setCollideWorldBounds(true)
         
         // Set Collision with <Objects> Layers
         MapObjectsLayer.setCollisionByProperty({ collides: true })
@@ -90,29 +83,27 @@ export default class Scene1 extends Phaser.Scene
         MapDepthLayer.setDepth(1);
 
         // Create Wallet
-        this.wallet = this.add.image(this.player.x + 250, this.player.y - 435, 'wallet')
+        this.wallet = this.add.image(700, 35, 'wallet')
         this.wallet.setDisplaySize(48, 48)
         this.wallet.setScrollFactor(0, 0)
         this.wallet.setDepth(10)
-
         this.wallet.setDataEnabled()
         this.wallet.data.set('amount', this.walletAmount)
 
-        this.walletText = this.add.text(this.player.x + 270, this.player.y - 450, '', { font: '24px Arial' })
+        this.walletText = this.add.text(720, 20, '', { font: '24px Arial' })
         this.walletText.setScrollFactor(0, 0)
         this.walletText.setDepth(10)
         this.walletText.setText(this.wallet.data.get('amount'))
 
         // Create EndowusWallet
-        this.endowusWallet = this.add.image(this.player.x + 250, this.player.y - 400, 'wallet')
+        this.endowusWallet = this.add.image(700, 75, 'wallet')
         this.endowusWallet.setDisplaySize(48, 48)
         this.endowusWallet.setScrollFactor(0, 0)
         this.endowusWallet.setDepth(10)
-
         this.endowusWallet.setDataEnabled()
         this.endowusWallet.data.set('amount', this.endowusWalletAmount)
 
-        this.endowusWalletText = this.add.text(this.player.x + 270, this.player.y - 415, '', { font: '24px Arial' })
+        this.endowusWalletText = this.add.text(720, 60, '', { font: '24px Arial' })
         this.endowusWalletText.setScrollFactor(0, 0)
         this.endowusWalletText.setDepth(10)
         this.endowusWalletText.setText(this.endowusWallet.data.get('amount'))
@@ -125,9 +116,9 @@ export default class Scene1 extends Phaser.Scene
             faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
         })
 
-        /* Use these commands to get exact frame names for animations, to be deleted */
-        // var frameNames = this.textures.get('player').getFrameNames();
-        // console.log(frameNames)
+        // /* Use these commands to get exact frame names for animations, to be deleted */
+        // // var frameNames = this.textures.get('player').getFrameNames();
+        // // console.log(frameNames)
 
         // Create Animation for - Idle Right
         this.anims.create({
@@ -210,9 +201,7 @@ export default class Scene1 extends Phaser.Scene
 
         // On Arrow Key Press, Move in Direction + Animation
         if (this.keys.right.isDown) {
-            // To be removed section
             this.walletManager(this.wallet, this.walletText, 50)
-            // Up to here
             this.player.anims.play('runRight', true)
             this.player.body.velocity.x = WorldProperties.velocity;
             this.keyLastPressed = "right"
@@ -246,6 +235,7 @@ export default class Scene1 extends Phaser.Scene
             }
         }
     }
+
     enterPortal(sceneName) {
         // Destroy all colliders to prevent repeated calls
         this.physics.world.colliders.destroy()
@@ -262,11 +252,3 @@ export default class Scene1 extends Phaser.Scene
         text.setText(wallet.data.get('amount'))
     }
 }
-
-        // const MapGameObjectsLayer = map.getObjectLayer('GameObjects')
-        
-        // map.findObject('GameObjects', function(object) {
-        //     if (object.name === 'Portal') {
-        //         this.physics.add.sprite(object.x, object.y, 'player')
-        //     }
-        // })
