@@ -42,6 +42,7 @@ export default class Scene1 extends Phaser.Scene
 
         // Layers on Tiled to be referenced here
         const MapGroundLayer = map.createLayer('Ground', [WorldOfSolaria])
+        const MapGround2Layer = map.createLayer('Ground2', [WorldOfSolaria])
         const MapObjectsLayer = map.createLayer('Objects', [WorldOfSolaria])
         const MapDepthLayer = map.createLayer('Depth', [WorldOfSolaria])
 
@@ -49,8 +50,8 @@ export default class Scene1 extends Phaser.Scene
         const SpawnPoint = map.findObject('GameObjects', obj => obj.name === 'spawn-point')
         this.player = this.physics.add.sprite(SpawnPoint.x, SpawnPoint.y, 'player')
         this.player.setScale(1.25) // Make Player slightly bigger
-        this.player.body.setSize(16,25) // Set Hitbox Size to match Player Size
-        this.player.body.setOffset(0,8) // Offset Hitbox to match Player
+        this.player.body.setSize(10,10) // Set Hitbox Size to match Player Size
+        this.player.body.setOffset(2,22) // Offset Hitbox to match Player
 
         // Set Bounds of the Camera, Follow Movement of Player
         this.cameras.main.startFollow(this.player)

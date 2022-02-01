@@ -42,7 +42,7 @@ export default class Scene2 extends Phaser.Scene
         // Create Character
         this.player = this.physics.add.sprite(300, 300, 'player')
         this.player.setScale(1.25) // Make Player slightly bigger
-        this.player.body.setSize(16,25) // Set Hitbox Size to match Player Size
+        this.player.body.setSize(16, 6) // Set Hitbox Size to match Player Size
         this.player.body.setOffset(0,8) // Offset Hitbox to match Player
 
         // Set Collision with World Bounds
