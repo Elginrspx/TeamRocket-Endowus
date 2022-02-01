@@ -53,7 +53,12 @@ export default class Scene1 extends Phaser.Scene
         this.player.body.setSize(10,10) // Set Hitbox Size to match Player Size
         this.player.body.setOffset(2,22) // Offset Hitbox to match Player
 
+        // Set Collision with World Bounds
+        this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
+        this.player.setCollideWorldBounds(true)
+
         // Set Bounds of the Camera, Follow Movement of Player
+        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
         this.cameras.main.startFollow(this.player)
 
         const GameObjects = map.createFromObjects('GameObjects', null)
@@ -61,17 +66,10 @@ export default class Scene1 extends Phaser.Scene
         GameObjects.forEach(object => {
             if (object.name === 'scene-2') {
                 // Offset Y axis by 50 as correction
+                object.y += 50
                 this.physics.world.enable(object)
                 this.physics.add.overlap(this.player, object, () => {
                     this.enterPortal(object.name)
-                })
-            }
-
-            if (object.name === 'scene-3') {
-                // Offset Y axis by 50 as correction
-                this.physics.world.enable(object)
-                this.physics.add.overlap(this.player, object, () => {
-                    this.enterPortal('scene-3')
                 })
             }
         })
@@ -194,8 +192,6 @@ export default class Scene1 extends Phaser.Scene
 
     // Update polls at 60 times a second
     update() {
-        // this.cameras.main.setBounds(this.player.x - WorldProperties.width/2, this.player.y - WorldProperties.height/2, WorldProperties.width, WorldProperties.height)
-        
         // Set Velocity to 0 whenever no key is being pressed
         this.player.body.velocity.x = 0
         this.player.body.velocity.y = 0
