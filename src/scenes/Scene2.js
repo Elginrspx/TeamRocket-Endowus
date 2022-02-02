@@ -20,7 +20,7 @@ export default class Scene2 extends Phaser.Scene
 
         // Preload Map
         this.load.image('World Of Solaria', 'tilemaps/World Of Solaria.png')
-        this.load.tilemapTiledJSON('scene1Tilemap', 'tilemaps/scene-2.json')
+        this.load.tilemapTiledJSON('scene2Tilemap', 'tilemaps/scene-2.json')
 
         // Preload Character
         this.load.atlas('player', 'characters/player.png', 'characters/player.json')
@@ -31,8 +31,11 @@ export default class Scene2 extends Phaser.Scene
 
     create()
     {
+        // Scene Fade In Effect
+        this.cameras.main.fadeIn(1000, 0, 0, 0)
+
         // Create Map
-        var map = this.make.tilemap({ key: 'scene1Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
+        var map = this.make.tilemap({ key: 'scene2Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
         const WorldOfSolaria = map.addTilesetImage('World Of Solaria', 'World Of Solaria')
 
         // Create Scrolling Background
@@ -59,7 +62,7 @@ export default class Scene2 extends Phaser.Scene
 
         // Set Bounds of the Camera, Follow Movement of Player
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
-        this.cameras.main.setZoom(1.75, 1.75)
+        this.cameras.main.setZoom(WorldProperties.cameraZoom, WorldProperties.cameraZoom)
         this.cameras.main.startFollow(this.player)
 
         const GameObjects = map.createFromObjects('GameObjects', null)
@@ -182,7 +185,6 @@ export default class Scene2 extends Phaser.Scene
         GameObjects.forEach(object => {
             switch(object.name) {
                 case "scene-1":
-                    object.y += 50
                     this.physics.world.enable(object)
                     this.physics.add.overlap(this.player, object, () => {
                         this.enterPortal(object.name)
@@ -191,6 +193,7 @@ export default class Scene2 extends Phaser.Scene
                 case "npc-1":
                     let npc = this.physics.add.sprite(object.x, object.y, 'player')
                     npc.anims.play('idleDown', true)
+                    break;
             }
         })
     }

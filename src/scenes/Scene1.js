@@ -31,6 +31,9 @@ export default class Scene1 extends Phaser.Scene
 
     create()
     {
+        // Scene Fade In Effect
+        this.cameras.main.fadeIn(1000, 0, 0, 0)
+
         // Create Map
         var map = this.make.tilemap({ key: 'scene1Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
         const WorldOfSolaria = map.addTilesetImage('World Of Solaria', 'World Of Solaria')
@@ -59,7 +62,7 @@ export default class Scene1 extends Phaser.Scene
 
         // Set Bounds of the Camera, Follow Movement of Player
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
-        this.cameras.main.setZoom(1.75, 1.75)
+        this.cameras.main.setZoom(WorldProperties.cameraZoom, WorldProperties.cameraZoom)
         this.cameras.main.startFollow(this.player)
 
         const GameObjects = map.createFromObjects('GameObjects', null)
@@ -191,6 +194,7 @@ export default class Scene1 extends Phaser.Scene
                 case "npc-1":
                     let npc = this.physics.add.sprite(object.x, object.y, 'player')
                     npc.anims.play('idleDown', true)
+                    break;
             }
         })
     }
@@ -239,14 +243,16 @@ export default class Scene1 extends Phaser.Scene
 
     enterPortal(sceneName) {
         // Can add a boolean to check if event is finished, if not dont allow enter portal
-        
+
         // Destroy all colliders to prevent repeated calls
         this.physics.world.colliders.destroy()
 
         // Camera Transitions, Start New Scene
         this.cameras.main.fadeOut(1000, 0, 0, 0)
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            this.scene.start(sceneName)
+            this.time.delayedCall(1000, () => {
+                this.scene.start(sceneName)
+            })
         })
     }
 
