@@ -59,20 +59,10 @@ export default class Scene1 extends Phaser.Scene
 
         // Set Bounds of the Camera, Follow Movement of Player
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
+        this.cameras.main.setZoom(1.75, 1.75)
         this.cameras.main.startFollow(this.player)
 
         const GameObjects = map.createFromObjects('GameObjects', null)
-
-        GameObjects.forEach(object => {
-            if (object.name === 'scene-2') {
-                // Offset Y axis by 50 as correction
-                object.y += 50
-                this.physics.world.enable(object)
-                this.physics.add.overlap(this.player, object, () => {
-                    this.enterPortal(object.name)
-                })
-            }
-        })
         
         // Set Collision with <Objects> Layers
         MapObjectsLayer.setCollisionByProperty({ collides: true })
@@ -188,6 +178,21 @@ export default class Scene1 extends Phaser.Scene
 
         // Set Starting Animation
         this.player.play("idleDown")
+
+        GameObjects.forEach(object => {
+            switch(object.name) {
+                case "scene-2":
+                    object.y += 50
+                    this.physics.world.enable(object)
+                    this.physics.add.overlap(this.player, object, () => {
+                        this.enterPortal(object.name)
+                    })
+                    break;
+                case "npc-1":
+                    let npc = this.physics.add.sprite(object.x, object.y, 'player')
+                    npc.anims.play('idleDown', true)
+            }
+        })
     }
 
     // Update polls at 60 times a second
@@ -198,7 +203,6 @@ export default class Scene1 extends Phaser.Scene
 
         // On Arrow Key Press, Move in Direction + Animation
         if (this.keys.right.isDown) {
-            this.walletManager(this.wallet, this.walletText, 50)
             this.player.anims.play('runRight', true)
             this.player.body.velocity.x = WorldProperties.velocity;
             this.keyLastPressed = "right"
@@ -234,6 +238,8 @@ export default class Scene1 extends Phaser.Scene
     }
 
     enterPortal(sceneName) {
+        // Can add a boolean to check if event is finished, if not dont allow enter portal
+        
         // Destroy all colliders to prevent repeated calls
         this.physics.world.colliders.destroy()
 

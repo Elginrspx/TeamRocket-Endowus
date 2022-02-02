@@ -1,7 +1,8 @@
 import Phaser from 'phaser'
 import { WorldProperties } from './worldProperties'
 
-import Scene1 from './scenes/Scene1'
+// import Scene1 from './scenes/Scene1'
+import Scene2 from './scenes/Scene2'
 
 const config = {
 	type: Phaser.AUTO,
@@ -13,7 +14,7 @@ const config = {
 			debug: true
 		}
 	},
-	scene: [Scene1]
+	scene: [Scene2]
 }
 
 export default new Phaser.Game(config)

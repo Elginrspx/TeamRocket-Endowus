@@ -6,64 +6,108 @@ export default class Scene2 extends Phaser.Scene
 	constructor()
 	{
 		super('scene-2')
+        // Can call from backend to update the wallet amount here
+        this.walletAmount = 50
+        this.endowusWalletAmount = 600
 	}
 
 	preload()
     {
         this.load.baseURL = "../assets/"
 
+        // Preload Scene Background
+        this.load.image('background', 'tilemaps/background.png');
+
         // Preload Map
-        this.load.image('hyptosis_tile-art-batch-1', 'tilemaps/hyptosis_tile-art-batch-1.png')
-        this.load.image('hyptosis_tile-art-batch-2', 'tilemaps/hyptosis_tile-art-batch-2.png')
-        this.load.tilemapTiledJSON('scene2Tilemap', 'tilemaps/scene-2.json')
+        this.load.image('World Of Solaria', 'tilemaps/World Of Solaria.png')
+        this.load.tilemapTiledJSON('scene1Tilemap', 'tilemaps/scene-2.json')
 
         // Preload Character
         this.load.atlas('player', 'characters/player.png', 'characters/player.json')
 
-        this.load.image('background', 'tilemaps/background.png');
+        // Preload Miscellaneous Assets
+        this.load.image('wallet', 'images/money.png')
     }
 
     create()
     {
         // Create Map
-        this.map = this.make.tilemap({ key: 'scene2Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
-        const hyptosisTileset1 = this.map.addTilesetImage('hyptosis_tile-art-batch-1', 'hyptosis_tile-art-batch-1')
-        const hyptosisTileset2 = this.map.addTilesetImage('hyptosis_tile-art-batch-2', 'hyptosis_tile-art-batch-2')
+        var map = this.make.tilemap({ key: 'scene1Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
+        const WorldOfSolaria = map.addTilesetImage('World Of Solaria', 'World Of Solaria')
 
         // Create Scrolling Background
-        this.background = this.add.tileSprite(0, 0, WorldProperties.width, WorldProperties.height, 'background')
+        this.add.tileSprite(0, 0, WorldProperties.width, WorldProperties.height, 'background')
             .setOrigin(0)
             .setScrollFactor(0,0);
 
         // Layers on Tiled to be referenced here
-        const mapGroundLayer = this.map.createLayer('Ground', [hyptosisTileset1, hyptosisTileset2])
-        const mapObjectsLayer = this.map.createLayer('Objects', [hyptosisTileset1, hyptosisTileset2])
+        const MapGroundLayer = map.createLayer('Ground', [WorldOfSolaria])
+        const MapGround2Layer = map.createLayer('Ground2', [WorldOfSolaria])
+        const MapObjectsLayer = map.createLayer('Objects', [WorldOfSolaria])
+        const MapDepthLayer = map.createLayer('Depth', [WorldOfSolaria])
 
         // Create Character
-        this.player = this.physics.add.sprite(300, 300, 'player')
+        const SpawnPoint = map.findObject('GameObjects', obj => obj.name === 'spawn-point')
+        this.player = this.physics.add.sprite(SpawnPoint.x, SpawnPoint.y, 'player')
         this.player.setScale(1.25) // Make Player slightly bigger
-        this.player.body.setSize(16, 6) // Set Hitbox Size to match Player Size
-        this.player.body.setOffset(0,8) // Offset Hitbox to match Player
+        this.player.body.setSize(10,10) // Set Hitbox Size to match Player Size
+        this.player.body.setOffset(2,22) // Offset Hitbox to match Player
 
         // Set Collision with World Bounds
-        // this.physics.world.setBounds(0, 0, this.map.widthInPixels*2, this.map.heightInPixels*2)
-        // this.player.body.setCollideWorldBounds(true)
+        this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
+        this.player.setCollideWorldBounds(true)
 
+        // Set Bounds of the Camera, Follow Movement of Player
+        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
+        this.cameras.main.setZoom(1.75, 1.75)
+        this.cameras.main.startFollow(this.player)
+
+        const GameObjects = map.createFromObjects('GameObjects', null)
+        
         // Set Collision with <Objects> Layers
-        mapObjectsLayer.setCollisionByProperty({ collides: true })
-        this.physics.add.collider(this.player, mapObjectsLayer)
+        MapObjectsLayer.setCollisionByProperty({ collides: true })
+        this.physics.add.collider(this.player, MapObjectsLayer)
+
+        // Set Layer for Depth Perception
+        MapDepthLayer.setDepth(1);
+
+        // Create Wallet
+        this.wallet = this.add.image(700, 35, 'wallet')
+        this.wallet.setDisplaySize(48, 48)
+        this.wallet.setScrollFactor(0, 0)
+        this.wallet.setDepth(10)
+        this.wallet.setDataEnabled()
+        this.wallet.data.set('amount', this.walletAmount)
+
+        this.walletText = this.add.text(720, 20, '', { font: '24px Arial' })
+        this.walletText.setScrollFactor(0, 0)
+        this.walletText.setDepth(10)
+        this.walletText.setText(this.wallet.data.get('amount'))
+
+        // Create EndowusWallet
+        this.endowusWallet = this.add.image(700, 75, 'wallet')
+        this.endowusWallet.setDisplaySize(48, 48)
+        this.endowusWallet.setScrollFactor(0, 0)
+        this.endowusWallet.setDepth(10)
+        this.endowusWallet.setDataEnabled()
+        this.endowusWallet.data.set('amount', this.endowusWalletAmount)
+
+        this.endowusWalletText = this.add.text(720, 60, '', { font: '24px Arial' })
+        this.endowusWalletText.setScrollFactor(0, 0)
+        this.endowusWalletText.setDepth(10)
+        this.endowusWalletText.setText(this.endowusWallet.data.get('amount'))
 
         /* For Debug Purposes, to be deleted */
         const debugGraphics = this.add.graphics().setAlpha(0.7);
-        mapObjectsLayer.renderDebug(debugGraphics, {
+        MapObjectsLayer.renderDebug(debugGraphics, {
             tileColor: null,
             collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
             faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
         })
 
-        /* Use these commands to get exact frame names for animations, to be deleted */
-        // var frameNames = this.textures.get('player').getFrameNames();
-        // console.log(frameNames)
+        // /* Use these commands to get exact frame names for animations, to be deleted */
+        // // var frameNames = this.textures.get('player').getFrameNames();
+        // // console.log(frameNames)
 
         // Create Animation for - Idle Right
         this.anims.create({
@@ -129,20 +173,30 @@ export default class Scene2 extends Phaser.Scene
             repeat: 0
         })
 
-        // Set Bounds of the Camera, Follow Movement of Player
-        this.cameras.main.startFollow(this.player)
-
         // Create key inputs for movement
         this.keys = this.input.keyboard.createCursorKeys();
 
         // Set Starting Animation
         this.player.play("idleDown")
+
+        GameObjects.forEach(object => {
+            switch(object.name) {
+                case "scene-1":
+                    object.y += 50
+                    this.physics.world.enable(object)
+                    this.physics.add.overlap(this.player, object, () => {
+                        this.enterPortal(object.name)
+                    })
+                    break;
+                case "npc-1":
+                    let npc = this.physics.add.sprite(object.x, object.y, 'player')
+                    npc.anims.play('idleDown', true)
+            }
+        })
     }
 
     // Update polls at 60 times a second
     update() {
-        this.cameras.main.setBounds(this.player.x - WorldProperties.width/2, this.player.y - WorldProperties.height/2, WorldProperties.width, WorldProperties.height)
-        
         // Set Velocity to 0 whenever no key is being pressed
         this.player.body.velocity.x = 0
         this.player.body.velocity.y = 0
@@ -181,5 +235,21 @@ export default class Scene2 extends Phaser.Scene
                     break;
             }
         }
+    }
+
+    enterPortal(sceneName) {
+        // Destroy all colliders to prevent repeated calls
+        this.physics.world.colliders.destroy()
+
+        // Camera Transitions, Start New Scene
+        this.cameras.main.fadeOut(1000, 0, 0, 0)
+        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+            this.scene.start(sceneName)
+        })
+    }
+
+    walletManager(wallet, text, amount) {
+        wallet.data.values.amount += amount
+        text.setText(wallet.data.get('amount'))
     }
 }
