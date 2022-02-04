@@ -47,6 +47,7 @@ export default class Scene1 extends Phaser.Scene
         const MapGroundLayer = map.createLayer('Ground', [WorldOfSolaria])
         const MapGround2Layer = map.createLayer('Ground2', [WorldOfSolaria])
         const MapObjectsLayer = map.createLayer('Objects', [WorldOfSolaria])
+        const MapObjects2Layer = map.createLayer('Objects2', [WorldOfSolaria])
         const MapDepthLayer = map.createLayer('Depth', [WorldOfSolaria])
 
         // Create Character
@@ -101,12 +102,14 @@ export default class Scene1 extends Phaser.Scene
         this.endowusWalletText.setText(this.endowusWallet.data.get('amount'))
 
         /* For Debug Purposes, to be deleted */
-        const debugGraphics = this.add.graphics().setAlpha(0.7);
-        MapObjectsLayer.renderDebug(debugGraphics, {
-            tileColor: null,
-            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-            faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
-        })
+        if (this.physics.config.debug) {
+            const debugGraphics = this.add.graphics().setAlpha(0.7);
+            MapObjectsLayer.renderDebug(debugGraphics, {
+                tileColor: null,
+                collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+                faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+            })
+        }
 
         // /* Use these commands to get exact frame names for animations, to be deleted */
         // // var frameNames = this.textures.get('player').getFrameNames();
@@ -197,6 +200,7 @@ export default class Scene1 extends Phaser.Scene
                     break;
             }
         })
+        console.log(this.physics)
     }
 
     // Update polls at 60 times a second

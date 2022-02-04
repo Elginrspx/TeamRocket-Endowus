@@ -20,6 +20,7 @@ export default class Scene2 extends Phaser.Scene
 
         // Preload Map
         this.load.image('World Of Solaria', 'tilemaps/World Of Solaria.png')
+        this.load.image('Animated', 'tilemaps/Animated.png')
         this.load.tilemapTiledJSON('scene2Tilemap', 'tilemaps/scene-2.json')
 
         // Preload Character
@@ -37,6 +38,7 @@ export default class Scene2 extends Phaser.Scene
         // Create Map
         var map = this.make.tilemap({ key: 'scene2Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
         const WorldOfSolaria = map.addTilesetImage('World Of Solaria', 'World Of Solaria')
+        const Animated = map.addTilesetImage('Animated', 'Animated')
 
         // Create Scrolling Background
         this.add.tileSprite(0, 0, WorldProperties.width, WorldProperties.height, 'background')
@@ -44,10 +46,11 @@ export default class Scene2 extends Phaser.Scene
             .setScrollFactor(0,0);
 
         // Layers on Tiled to be referenced here
-        const MapGroundLayer = map.createLayer('Ground', [WorldOfSolaria])
-        const MapGround2Layer = map.createLayer('Ground2', [WorldOfSolaria])
-        const MapObjectsLayer = map.createLayer('Objects', [WorldOfSolaria])
-        const MapDepthLayer = map.createLayer('Depth', [WorldOfSolaria])
+        const MapGroundLayer = map.createLayer('Ground', [WorldOfSolaria, Animated])
+        const MapGround2Layer = map.createLayer('Ground2', [WorldOfSolaria, Animated])
+        const MapObjectsLayer = map.createLayer('Objects', [WorldOfSolaria, Animated])
+        const MapObjects2Layer = map.createLayer('Objects2', [WorldOfSolaria, Animated])
+        const MapDepthLayer = map.createLayer('Depth', [WorldOfSolaria, Animated])
 
         // Create Character
         const SpawnPoint = map.findObject('GameObjects', obj => obj.name === 'spawn-point')
@@ -101,12 +104,14 @@ export default class Scene2 extends Phaser.Scene
         this.endowusWalletText.setText(this.endowusWallet.data.get('amount'))
 
         /* For Debug Purposes, to be deleted */
-        const debugGraphics = this.add.graphics().setAlpha(0.7);
-        MapObjectsLayer.renderDebug(debugGraphics, {
-            tileColor: null,
-            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-            faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
-        })
+        if (this.physics.config.debug) {
+            const debugGraphics = this.add.graphics().setAlpha(0.7);
+            MapObjectsLayer.renderDebug(debugGraphics, {
+                tileColor: null,
+                collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+                faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+            })
+        }
 
         // /* Use these commands to get exact frame names for animations, to be deleted */
         // // var frameNames = this.textures.get('player').getFrameNames();
