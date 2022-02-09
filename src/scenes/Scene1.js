@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import { WorldProperties } from '../worldProperties'
+// import { EventDispatcher } from '../eventDispatcher'
 
 export default class Scene1 extends Phaser.Scene
 {
@@ -9,6 +10,7 @@ export default class Scene1 extends Phaser.Scene
         // Can call from backend to update the wallet amount here
         this.walletAmount = 50
         this.endowusWalletAmount = 600
+        this.eventNumber = 1
 	}
 
 	preload()
@@ -40,9 +42,9 @@ export default class Scene1 extends Phaser.Scene
         this.cameras.main.fadeIn(1000, 0, 0, 0)
 
         // Create Map
-        var map = this.make.tilemap({ key: 'scene1Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
-        const WorldOfSolaria = map.addTilesetImage('World Of Solaria', 'World Of Solaria')
-        const Animated = map.addTilesetImage('Animated', 'Animated')
+        this.map = this.make.tilemap({ key: 'scene1Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
+        const WorldOfSolaria = this.map.addTilesetImage('World Of Solaria', 'World Of Solaria')
+        const Animated = this.map.addTilesetImage('Animated', 'Animated')
 
         // Create Scrolling Background
         this.add.tileSprite(0, 0, WorldProperties.width, WorldProperties.height, 'background')
@@ -50,34 +52,34 @@ export default class Scene1 extends Phaser.Scene
             .setScrollFactor(0,0);
 
         // Layers on Tiled to be referenced here
-        const MapGroundLayer = map.createLayer('Ground', [WorldOfSolaria, Animated])
-        const MapGround2Layer = map.createLayer('Ground2', [WorldOfSolaria, Animated])
-        const MapObjectsLayer = map.createLayer('Objects', [WorldOfSolaria, Animated])
-        const MapObjects2Layer = map.createLayer('Objects2', [WorldOfSolaria, Animated])
-        const MapDepthLayer = map.createLayer('Depth', [WorldOfSolaria, Animated])
+        const MapGroundLayer = this.map.createLayer('Ground', [WorldOfSolaria, Animated])
+        const MapGround2Layer = this.map.createLayer('Ground2', [WorldOfSolaria, Animated])
+        const MapObjectsLayer = this.map.createLayer('Objects', [WorldOfSolaria, Animated])
+        const MapObjects2Layer = this.map.createLayer('Objects2', [WorldOfSolaria, Animated])
+        const MapDepthLayer = this.map.createLayer('Depth', [WorldOfSolaria, Animated])
 
         // Animate Tiles (Ignore the error)
-        this.animatedTiles.init(map);
+        this.animatedTiles.init(this.map);
 
         // Create Character
-        const SpawnPoint = map.findObject('GameObjects', obj => obj.name === 'spawn-point')
+        const SpawnPoint = this.map.findObject('GameObjects', obj => obj.name === 'spawn-point')
         this.player = this.physics.add.sprite(SpawnPoint.x, SpawnPoint.y, 'player')
         this.player.setScale(1.25) // Make Player slightly bigger
         this.player.body.setSize(10,10) // Set Hitbox Size to match Player Size
         this.player.body.setOffset(2,22) // Offset Hitbox to match Player
 
         // Set Collision with World Bounds
-        this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
+        this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
         this.player.setCollideWorldBounds(true)
 
         // Set Bounds of the Camera, Follow Movement of Player
-        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
+        this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
         this.cameras.main.setZoom(WorldProperties.cameraZoom, WorldProperties.cameraZoom)
         this.cameras.main.startFollow(this.player)
 
         // this.add.sprite(300, 300, 'questMarker')
 
-        const GameObjects = map.createFromObjects('GameObjects', null)
+        this.gameObjects = this.map.createFromObjects('GameObjects', null)
         
         // Set Collision with <Objects> Layers
         MapObjectsLayer.setCollisionByProperty({ collides: true })
@@ -190,18 +192,11 @@ export default class Scene1 extends Phaser.Scene
             repeat: 0
         })
 
-        // Create key inputs for movement
-        this.keys = this.input.keyboard.createCursorKeys();
-
-        // Set Starting Animation
-        this.player.play("idleDown")
-
-        GameObjects.forEach(object => {
+        this.gameObjects.forEach(object => {
+            // object.alpha = 0
             switch(object.name) {
                 case "scene-2":
                     object.y += 50
-                    /* ForChange Alpha to 0 to Hide Black Box */
-                    // object.alpha = 0
                     this.physics.world.enable(object)
                     this.physics.add.overlap(this.player, object, () => {
                         this.enterPortal(object.name)
@@ -213,6 +208,14 @@ export default class Scene1 extends Phaser.Scene
                     break;
             }
         })
+
+        this.setEventCollision()
+
+        // Create key inputs for movement
+        this.keys = this.input.keyboard.createCursorKeys();
+
+        // Set Starting Animation
+        this.player.play("idleDown")
     }
 
     // Update polls at 60 times a second
@@ -275,5 +278,58 @@ export default class Scene1 extends Phaser.Scene
     walletManager(wallet, text, amount) {
         wallet.data.values.amount += amount
         text.setText(wallet.data.get('amount'))
+    }
+
+    setEventCollision() {
+        var currentEvent = "event" + this.eventNumber
+        // var eventObject = this.map.findObject('GameObjects', obj => obj.name === currentEvent)
+        var eventObject = this.gameObjects.find(event => event.name === currentEvent)
+        var questMarker = this.physics.add.sprite(eventObject.x, eventObject.y - 50, 'questMarker')
+        questMarker.setScale(0.20, 0.20)
+
+        this.physics.world.enable(eventObject)
+        this.physics.add.overlap(this.player, eventObject, () => {
+            var eventStatus = this.playEvent(this.eventNumber)
+
+            // Disable Event and Destroy Quest Marker on Event Completion
+            if (eventStatus == "completed") {
+                this.physics.world.disable(eventObject)
+                questMarker.destroy()
+
+                if (this.eventNumber != 0) {
+                    // Play Next Event
+                    this.setEventCollision()
+                }
+            }
+        })
+    }
+
+    playEvent(eventNumber) {
+        switch(eventNumber) {
+            case 1:
+                console.log("In Event 1")
+                // Running Event 1 stuff
+                // End of Event 1
+
+                // After Event 1, to run Event 2
+                this.eventNumber = 2
+                return "completed"
+            case 2:
+                console.log("In Event 2")
+                // Running Event 2 stuff
+                // End of Event 2
+
+                // After Event 2, to run Event 3
+                this.eventNumber = 3
+                return "completed"
+            case 3:
+                console.log("In Event 3")
+                // Running Event 3 stuff
+                // End of Event 3
+
+                // After Event 3, no more events
+                this.eventNumber = 0
+                return "completed"
+        }
     }
 }

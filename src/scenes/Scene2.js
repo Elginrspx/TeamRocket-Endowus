@@ -187,17 +187,10 @@ export default class Scene2 extends Phaser.Scene
             repeat: 0
         })
 
-        // Create key inputs for movement
-        this.keys = this.input.keyboard.createCursorKeys();
-
-        // Set Starting Animation
-        this.player.play("idleDown")
-
         GameObjects.forEach(object => {
+            object.alpha = 0
             switch(object.name) {
                 case "scene-1":
-                    /* ForChange Alpha to 0 to Hide Black Box */
-                    // object.alpha = 0
                     this.physics.world.enable(object)
                     this.physics.add.overlap(this.player, object, () => {
                         this.enterPortal(object.name)
@@ -209,6 +202,12 @@ export default class Scene2 extends Phaser.Scene
                     break;
             }
         })
+
+        // Create key inputs for movement
+        this.keys = this.input.keyboard.createCursorKeys();
+
+        // Set Starting Animation
+        this.player.play("idleDown")
     }
 
     // Update polls at 60 times a second
