@@ -20,12 +20,17 @@ export default class Scene1 extends Phaser.Scene
 
         // Preload Map
         this.load.image('World Of Solaria', 'tilemaps/World Of Solaria.png')
+        this.load.image('Animated', 'tilemaps/Animated.png')
         this.load.tilemapTiledJSON('scene1Tilemap', 'tilemaps/scene-1.json')
+        
+        // Preload Plugin for Animated Tileset
+        this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');
 
         // Preload Character
         this.load.atlas('player', 'characters/player.png', 'characters/player.json')
 
         // Preload Miscellaneous Assets
+        this.load.image('questMarker', 'images/questMarker.png')
         this.load.image('wallet', 'images/money.png')
     }
 
@@ -37,6 +42,7 @@ export default class Scene1 extends Phaser.Scene
         // Create Map
         var map = this.make.tilemap({ key: 'scene1Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
         const WorldOfSolaria = map.addTilesetImage('World Of Solaria', 'World Of Solaria')
+        const Animated = map.addTilesetImage('Animated', 'Animated')
 
         // Create Scrolling Background
         this.add.tileSprite(0, 0, WorldProperties.width, WorldProperties.height, 'background')
@@ -44,11 +50,14 @@ export default class Scene1 extends Phaser.Scene
             .setScrollFactor(0,0);
 
         // Layers on Tiled to be referenced here
-        const MapGroundLayer = map.createLayer('Ground', [WorldOfSolaria])
-        const MapGround2Layer = map.createLayer('Ground2', [WorldOfSolaria])
-        const MapObjectsLayer = map.createLayer('Objects', [WorldOfSolaria])
-        const MapObjects2Layer = map.createLayer('Objects2', [WorldOfSolaria])
-        const MapDepthLayer = map.createLayer('Depth', [WorldOfSolaria])
+        const MapGroundLayer = map.createLayer('Ground', [WorldOfSolaria, Animated])
+        const MapGround2Layer = map.createLayer('Ground2', [WorldOfSolaria, Animated])
+        const MapObjectsLayer = map.createLayer('Objects', [WorldOfSolaria, Animated])
+        const MapObjects2Layer = map.createLayer('Objects2', [WorldOfSolaria, Animated])
+        const MapDepthLayer = map.createLayer('Depth', [WorldOfSolaria, Animated])
+
+        // Animate Tiles (Ignore the error)
+        this.animatedTiles.init(map);
 
         // Create Character
         const SpawnPoint = map.findObject('GameObjects', obj => obj.name === 'spawn-point')
@@ -66,6 +75,8 @@ export default class Scene1 extends Phaser.Scene
         this.cameras.main.setZoom(WorldProperties.cameraZoom, WorldProperties.cameraZoom)
         this.cameras.main.startFollow(this.player)
 
+        // this.add.sprite(300, 300, 'questMarker')
+
         const GameObjects = map.createFromObjects('GameObjects', null)
         
         // Set Collision with <Objects> Layers
@@ -76,29 +87,29 @@ export default class Scene1 extends Phaser.Scene
         MapDepthLayer.setDepth(1);
 
         // Create Wallet
-        this.wallet = this.add.image(700, 35, 'wallet')
-        this.wallet.setDisplaySize(48, 48)
+        this.wallet = this.add.image(590, 125, 'wallet')
+        this.wallet.setDisplaySize(38, 38)
         this.wallet.setScrollFactor(0, 0)
-        this.wallet.setDepth(10)
+        this.wallet.setDepth(100)
         this.wallet.setDataEnabled()
         this.wallet.data.set('amount', this.walletAmount)
 
-        this.walletText = this.add.text(720, 20, '', { font: '24px Arial' })
+        this.walletText = this.add.text(605, 115, '', { font: '20px Arial' })
         this.walletText.setScrollFactor(0, 0)
-        this.walletText.setDepth(10)
+        this.walletText.setDepth(100)
         this.walletText.setText(this.wallet.data.get('amount'))
 
         // Create EndowusWallet
-        this.endowusWallet = this.add.image(700, 75, 'wallet')
-        this.endowusWallet.setDisplaySize(48, 48)
+        this.endowusWallet = this.add.image(590, 155, 'wallet')
+        this.endowusWallet.setDisplaySize(38, 38)
         this.endowusWallet.setScrollFactor(0, 0)
-        this.endowusWallet.setDepth(10)
+        this.endowusWallet.setDepth(100)
         this.endowusWallet.setDataEnabled()
         this.endowusWallet.data.set('amount', this.endowusWalletAmount)
 
-        this.endowusWalletText = this.add.text(720, 60, '', { font: '24px Arial' })
+        this.endowusWalletText = this.add.text(605, 145, '', { font: '20px Arial' })
         this.endowusWalletText.setScrollFactor(0, 0)
-        this.endowusWalletText.setDepth(10)
+        this.endowusWalletText.setDepth(100)
         this.endowusWalletText.setText(this.endowusWallet.data.get('amount'))
 
         /* For Debug Purposes, to be deleted */
@@ -189,6 +200,8 @@ export default class Scene1 extends Phaser.Scene
             switch(object.name) {
                 case "scene-2":
                     object.y += 50
+                    /* ForChange Alpha to 0 to Hide Black Box */
+                    // object.alpha = 0
                     this.physics.world.enable(object)
                     this.physics.add.overlap(this.player, object, () => {
                         this.enterPortal(object.name)
@@ -200,7 +213,6 @@ export default class Scene1 extends Phaser.Scene
                     break;
             }
         })
-        console.log(this.physics)
     }
 
     // Update polls at 60 times a second

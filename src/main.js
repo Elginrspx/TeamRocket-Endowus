@@ -11,10 +11,10 @@ const config = {
 	physics: {
 		default: 'arcade',
 		arcade: {
-			debug: true
+			debug: false
 		}
 	},
-	scene: [Scene2, Scene1]
+	scene: [Scene1, Scene2]
 }
 
 export default new Phaser.Game(config)

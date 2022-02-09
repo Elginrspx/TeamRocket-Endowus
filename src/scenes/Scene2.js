@@ -23,6 +23,9 @@ export default class Scene2 extends Phaser.Scene
         this.load.image('Animated', 'tilemaps/Animated.png')
         this.load.tilemapTiledJSON('scene2Tilemap', 'tilemaps/scene-2.json')
 
+        // Preload Plugin for Animated Tileset
+        this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');   
+
         // Preload Character
         this.load.atlas('player', 'characters/player.png', 'characters/player.json')
 
@@ -52,6 +55,9 @@ export default class Scene2 extends Phaser.Scene
         const MapObjects2Layer = map.createLayer('Objects2', [WorldOfSolaria, Animated])
         const MapDepthLayer = map.createLayer('Depth', [WorldOfSolaria, Animated])
 
+        // Animate Tiles (Ignore the error)
+        this.animatedTiles.init(map);
+
         // Create Character
         const SpawnPoint = map.findObject('GameObjects', obj => obj.name === 'spawn-point')
         this.player = this.physics.add.sprite(SpawnPoint.x, SpawnPoint.y, 'player')
@@ -78,29 +84,29 @@ export default class Scene2 extends Phaser.Scene
         MapDepthLayer.setDepth(1);
 
         // Create Wallet
-        this.wallet = this.add.image(700, 35, 'wallet')
-        this.wallet.setDisplaySize(48, 48)
+        this.wallet = this.add.image(590, 125, 'wallet')
+        this.wallet.setDisplaySize(38, 38)
         this.wallet.setScrollFactor(0, 0)
-        this.wallet.setDepth(10)
+        this.wallet.setDepth(100)
         this.wallet.setDataEnabled()
         this.wallet.data.set('amount', this.walletAmount)
 
-        this.walletText = this.add.text(720, 20, '', { font: '24px Arial' })
+        this.walletText = this.add.text(605, 115, '', { font: '20px Arial' })
         this.walletText.setScrollFactor(0, 0)
-        this.walletText.setDepth(10)
+        this.walletText.setDepth(100)
         this.walletText.setText(this.wallet.data.get('amount'))
 
         // Create EndowusWallet
-        this.endowusWallet = this.add.image(700, 75, 'wallet')
-        this.endowusWallet.setDisplaySize(48, 48)
+        this.endowusWallet = this.add.image(590, 155, 'wallet')
+        this.endowusWallet.setDisplaySize(38, 38)
         this.endowusWallet.setScrollFactor(0, 0)
-        this.endowusWallet.setDepth(10)
+        this.endowusWallet.setDepth(100)
         this.endowusWallet.setDataEnabled()
         this.endowusWallet.data.set('amount', this.endowusWalletAmount)
 
-        this.endowusWalletText = this.add.text(720, 60, '', { font: '24px Arial' })
+        this.endowusWalletText = this.add.text(605, 145, '', { font: '20px Arial' })
         this.endowusWalletText.setScrollFactor(0, 0)
-        this.endowusWalletText.setDepth(10)
+        this.endowusWalletText.setDepth(100)
         this.endowusWalletText.setText(this.endowusWallet.data.get('amount'))
 
         /* For Debug Purposes, to be deleted */
@@ -190,6 +196,8 @@ export default class Scene2 extends Phaser.Scene
         GameObjects.forEach(object => {
             switch(object.name) {
                 case "scene-1":
+                    /* ForChange Alpha to 0 to Hide Black Box */
+                    // object.alpha = 0
                     this.physics.world.enable(object)
                     this.physics.add.overlap(this.player, object, () => {
                         this.enterPortal(object.name)
@@ -252,7 +260,9 @@ export default class Scene2 extends Phaser.Scene
         // Camera Transitions, Start New Scene
         this.cameras.main.fadeOut(1000, 0, 0, 0)
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            this.scene.start(sceneName)
+            this.time.delayedCall(1000, () => {
+                this.scene.start(sceneName)
+            })        
         })
     }
 
