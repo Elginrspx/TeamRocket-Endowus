@@ -39,9 +39,9 @@ export default class Scene2 extends Phaser.Scene
         this.cameras.main.fadeIn(1000, 0, 0, 0)
 
         // Create Map
-        var map = this.make.tilemap({ key: 'scene2Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
-        const WorldOfSolaria = map.addTilesetImage('World Of Solaria', 'World Of Solaria')
-        const Animated = map.addTilesetImage('Animated', 'Animated')
+        this.map = this.make.tilemap({ key: 'scene2Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
+        const WorldOfSolaria = this.map.addTilesetImage('World Of Solaria', 'World Of Solaria')
+        const Animated = this.map.addTilesetImage('Animated', 'Animated')
 
         // Create Scrolling Background
         this.add.tileSprite(0, 0, WorldProperties.width, WorldProperties.height, 'background')
@@ -49,32 +49,32 @@ export default class Scene2 extends Phaser.Scene
             .setScrollFactor(0,0);
 
         // Layers on Tiled to be referenced here
-        const MapGroundLayer = map.createLayer('Ground', [WorldOfSolaria, Animated])
-        const MapGround2Layer = map.createLayer('Ground2', [WorldOfSolaria, Animated])
-        const MapObjectsLayer = map.createLayer('Objects', [WorldOfSolaria, Animated])
-        const MapObjects2Layer = map.createLayer('Objects2', [WorldOfSolaria, Animated])
-        const MapDepthLayer = map.createLayer('Depth', [WorldOfSolaria, Animated])
+        const MapGroundLayer = this.map.createLayer('Ground', [WorldOfSolaria, Animated])
+        const MapGround2Layer = this.map.createLayer('Ground2', [WorldOfSolaria, Animated])
+        const MapObjectsLayer = this.map.createLayer('Objects', [WorldOfSolaria, Animated])
+        const MapObjects2Layer = this.map.createLayer('Objects2', [WorldOfSolaria, Animated])
+        const MapDepthLayer = this.map.createLayer('Depth', [WorldOfSolaria, Animated])
 
         // Animate Tiles (Ignore the error)
-        this.animatedTiles.init(map);
+        this.animatedTiles.init(this.map);
 
         // Create Character
-        const SpawnPoint = map.findObject('GameObjects', obj => obj.name === 'spawn-point')
+        const SpawnPoint = this.map.findObject('GameObjects', obj => obj.name === 'spawn-point')
         this.player = this.physics.add.sprite(SpawnPoint.x, SpawnPoint.y, 'player')
         this.player.setScale(1.25) // Make Player slightly bigger
         this.player.body.setSize(10,10) // Set Hitbox Size to match Player Size
         this.player.body.setOffset(2,22) // Offset Hitbox to match Player
 
         // Set Collision with World Bounds
-        this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
+        this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
         this.player.setCollideWorldBounds(true)
 
         // Set Bounds of the Camera, Follow Movement of Player
-        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
+        this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
         this.cameras.main.setZoom(WorldProperties.cameraZoom, WorldProperties.cameraZoom)
         this.cameras.main.startFollow(this.player)
 
-        const GameObjects = map.createFromObjects('GameObjects', null)
+        this.gameObjects = this.map.createFromObjects('GameObjects', null)
         
         // Set Collision with <Objects> Layers
         MapObjectsLayer.setCollisionByProperty({ collides: true })
@@ -187,7 +187,7 @@ export default class Scene2 extends Phaser.Scene
             repeat: 0
         })
 
-        GameObjects.forEach(object => {
+        this.gameObjects.forEach(object => {
             object.alpha = 0
             switch(object.name) {
                 case "scene-1":

@@ -1,6 +1,5 @@
 import Phaser from 'phaser'
 import { WorldProperties } from '../worldProperties'
-// import { EventDispatcher } from '../eventDispatcher'
 
 export default class Scene1 extends Phaser.Scene
 {
@@ -76,8 +75,6 @@ export default class Scene1 extends Phaser.Scene
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
         this.cameras.main.setZoom(WorldProperties.cameraZoom, WorldProperties.cameraZoom)
         this.cameras.main.startFollow(this.player)
-
-        // this.add.sprite(300, 300, 'questMarker')
 
         this.gameObjects = this.map.createFromObjects('GameObjects', null)
         
@@ -193,7 +190,7 @@ export default class Scene1 extends Phaser.Scene
         })
 
         this.gameObjects.forEach(object => {
-            // object.alpha = 0
+            object.alpha = 0
             switch(object.name) {
                 case "scene-2":
                     object.y += 50
