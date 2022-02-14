@@ -28,6 +28,11 @@ export default class Scene2 extends Phaser.Scene
 
         // Preload Character
         this.load.atlas('player', 'characters/player.png', 'characters/player.json')
+        this.load.atlas('npc-1', 'characters/npc-1.png', 'characters/npc-1.json')
+        this.load.atlas('npc-2', 'characters/npc-2.png', 'characters/npc-2.json')
+        this.load.atlas('npc-3', 'characters/npc-3.png', 'characters/npc-3.json')
+        this.load.atlas('npc-4', 'characters/npc-4.png', 'characters/npc-4.json')
+        this.load.atlas('npc-5', 'characters/npc-5.png', 'characters/npc-5.json')
 
         // Preload Miscellaneous Assets
         this.load.image('wallet', 'images/money.png')
@@ -58,12 +63,11 @@ export default class Scene2 extends Phaser.Scene
         // Animate Tiles (Ignore the error)
         this.animatedTiles.init(this.map);
 
+        // Create All Animations
+        this.createAnimations()
         // Create Character
         const SpawnPoint = this.map.findObject('GameObjects', obj => obj.name === 'spawn-point')
-        this.player = this.physics.add.sprite(SpawnPoint.x, SpawnPoint.y, 'player')
-        this.player.setScale(1.25) // Make Player slightly bigger
-        this.player.body.setSize(10,10) // Set Hitbox Size to match Player Size
-        this.player.body.setOffset(2,22) // Offset Hitbox to match Player
+        this.player = this.createCharacter(SpawnPoint.x, SpawnPoint.y, 'player')
 
         // Set Collision with World Bounds
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
@@ -123,72 +127,9 @@ export default class Scene2 extends Phaser.Scene
         // // var frameNames = this.textures.get('player').getFrameNames();
         // // console.log(frameNames)
 
-        // Create Animation for - Idle Right
-        this.anims.create({
-            key: 'idleRight',
-            frames: this.anims.generateFrameNames('player', {start: 4, end: 9, zeroPad: 0, prefix: 'player-', suffix: '.png'}),
-            frameRate: 6,
-            repeat: -1
-        })
-
-        // Create Animation for - Idle Up
-        this.anims.create({
-            key: 'idleUp',
-            frames: this.anims.generateFrameNames('player', {start: 10, end: 15, zeroPad: 0, prefix: 'player-', suffix: '.png'}),
-            frameRate: 6,
-            repeat: -1
-        })
-
-        // Create Animation for - Idle Left
-        this.anims.create({
-            key: 'idleLeft',
-            frames: this.anims.generateFrameNames('player', {start: 16, end: 21, zeroPad: 0, prefix: 'player-', suffix: '.png'}),
-            frameRate: 6,
-            repeat: -1
-        })
-
-        // Create Animation for - Idle Down
-        this.anims.create({
-            key: 'idleDown',
-            frames: this.anims.generateFrameNames('player', {start: 22, end: 27, zeroPad: 0, prefix: 'player-', suffix: '.png'}),
-            frameRate: 6,
-            repeat: -1
-        })
-
-        // Create Animation for - Run Right
-        this.anims.create({
-            key: 'runRight',
-            frames: this.anims.generateFrameNames('player', {start: 28, end: 33, zeroPad: 0, prefix: 'player-', suffix: '.png'}),
-            frameRate: 6,
-            repeat: 0
-        })
-
-        // Create Animation for - Run Up
-        this.anims.create({
-            key: 'runUp',
-            frames: this.anims.generateFrameNames('player', {start: 34, end: 39, zeroPad: 0, prefix: 'player-', suffix: '.png'}),
-            frameRate: 6,
-            repeat: 0
-        })
-
-        // Create Animation for - Run Left
-        this.anims.create({
-            key: 'runLeft',
-            frames: this.anims.generateFrameNames('player', {start: 40, end: 45, zeroPad: 0, prefix: 'player-', suffix: '.png'}),
-            frameRate: 6,
-            repeat: 0
-        })
-
-        // Create Animation for - Run Down
-        this.anims.create({
-            key: 'runDown',
-            frames: this.anims.generateFrameNames('player', {start: 46, end: 51, zeroPad: 0, prefix: 'player-', suffix: '.png'}),
-            frameRate: 6,
-            repeat: 0
-        })
-
         this.gameObjects.forEach(object => {
-            object.alpha = 0
+            // object.alpha = 0
+            let npc
             switch(object.name) {
                 case "scene-1":
                     this.physics.world.enable(object)
@@ -204,8 +145,24 @@ export default class Scene2 extends Phaser.Scene
                     })
                     break;
                 case "npc-1":
-                    let npc = this.physics.add.sprite(object.x, object.y, 'player')
-                    npc.anims.play('idleDown', true)
+                    npc = this.createCharacter(object.x, object.y, 'npc-1')
+                    npc.anims.play('npc1IdleDown', true)
+                    break;
+                case "npc-2":
+                    npc = this.createCharacter(object.x, object.y, 'npc-2')
+                    npc.anims.play('npc2IdleDown', true)
+                    break;
+                case "npc-3":
+                    npc = this.createCharacter(object.x, object.y, 'npc-3')
+                    npc.anims.play('npc3IdleDown', true)
+                    break;
+                case "npc-4":
+                    npc = this.createCharacter(object.x, object.y, 'npc-4')
+                    npc.anims.play('npc4IdleDown', true)
+                    break;
+                case "npc-5":
+                    npc = this.createCharacter(object.x, object.y, 'npc-5')
+                    npc.anims.play('npc5IdleDown', true)
                     break;
             }
         })
@@ -275,5 +232,120 @@ export default class Scene2 extends Phaser.Scene
     walletManager(wallet, text, amount) {
         wallet.data.values.amount += amount
         text.setText(wallet.data.get('amount'))
+    }
+
+    createCharacter(x, y, type) {
+        var character = this.physics.add.sprite(x, y, type)
+        character.setScale(1.25) // Make Player slightly bigger
+        character.body.setSize(10,10) // Set Hitbox Size to match Player Size
+        character.body.setOffset(2,22) // Offset Hitbox to match Player
+
+        return character
+    }
+
+    createAnimations() {
+        // Create Animation for Player - Idle Right
+        this.anims.create({
+            key: 'idleRight',
+            frames: this.anims.generateFrameNames('player', {start: 4, end: 9, zeroPad: 0, prefix: 'player-', suffix: '.png'}),
+            frameRate: 6,
+            repeat: -1
+        })
+
+        // Create Animation for Player - Idle Up
+        this.anims.create({
+            key: 'idleUp',
+            frames: this.anims.generateFrameNames('player', {start: 10, end: 15, zeroPad: 0, prefix: 'player-', suffix: '.png'}),
+            frameRate: 6,
+            repeat: -1
+        })
+
+        // Create Animation for Player - Idle Left
+        this.anims.create({
+            key: 'idleLeft',
+            frames: this.anims.generateFrameNames('player', {start: 16, end: 21, zeroPad: 0, prefix: 'player-', suffix: '.png'}),
+            frameRate: 6,
+            repeat: -1
+        })
+
+        // Create Animation for Player - Idle Down
+        this.anims.create({
+            key: 'idleDown',
+            frames: this.anims.generateFrameNames('player', {start: 22, end: 27, zeroPad: 0, prefix: 'player-', suffix: '.png'}),
+            frameRate: 6,
+            repeat: -1
+        })
+
+        // Create Animation for Player - Run Right
+        this.anims.create({
+            key: 'runRight',
+            frames: this.anims.generateFrameNames('player', {start: 28, end: 33, zeroPad: 0, prefix: 'player-', suffix: '.png'}),
+            frameRate: 6,
+            repeat: 0
+        })
+
+        // Create Animation for Player - Run Up
+        this.anims.create({
+            key: 'runUp',
+            frames: this.anims.generateFrameNames('player', {start: 34, end: 39, zeroPad: 0, prefix: 'player-', suffix: '.png'}),
+            frameRate: 6,
+            repeat: 0
+        })
+
+        // Create Animation for Player - Run Left
+        this.anims.create({
+            key: 'runLeft',
+            frames: this.anims.generateFrameNames('player', {start: 40, end: 45, zeroPad: 0, prefix: 'player-', suffix: '.png'}),
+            frameRate: 6,
+            repeat: 0
+        })
+
+        // Create Animation for Player - Run Down
+        this.anims.create({
+            key: 'runDown',
+            frames: this.anims.generateFrameNames('player', {start: 46, end: 51, zeroPad: 0, prefix: 'player-', suffix: '.png'}),
+            frameRate: 6,
+            repeat: 0
+        })
+
+        // Create Animation for NPC-1 - Idle Down
+        this.anims.create({
+            key: 'npc1IdleDown',
+            frames: this.anims.generateFrameNames('npc-1', {start: 0, end: 3, zeroPad: 0, prefix: 'npc-1-', suffix: '.png'}),
+            frameRate: 6,
+            repeat: -1
+        })
+
+        // Create Animation for NPC-2 - Idle Down
+        this.anims.create({
+            key: 'npc2IdleDown',
+            frames: this.anims.generateFrameNames('npc-2', {start: 0, end: 3, zeroPad: 0, prefix: 'npc-2-', suffix: '.png'}),
+            frameRate: 6,
+            repeat: -1
+        })
+
+        // Create Animation for NPC-3 - Idle Down
+        this.anims.create({
+            key: 'npc3IdleDown',
+            frames: this.anims.generateFrameNames('npc-3', {start: 0, end: 3, zeroPad: 0, prefix: 'npc-3-', suffix: '.png'}),
+            frameRate: 6,
+            repeat: -1
+        })
+
+        // Create Animation for NPC-4 - Idle Down
+        this.anims.create({
+            key: 'npc4IdleDown',
+            frames: this.anims.generateFrameNames('npc-4', {start: 0, end: 3, zeroPad: 0, prefix: 'npc-4-', suffix: '.png'}),
+            frameRate: 6,
+            repeat: -1
+        })
+
+        // Create Animation for NPC-5 - Idle Down
+        this.anims.create({
+            key: 'npc5IdleDown',
+            frames: this.anims.generateFrameNames('npc-5', {start: 0, end: 3, zeroPad: 0, prefix: 'npc-5-', suffix: '.png'}),
+            frameRate: 6,
+            repeat: -1
+        })
     }
 }

@@ -107,52 +107,52 @@
                  "type":"",
                  "visible":true,
                  "width":10,
-                 "x":243.667,
-                 "y":213.667
+                 "x":243.6045,
+                 "y":218
                 }, 
                 {
                  "height":10,
                  "id":4,
-                 "name":"npc-1",
+                 "name":"npc-2",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":10,
-                 "x":147,
-                 "y":118.5
+                 "x":146.9375,
+                 "y":122
                 }, 
                 {
                  "height":10,
                  "id":5,
-                 "name":"npc-1",
+                 "name":"npc-3",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":10,
-                 "x":259.295,
-                 "y":80.1136
+                 "x":259.113181818182,
+                 "y":84
                 }, 
                 {
                  "height":10,
                  "id":6,
-                 "name":"npc-1",
+                 "name":"npc-4",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":10,
-                 "x":563.318,
-                 "y":54.2045
+                 "x":563.53675,
+                 "y":58
                 }, 
                 {
                  "height":10,
                  "id":7,
-                 "name":"npc-1",
+                 "name":"npc-5",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":10,
-                 "x":626.667,
-                 "y":197.333
+                 "x":627.38575,
+                 "y":202
                 }, 
                 {
                  "height":10,

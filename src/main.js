@@ -12,7 +12,7 @@ const config = {
 	physics: {
 		default: 'arcade',
 		arcade: {
-			debug: true
+			debug: false
 		}
 	},
 	scene: [Scene1, Scene2, Scene3]

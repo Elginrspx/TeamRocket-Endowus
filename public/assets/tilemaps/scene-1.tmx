@@ -66429,11 +66429,11 @@
  <objectgroup id="4" name="GameObjects">
   <object id="1" name="spawn-point" x="16.3333" y="609" width="16" height="16"/>
   <object id="2" name="scene-2" x="947" y="408.667" width="10" height="48"/>
-  <object id="3" name="npc-1" x="243.667" y="213.667" width="10" height="10"/>
-  <object id="4" name="npc-1" x="147" y="118.5" width="10" height="10"/>
-  <object id="5" name="npc-1" x="259.295" y="80.1136" width="10" height="10"/>
-  <object id="6" name="npc-1" x="563.318" y="54.2045" width="10" height="10"/>
-  <object id="7" name="npc-1" x="626.667" y="197.333" width="10" height="10"/>
+  <object id="3" name="npc-1" x="243.605" y="218" width="10" height="10"/>
+  <object id="4" name="npc-2" x="146.938" y="122" width="10" height="10"/>
+  <object id="5" name="npc-3" x="259.113" y="84" width="10" height="10"/>
+  <object id="6" name="npc-4" x="563.537" y="58" width="10" height="10"/>
+  <object id="7" name="npc-5" x="627.386" y="202" width="10" height="10"/>
   <object id="8" name="npc-1" x="883" y="118" width="10" height="10"/>
   <object id="9" name="event1" x="168.667" y="614"/>
   <object id="10" name="event2" x="169.333" y="386.667"/>
