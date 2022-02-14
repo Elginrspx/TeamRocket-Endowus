@@ -3,6 +3,7 @@ import { WorldProperties } from './worldProperties'
 
 import Scene1 from './scenes/Scene1'
 import Scene2 from './scenes/Scene2'
+import Scene3 from './scenes/Scene3'
 
 const config = {
 	type: Phaser.AUTO,
@@ -11,10 +12,10 @@ const config = {
 	physics: {
 		default: 'arcade',
 		arcade: {
-			debug: false
+			debug: true
 		}
 	},
-	scene: [Scene1, Scene2]
+	scene: [Scene1, Scene2, Scene3]
 }
 
 export default new Phaser.Game(config)

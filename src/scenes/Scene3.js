@@ -1,11 +1,11 @@
 import Phaser from 'phaser'
 import { WorldProperties } from '../worldProperties'
 
-export default class Scene2 extends Phaser.Scene
+export default class Scene3 extends Phaser.Scene
 {
 	constructor()
 	{
-		super('scene-2')
+		super('scene-3')
         // Can call from backend to update the wallet amount here
         this.walletAmount = 50
         this.endowusWalletAmount = 600
@@ -21,7 +21,7 @@ export default class Scene2 extends Phaser.Scene
         // Preload Map
         this.load.image('World Of Solaria', 'tilemaps/World Of Solaria.png')
         this.load.image('Animated', 'tilemaps/Animated.png')
-        this.load.tilemapTiledJSON('scene2Tilemap', 'tilemaps/scene-2.json')
+        this.load.tilemapTiledJSON('scene3Tilemap', 'tilemaps/scene-3.json')
 
         // Preload Plugin for Animated Tileset
         this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');   
@@ -39,7 +39,7 @@ export default class Scene2 extends Phaser.Scene
         this.cameras.main.fadeIn(1000, 0, 0, 0)
 
         // Create Map
-        this.map = this.make.tilemap({ key: 'scene2Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
+        this.map = this.make.tilemap({ key: 'scene3Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
         const WorldOfSolaria = this.map.addTilesetImage('World Of Solaria', 'World Of Solaria')
         const Animated = this.map.addTilesetImage('Animated', 'Animated')
 
@@ -190,14 +190,7 @@ export default class Scene2 extends Phaser.Scene
         this.gameObjects.forEach(object => {
             object.alpha = 0
             switch(object.name) {
-                case "scene-1":
-                    this.physics.world.enable(object)
-                    this.physics.add.overlap(this.player, object, () => {
-                        this.enterPortal(object.name)
-                    })
-                    break;
-                case "scene-3":
-                    object.y += 80
+                case "scene-2":
                     this.physics.world.enable(object)
                     this.physics.add.overlap(this.player, object, () => {
                         this.enterPortal(object.name)
