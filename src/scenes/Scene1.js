@@ -6,14 +6,15 @@ export default class Scene1 extends Phaser.Scene
 	constructor()
 	{
 		super('scene-1')
-        // Can call from backend to update the wallet amount here
-        this.walletAmount = 50
-        this.endowusWalletAmount = 600
-        this.eventNumber = 1
 	}
 
 	preload()
     {
+        // Can call from backend to update the wallet amount here
+        this.walletAmount = 50
+        this.endowusWalletAmount = 600
+        this.eventNumber = 1
+
         this.load.baseURL = "../assets/"
 
         // Preload Scene Background
@@ -131,7 +132,10 @@ export default class Scene1 extends Phaser.Scene
         // // console.log(frameNames)
 
         this.gameObjects.forEach(object => {
-            // object.alpha = 0
+            if (!this.physics.config.debug) {
+                object.alpha = 0
+            }
+
             let npc
             switch(object.name) {
                 case "scene-2":
@@ -236,27 +240,22 @@ export default class Scene1 extends Phaser.Scene
     }
 
     setEventCollision() {
-        var currentEvent = "event" + this.eventNumber
-        // var eventObject = this.map.findObject('GameObjects', obj => obj.name === currentEvent)
-        var eventObject = this.gameObjects.find(event => event.name === currentEvent)
-        var questMarker = this.physics.add.sprite(eventObject.x, eventObject.y - 50, 'questMarker')
-        questMarker.setScale(0.20, 0.20)
+        if (this.eventNumber != 0 || this.eventNumber != null) {
+            var currentEvent = "event" + this.eventNumber
+            // var eventObject = this.map.findObject('GameObjects', obj => obj.name === currentEvent)
+            var eventObject = this.gameObjects.find(event => event.name === currentEvent)
+            var questMarker = this.physics.add.sprite(eventObject.x, eventObject.y - 50, 'questMarker')
+            questMarker.setScale(0.20, 0.20)
 
-        this.physics.world.enable(eventObject)
-        this.physics.add.overlap(this.player, eventObject, () => {
-            var eventStatus = this.playEvent(this.eventNumber)
-
-            // Disable Event and Destroy Quest Marker on Event Completion
-            if (eventStatus == "completed") {
+            this.physics.world.enable(eventObject)
+            this.physics.add.overlap(this.player, eventObject, () => {
+                // Disable Game Object and Quest Marker on collision
                 this.physics.world.disable(eventObject)
                 questMarker.destroy()
 
-                if (this.eventNumber != 0) {
-                    // Play Next Event
-                    this.setEventCollision()
-                }
-            }
-        })
+                this.playEvent(this.eventNumber)
+            })
+        }
     }
 
     playEvent(eventNumber) {
@@ -268,7 +267,9 @@ export default class Scene1 extends Phaser.Scene
 
                 // After Event 1, to run Event 2
                 this.eventNumber = 2
-                return "completed"
+
+                this.setEventCollision()
+                break;
             case 2:
                 console.log("In Event 2")
                 // Running Event 2 stuff
@@ -276,15 +277,17 @@ export default class Scene1 extends Phaser.Scene
 
                 // After Event 2, to run Event 3
                 this.eventNumber = 3
-                return "completed"
+
+                this.setEventCollision()
+                break;
             case 3:
                 console.log("In Event 3")
                 // Running Event 3 stuff
                 // End of Event 3
 
-                // After Event 3, no more events
+                // After Event 3, no more events OR end the game
                 this.eventNumber = 0
-                return "completed"
+                break;
         }
     }
 
