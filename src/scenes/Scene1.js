@@ -10,10 +10,11 @@ export default class Scene1 extends Phaser.Scene
 
 	preload()
     {
-        // Can call from backend to update the wallet amount here
+        // Preload data from backend
         this.walletAmount = 50
         this.endowusWalletAmount = 600
         this.eventNumber = 1
+        this.riskTolerance = 0
 
         this.load.baseURL = "../assets/"
 
@@ -37,8 +38,9 @@ export default class Scene1 extends Phaser.Scene
         this.load.atlas('npc-5', 'characters/npc-5.png', 'characters/npc-5.json')
 
         // Preload Miscellaneous Assets
-        this.load.image('questMarker', 'images/questMarker.png')
+        this.load.atlas('questMarker', 'images/questMarker.png', 'images/questMarker.json')
         this.load.image('wallet', 'images/money.png')
+        this.load.image('endowusWallet', 'images/endowus.png')
     }
 
     create()
@@ -105,8 +107,8 @@ export default class Scene1 extends Phaser.Scene
         this.walletText.setText(this.wallet.data.get('amount'))
 
         // Create EndowusWallet
-        this.endowusWallet = this.add.image(590, 155, 'wallet')
-        this.endowusWallet.setDisplaySize(38, 38)
+        this.endowusWallet = this.add.image(560, 155, 'endowusWallet')
+        this.endowusWallet.setDisplaySize(80, 16)
         this.endowusWallet.setScrollFactor(0, 0)
         this.endowusWallet.setDepth(100)
         this.endowusWallet.setDataEnabled()
@@ -168,7 +170,10 @@ export default class Scene1 extends Phaser.Scene
             }
         })
 
+        // Set Event Waypoints
         this.setEventCollision()
+
+        this.setEarningPotential(this.riskTolerance)
 
         // Create key inputs for movement
         this.keys = this.input.keyboard.createCursorKeys();
@@ -229,7 +234,10 @@ export default class Scene1 extends Phaser.Scene
         this.cameras.main.fadeOut(1000, 0, 0, 0)
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
             this.time.delayedCall(1000, () => {
-                this.scene.start(sceneName)
+                this.scene.start(sceneName, {
+                    walletAmount: this.wallet.data.values.amount ,
+                    endowusWalletAmount: this.endowusWallet.data.values.amount 
+                })
             })
         })
     }
@@ -246,6 +254,7 @@ export default class Scene1 extends Phaser.Scene
             var eventObject = this.gameObjects.find(event => event.name === currentEvent)
             var questMarker = this.physics.add.sprite(eventObject.x, eventObject.y - 50, 'questMarker')
             questMarker.setScale(0.20, 0.20)
+            questMarker.anims.play('questMarkerAnim', true)
 
             this.physics.world.enable(eventObject)
             this.physics.add.overlap(this.player, eventObject, () => {
@@ -265,6 +274,9 @@ export default class Scene1 extends Phaser.Scene
                 // Running Event 1 stuff
                 // End of Event 1
 
+                // Randomised + or - to wallet amount
+                this.calculateEarnLoss(this.endowusWallet, this.endowusWalletText)
+
                 // After Event 1, to run Event 2
                 this.eventNumber = 2
 
@@ -274,6 +286,9 @@ export default class Scene1 extends Phaser.Scene
                 console.log("In Event 2")
                 // Running Event 2 stuff
                 // End of Event 2
+
+                // Randomised + or - to wallet amount
+                this.calculateEarnLoss(this.endowusWallet, this.endowusWalletText)
 
                 // After Event 2, to run Event 3
                 this.eventNumber = 3
@@ -285,10 +300,35 @@ export default class Scene1 extends Phaser.Scene
                 // Running Event 3 stuff
                 // End of Event 3
 
+                // Randomised + or - to wallet amount
+                this.calculateEarnLoss(this.endowusWallet, this.endowusWalletText)
+
                 // After Event 3, no more events OR end the game
                 this.eventNumber = 0
                 break;
         }
+    }
+
+    setEarningPotential(riskTolerance) {
+        /* Risk Tolerance (RT) ranges from 0% - 60%
+        Assuming that 0% RT will Earn / Lose up to 3% Annually
+        Assuming that 60% RT will Earn / Lose up to 9% Annually
+        To match RT to Earning Potential using Simple Linear Conversion formula
+        */
+        this.earningPotential = ((riskTolerance - 0) / (60 - 0)) * (9 - 3) + 3
+    }
+
+    calculateEarnLoss(wallet, text) {
+        // Returns may be anywhere from 0% up to earning potential %
+        let returnsPercentage = Math.random() * this.earningPotential
+
+        let currentAmount = wallet.data.values.amount
+        let returns = Math.round(currentAmount * (returnsPercentage / 100))
+        // 50% for returns to be + or -
+        // returns *= Math.round(Math.random()) ? 1 : -1
+        this.walletManager(wallet, text, returns)
+
+        console.log("This year, returns percentage is " + returnsPercentage + "% out of " + this.earningPotential + "%.\nTotal earnings: $" + returns)
     }
 
     createCharacter(x, y, type) {
@@ -401,6 +441,14 @@ export default class Scene1 extends Phaser.Scene
         this.anims.create({
             key: 'npc5IdleDown',
             frames: this.anims.generateFrameNames('npc-5', {start: 0, end: 3, zeroPad: 0, prefix: 'npc-5-', suffix: '.png'}),
+            frameRate: 6,
+            repeat: -1
+        })
+
+        // Create Animation for Quest Marker
+        this.anims.create({
+            key: 'questMarkerAnim',
+            frames: this.anims.generateFrameNames('questMarker', {start: 0, end: 3, zeroPad: 0, prefix: 'questMarker-', suffix: '.png'}),
             frameRate: 6,
             repeat: -1
         })

@@ -8,11 +8,14 @@ export default class Scene2 extends Phaser.Scene
 		super('scene-2')
 	}
 
+    init(data) {
+        this.walletAmount = data.walletAmount
+        this.endowusWalletAmount = data.endowusWalletAmount
+    }
+
 	preload()
     {
         // Can call from backend to update the wallet amount here
-        this.walletAmount = 50
-        this.endowusWalletAmount = 600
         this.eventNumber = 1
 
         this.load.baseURL = "../assets/"
