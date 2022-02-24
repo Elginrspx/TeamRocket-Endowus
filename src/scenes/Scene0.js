@@ -1,19 +1,17 @@
 import Phaser from 'phaser'
-import { WorldProperties } from '../settings'
+import { WorldProperties, PortfolioType } from '../settings'
 
-export default class Scene3 extends Phaser.Scene
+export default class Scene0 extends Phaser.Scene
 {
 	constructor()
 	{
-		super('scene-3')
+		super('scene-0')
 	}
 
 	preload()
     {
-        // Can call from backend to update the wallet amount here
-        this.walletAmount = 50
-        this.endowusWalletAmount = 600
-        this.eventNumber = 1
+        this.walletAmount = 0
+        this.endowusWalletAmount = 0
 
         this.load.baseURL = "../assets/"
 
@@ -23,22 +21,18 @@ export default class Scene3 extends Phaser.Scene
         // Preload Map
         this.load.image('World Of Solaria', 'tilemaps/World Of Solaria.png')
         this.load.image('Animated', 'tilemaps/Animated.png')
-        this.load.tilemapTiledJSON('scene3Tilemap', 'tilemaps/scene-3.json')
-
+        this.load.tilemapTiledJSON('scene0Tilemap', 'tilemaps/scene-0.json')
+        
         // Preload Plugin for Animated Tileset
-        this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');   
+        this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');
 
         // Preload Character
         this.load.atlas('player', 'characters/player.png', 'characters/player.json')
-        this.load.atlas('npc-1', 'characters/npc-1.png', 'characters/npc-1.json')
-        this.load.atlas('npc-2', 'characters/npc-2.png', 'characters/npc-2.json')
-        this.load.atlas('npc-3', 'characters/npc-3.png', 'characters/npc-3.json')
-        this.load.atlas('npc-4', 'characters/npc-4.png', 'characters/npc-4.json')
-        this.load.atlas('npc-5', 'characters/npc-5.png', 'characters/npc-5.json')
 
         // Preload Miscellaneous Assets
-        this.load.image('questMarker', 'images/questMarker.png')
+        this.load.atlas('questMarker', 'images/questMarker.png', 'images/questMarker.json')
         this.load.image('wallet', 'images/money.png')
+        this.load.image('endowusWallet', 'images/endowus.png')
     }
 
     create()
@@ -47,7 +41,7 @@ export default class Scene3 extends Phaser.Scene
         this.cameras.main.fadeIn(1000, 0, 0, 0)
 
         // Create Map
-        this.map = this.make.tilemap({ key: 'scene3Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
+        this.map = this.make.tilemap({ key: 'scene0Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
         const WorldOfSolaria = this.map.addTilesetImage('World Of Solaria', 'World Of Solaria')
         const Animated = this.map.addTilesetImage('Animated', 'Animated')
 
@@ -105,8 +99,8 @@ export default class Scene3 extends Phaser.Scene
         this.walletText.setText(this.wallet.data.get('amount'))
 
         // Create EndowusWallet
-        this.endowusWallet = this.add.image(590, 155, 'wallet')
-        this.endowusWallet.setDisplaySize(38, 38)
+        this.endowusWallet = this.add.image(560, 155, 'endowusWallet')
+        this.endowusWallet.setDisplaySize(80, 16)
         this.endowusWallet.setScrollFactor(0, 0)
         this.endowusWallet.setDepth(100)
         this.endowusWallet.setDataEnabled()
@@ -136,38 +130,19 @@ export default class Scene3 extends Phaser.Scene
                 object.alpha = 0
             }
 
-            let npc
-            switch(object.name) {
-                case "scene-2":
-                    this.physics.world.enable(object)
-                    this.physics.add.overlap(this.player, object, () => {
-                        this.enterPortal(object.name)
-                    })
-                    break;
-                case "npc-1":
-                    npc = this.createCharacter(object.x, object.y, 'npc-1')
-                    npc.anims.play('npc1IdleDown', true)
-                    break;
-                case "npc-2":
-                    npc = this.createCharacter(object.x, object.y, 'npc-2')
-                    npc.anims.play('npc2IdleDown', true)
-                    break;
-                case "npc-3":
-                    npc = this.createCharacter(object.x, object.y, 'npc-3')
-                    npc.anims.play('npc3IdleDown', true)
-                    break;
-                case "npc-4":
-                    npc = this.createCharacter(object.x, object.y, 'npc-4')
-                    npc.anims.play('npc4IdleDown', true)
-                    break;
-                case "npc-5":
-                    npc = this.createCharacter(object.x, object.y, 'npc-5')
-                    npc.anims.play('npc5IdleDown', true)
-                    break;
+            // For every object that is not spawn point
+            if (object.name != "spawn-point") {
+                object.y += 30
+                var questMarker = this.physics.add.sprite(object.x, object.y - 50, 'questMarker')
+                questMarker.setScale(0.10, 0.10)
+                questMarker.anims.play('questMarkerAnim', true)
+
+                this.physics.world.enable(object)
+                this.physics.add.overlap(this.player, object, () => {
+                    this.playEvent(object)
+                })
             }
         })
-
-        this.setEventCollision()
 
         // Create key inputs for movement
         this.keys = this.input.keyboard.createCursorKeys();
@@ -219,6 +194,8 @@ export default class Scene3 extends Phaser.Scene
     }
 
     enterPortal(sceneName) {
+        // Can add a boolean to check if event is finished, if not dont allow enter portal
+
         // Destroy all colliders to prevent repeated calls
         this.physics.world.colliders.destroy()
 
@@ -226,8 +203,11 @@ export default class Scene3 extends Phaser.Scene
         this.cameras.main.fadeOut(1000, 0, 0, 0)
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
             this.time.delayedCall(1000, () => {
-                this.scene.start(sceneName)
-            })        
+                this.scene.start(sceneName, {
+                    walletAmount: this.wallet.data.values.amount ,
+                    endowusWalletAmount: this.endowusWallet.data.values.amount 
+                })
+            })
         })
     }
 
@@ -236,56 +216,52 @@ export default class Scene3 extends Phaser.Scene
         text.setText(wallet.data.get('amount'))
     }
 
-    setEventCollision() {
-        if (this.eventNumber != 0 || this.eventNumber != null) {
-            var currentEvent = "event" + this.eventNumber
-            // var eventObject = this.map.findObject('GameObjects', obj => obj.name === currentEvent)
-            var eventObject = this.gameObjects.find(event => event.name === currentEvent)
-            var questMarker = this.physics.add.sprite(eventObject.x, eventObject.y - 50, 'questMarker')
-            questMarker.setScale(0.20, 0.20)
+    playEvent(object) {
+        // switch(object.name) {
+        //     case 'equities100':
+        //         // Disable Object temporarily so it only calls once
+        //         this.physics.world.disable(object)
+        //         // Insert Dialog here
 
-            this.physics.world.enable(eventObject)
-            this.physics.add.overlap(this.player, eventObject, () => {
-                // Disable Game Object and Quest Marker on collision
-                this.physics.world.disable(eventObject)
-                questMarker.destroy()
+        //         //response = run dialog here to get if user choose portfolio or not
+        //         if (response == 'Yes') {
+        //             // set the portfolio's return here
+        //         } else {
+        //             // re-enable the object so user may come back and choose again
+        //         }
 
-                this.playEvent(this.eventNumber)
-            })
-        }
+                
+        //         break;
+        // }
     }
 
-    playEvent(eventNumber) {
-        switch(eventNumber) {
-            case 1:
-                console.log("In Event 1")
-                // Running Event 1 stuff
-                // End of Event 1
-
-                // After Event 1, to run Event 2
-                this.eventNumber = 2
-
-                this.setEventCollision()
+    setReturns(selectedPortfolio) {
+        switch(selectedPortfolio) {
+            case "equities100":
+                this.annualisedReturn = PortfolioType.equities100.annualisedReturn;
+                this.volatility = PortfolioType.equities100.volatility;
                 break;
-            case 2:
-                console.log("In Event 2")
-                // Running Event 2 stuff
-                // End of Event 2
-
-                // After Event 2, to run Event 3
-                this.eventNumber = 3
-
-                this.setEventCollision()
+            case "equities80":
+                this.annualisedReturn = PortfolioType.equities80.annualisedReturn;
+                this.volatility = PortfolioType.equities80.volatility;
                 break;
-            case 3:
-                console.log("In Event 3")
-                // Running Event 3 stuff
-                // End of Event 3
-
-                // After Event 3, no more events OR end the game
-                this.eventNumber = 0
+            case "equities60":
+                this.annualisedReturn = PortfolioType.equities60.annualisedReturn;
+                this.volatility = PortfolioType.equities60.volatility;
                 break;
-        }
+            case "equities40":
+                this.annualisedReturn = PortfolioType.equities40.annualisedReturn;
+                this.volatility = PortfolioType.equities40.volatility;
+                break;
+            case "equities20":
+                this.annualisedReturn = PortfolioType.equities20.annualisedReturn;
+                this.volatility = PortfolioType.equities20.volatility;
+                break;
+            case "equities0":
+                this.annualisedReturn = PortfolioType.equities0.annualisedReturn;
+                this.volatility = PortfolioType.equities0.volatility;
+                break;
+        }       
     }
 
     createCharacter(x, y, type) {
@@ -362,42 +338,10 @@ export default class Scene3 extends Phaser.Scene
             repeat: 0
         })
 
-        // Create Animation for NPC-1 - Idle Down
+        // Create Animation for Quest Marker
         this.anims.create({
-            key: 'npc1IdleDown',
-            frames: this.anims.generateFrameNames('npc-1', {start: 0, end: 3, zeroPad: 0, prefix: 'npc-1-', suffix: '.png'}),
-            frameRate: 6,
-            repeat: -1
-        })
-
-        // Create Animation for NPC-2 - Idle Down
-        this.anims.create({
-            key: 'npc2IdleDown',
-            frames: this.anims.generateFrameNames('npc-2', {start: 0, end: 3, zeroPad: 0, prefix: 'npc-2-', suffix: '.png'}),
-            frameRate: 6,
-            repeat: -1
-        })
-
-        // Create Animation for NPC-3 - Idle Down
-        this.anims.create({
-            key: 'npc3IdleDown',
-            frames: this.anims.generateFrameNames('npc-3', {start: 0, end: 3, zeroPad: 0, prefix: 'npc-3-', suffix: '.png'}),
-            frameRate: 6,
-            repeat: -1
-        })
-
-        // Create Animation for NPC-4 - Idle Down
-        this.anims.create({
-            key: 'npc4IdleDown',
-            frames: this.anims.generateFrameNames('npc-4', {start: 0, end: 3, zeroPad: 0, prefix: 'npc-4-', suffix: '.png'}),
-            frameRate: 6,
-            repeat: -1
-        })
-
-        // Create Animation for NPC-5 - Idle Down
-        this.anims.create({
-            key: 'npc5IdleDown',
-            frames: this.anims.generateFrameNames('npc-5', {start: 0, end: 3, zeroPad: 0, prefix: 'npc-5-', suffix: '.png'}),
+            key: 'questMarkerAnim',
+            frames: this.anims.generateFrameNames('questMarker', {start: 0, end: 3, zeroPad: 0, prefix: 'questMarker-', suffix: '.png'}),
             frameRate: 6,
             repeat: -1
         })

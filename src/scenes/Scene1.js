@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { WorldProperties } from '../worldProperties'
+import { WorldProperties, PortfolioType } from '../settings'
 
 export default class Scene1 extends Phaser.Scene
 {
@@ -14,7 +14,6 @@ export default class Scene1 extends Phaser.Scene
         this.walletAmount = 50
         this.endowusWalletAmount = 600
         this.eventNumber = 1
-        this.riskTolerance = 0
 
         this.load.baseURL = "../assets/"
 
@@ -173,7 +172,7 @@ export default class Scene1 extends Phaser.Scene
         // Set Event Waypoints
         this.setEventCollision()
 
-        this.setEarningPotential(this.riskTolerance)
+        this.setEarningPotential()
 
         // Create key inputs for movement
         this.keys = this.input.keyboard.createCursorKeys();
@@ -309,26 +308,33 @@ export default class Scene1 extends Phaser.Scene
         }
     }
 
-    setEarningPotential(riskTolerance) {
-        /* Risk Tolerance (RT) ranges from 0% - 60%
-        Assuming that 0% RT will Earn / Lose up to 3% Annually
-        Assuming that 60% RT will Earn / Lose up to 9% Annually
-        To match RT to Earning Potential using Simple Linear Conversion formula
-        */
-        this.earningPotential = ((riskTolerance - 0) / (60 - 0)) * (9 - 3) + 3
+    setEarningPotential() {
+        this.portfolioType = "portfolio1"
+        switch(this.portfolioType) {
+            case "portfolio1":
+                this.annualisedReturn = PortfolioType.portfolio1.annualisedReturn;
+                this.volatility = PortfolioType.portfolio1.volatility;
+                break;
+            case "portfolio2":
+                this.annualisedReturn = PortfolioType.portfolio2.annualisedReturn;
+                this.volatility = PortfolioType.portfolio2.volatility;
+                break;
+        }       
     }
 
     calculateEarnLoss(wallet, text) {
         // Returns may be anywhere from 0% up to earning potential %
-        let returnsPercentage = Math.random() * this.earningPotential
+        let returnsPercentage = ((Math.random() - 0) / (1 - 0)) * (this.annualisedReturn - this.volatility) + this.volatility
+        console.log(this.annualisedReturn)
+        console.log(this.volatility)
+        console.log(returnsPercentage)
 
         let currentAmount = wallet.data.values.amount
-        let returns = Math.round(currentAmount * (returnsPercentage / 100))
-        // 50% for returns to be + or -
-        // returns *= Math.round(Math.random()) ? 1 : -1
-        this.walletManager(wallet, text, returns)
+        let amount = Math.round(currentAmount * (returnsPercentage / 100))
 
-        console.log("This year, returns percentage is " + returnsPercentage + "% out of " + this.earningPotential + "%.\nTotal earnings: $" + returns)
+        this.walletManager(wallet, text, amount)
+
+        console.log("This year, returns percentage is " + returnsPercentage.toFixed(2) + "% out of " + this.annualisedReturn + "%.\nTotal earnings: $" + amount)
     }
 
     createCharacter(x, y, type) {

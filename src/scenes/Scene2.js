@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { WorldProperties } from '../worldProperties'
+import { WorldProperties } from '../settings'
 
 export default class Scene2 extends Phaser.Scene
 {
