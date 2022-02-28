@@ -319,7 +319,6 @@ export default class Scene3 extends Phaser.Scene
             }
             this.dialogEvent = ""
             this.time.delayedCall(5000, this.calculateEarnLoss, [this.endowusWallet, this.endowusWalletText], this)
-            return
         } else if (this.Dialog.visible && this.dialogEvent == "interest") {
             this.dialogEvent = ""
             this.Dialog.display(false);
@@ -328,20 +327,23 @@ export default class Scene3 extends Phaser.Scene
             this.personaEvents.shift()
             this.eventNumber = this.personaEvents[0]
 
-            // Check if next Event is available in current scene, else find the scene which has it
-            var eventObject = this.gameObjects.find(event => event.name === "event" + this.eventNumber)
-            if (eventObject == null) {
-                for (var scene in SceneEventMapping) {
-                    if (SceneEventMapping[scene].includes(this.eventNumber)) {
-                        this.enterScene(scene)
-                        return
+            if (this.eventNumber != null) {
+                // Check if next Event is available in current scene, else find the scene which has it
+                var eventObject = this.gameObjects.find(event => event.name === "event" + this.eventNumber)
+                if (eventObject == null) {
+                    for (var scene in SceneEventMapping) {
+                        if (SceneEventMapping[scene].includes(this.eventNumber)) {
+                            this.enterScene(scene)
+                            return
+                        }
                     }
                 }
-            }
 
-            // Event is available within current Scene
-            this.setEventCollision()
-            return
+                // Event is available within current Scene
+                this.setEventCollision()
+            } else {
+                console.log("Game has ended")
+            }
         } else {
             this.Dialog.display(false);
         }

@@ -78,7 +78,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 		} else if (commandType == 2) {
 			this.graphics.command.setText('Spacebar: Yes    Shift: No');
 		} else if (commandType == 3) {
-			this.graphics.command.setText('Spacebar: Invest    Shift: Savings');
+			this.graphics.command.setText('Spacebar: Invest    Shift: Cash');
 		}
 		
 		
