@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { WorldProperties, Persona } from '../settings'
+import { WorldProperties, PersonaEvents, SceneEventMapping } from '../settings'
 
 export default class Scene0 extends Phaser.Scene
 {
@@ -189,10 +189,10 @@ export default class Scene0 extends Phaser.Scene
 
         switch(this.persona) {
             case "student":
-                this.personaEvents = Persona.student.events
+                this.personaEvents = PersonaEvents.student
                 break
             case "familyMan":
-                this.personaEvents = Persona.familyMan.events
+                this.personaEvents = PersonaEvents.familyMan
                 break
         }
 
@@ -247,7 +247,7 @@ export default class Scene0 extends Phaser.Scene
         // Code to only press key ONCE
         if (this.keys.space.isDown) {
             if (!this.spacePressed) {
-                this.runEventDialog(true)
+                this.dialogManager(true)
                 this.spacePressed = true
             }
         }
@@ -258,7 +258,7 @@ export default class Scene0 extends Phaser.Scene
 
         if (this.keys.shift.isDown) {
             if (!this.shiftPressed) {
-                this.runEventDialog(false)
+                this.dialogManager(false)
                 this.shiftPressed = true
             }
         }
@@ -291,33 +291,42 @@ export default class Scene0 extends Phaser.Scene
 
     playEvent(object) {
         this.physics.world.disable(object)
-        this.Dialog.setText(this.script[object.name]["script"][0])
+        this.Dialog.setText(this.script[object.name]["script"][0], 1)
         this.currentObject = object, this.isScript = true, this.scriptNumber = 0
     }
 
-    runEventDialog(isContinue) {
+    dialogManager(isSpace) {
         if (this.Dialog.visible && this.isScript) {
-            if (isContinue) {
+            if (isSpace) {
                 this.scriptNumber += 1
                 if (this.script[this.currentObject.name]["script"][this.scriptNumber] != null) {
-                    this.Dialog.setText(this.script[this.currentObject.name]["script"][this.scriptNumber])
+                    this.Dialog.setText(this.script[this.currentObject.name]["script"][this.scriptNumber], 1)
                 } else {
                     this.isScript = false
-                    this.Dialog.setText("Do you want to select this portfolio?")
+                    this.Dialog.setText("Do you want to select this portfolio?", 2)
                 }
                 return
             }
         }
 
         if (this.Dialog.visible && !this.isScript) {
-            if (isContinue) {
+            if (isSpace) {
                 this.annualisedReturn = this.script[this.currentObject.name]["annualisedReturn"]
                 this.volatility = this.script[this.currentObject.name]["volatility"]
                 this.Dialog.display(false);
-                this.enterScene("scene-1")
+
+                this.eventNumber = this.personaEvents[0]
+
+                // Check and start scene which contains first event
+                for (var scene in SceneEventMapping) {
+                    if (SceneEventMapping[scene].includes(this.eventNumber)) {
+                        this.enterScene(scene)
+                        return
+                    }
+                }
             }
 
-            if (!isContinue) {
+            if (!isSpace) {
                 this.time.delayedCall(2000, this.reenableEvent, [this.currentObject], this)
                 this.Dialog.display(false);
             }

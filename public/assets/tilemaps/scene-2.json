@@ -100,17 +100,6 @@
                  "y":0.5
                 }, 
                 {
-                 "height":75,
-                 "id":11,
-                 "name":"scene-3",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":10,
-                 "x":947,
-                 "y":610.667
-                }, 
-                {
                  "height":10,
                  "id":12,
                  "name":"npc-5",
@@ -118,7 +107,7 @@
                  "type":"",
                  "visible":true,
                  "width":10,
-                 "x":387.272727272727,
+                 "x":387.273,
                  "y":586
                 }, 
                 {
@@ -129,7 +118,7 @@
                  "type":"",
                  "visible":true,
                  "width":10,
-                 "x":483.30303030303,
+                 "x":483.303,
                  "y":602
                 }, 
                 {
@@ -140,7 +129,7 @@
                  "type":"",
                  "visible":true,
                  "width":10,
-                 "x":410.916666666667,
+                 "x":410.917,
                  "y":294
                 }, 
                 {
@@ -151,8 +140,30 @@
                  "type":"",
                  "visible":true,
                  "width":10,
-                 "x":688.666666666667,
+                 "x":688.667,
                  "y":470
+                }, 
+                {
+                 "height":0,
+                 "id":16,
+                 "name":"event4",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":155,
+                 "y":308
+                }, 
+                {
+                 "height":0,
+                 "id":17,
+                 "name":"event5",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":605,
+                 "y":511.5
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -161,7 +172,7 @@
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":16,
+ "nextobjectid":18,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.2",

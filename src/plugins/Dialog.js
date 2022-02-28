@@ -14,7 +14,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 		this.windowColor = 0x000000;
 		this.windowHeight = 150;
 		this.padding = 32;
-		this.dialogSpeed = 10;
+		this.dialogSpeed = 15;
 		this.scrollFactor = 0; //scrollFactor of 0 fixes to the camera
 
 		// if the dialog window is shown
@@ -22,7 +22,8 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 		// the text that will be displayed in the window
 		this.graphics = {
 			background: null,
-			text: null
+			text: null,
+			command: null
 		};
 	}
 
@@ -31,6 +32,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 		// Create the dialog window
 		this._drawBackground();
 		this._drawText();
+		this._drawCommand();
 		
 		this.display(false);
 		
@@ -42,6 +44,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 	shutdown() {
 		if (this.timedEvent) this.timedEvent.remove();
 		if (this.graphics.text) this.graphics.text.destroy();
+		if (this.graphics.command) this.graphics.command.destroy();
 	}
 
 	//  Called when a Scene is destroyed by the Scene Manager. There is no coming back from a destroyed Scene, so clear up all resources here.
@@ -57,11 +60,12 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 		else this.visible = showMe;
 
 		if (this.graphics.text) this.graphics.text.visible = this.visible;
+		if (this.graphics.command) this.graphics.command.visible = this.visible;
 		if (this.graphics.background) this.graphics.background.visible = this.visible;
 	}
 
 	// Sets the text for the dialog window
-	setText(text) {
+	setText(text, commandType) {
 		if(!text || !text.split) return;
 		if (this.timedEvent) this.timedEvent.remove();
 
@@ -69,6 +73,14 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 		const charArray = text.split('');
 		
 		this.graphics.text.setText('');
+		if (commandType == 1) {
+			this.graphics.command.setText('Spacebar: Continue');
+		} else if (commandType == 2) {
+			this.graphics.command.setText('Spacebar: Yes    Shift: No');
+		} else if (commandType == 3) {
+			this.graphics.command.setText('Spacebar: Invest    Shift: Savings');
+		}
+		
 		
 		this.timedEvent = this.scene.time.addEvent({
 			delay: 150 - (this.dialogSpeed * 30),
@@ -83,14 +95,14 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 			loop: true
 		});
 	}
-	
+
 	// Calculates where to place the dialog window based on the game size
 	_calculateWindowDimensions() {
 		var gameHeight = this.scene.sys.game.config.height;
 		var gameWidth = this.scene.sys.game.config.width;
-		var x = this.padding*4;
+		var x = 135;
 		var y = gameHeight - this.windowHeight - this.padding;
-		var width = gameWidth - (this.padding * 2);
+		var width = gameWidth - (x*2);
 		var height = this.windowHeight;
 		return {
 			x,
@@ -117,7 +129,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 	// Creates text holder within the dialog window
 	_drawText() {
 		let dimensions = this._calculateWindowDimensions();
-		let x = dimensions.x + this.padding;
+		let x = dimensions.x + (this.padding * 0.5);
 		let y = dimensions.y + (this.padding * 0.5);
 		let text = '';
 	   
@@ -128,13 +140,36 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 			style: {
 				wordWrap: { width: dimensions.width - this.padding },
 				fontFamily: 'pressstart',
-				fontSize: '14px',
-				lineSpacing: '12'
+				fontSize: '12px',
+				lineSpacing: '1'
 			}
 		}).setScrollFactor(this.scrollFactor);
 
 		// Ensure the dialog text renders above the background
 		this.graphics.text.setDepth(1010);
+	}
+
+	// Creates text holder within the dialog window
+	_drawCommand() {
+		let dimensions = this._calculateWindowDimensions();
+		let x = dimensions.x + (this.padding * 0.5) + 325;
+		let y = dimensions.y + (this.padding * 0.5) + 45;
+		let command = '';
+	   
+		this.graphics.command = this.scene.make.text({
+			x,
+			y,
+			command,
+			style: {
+				wordWrap: { width: dimensions.width - this.padding },
+				fontFamily: 'pressstart',
+				fontSize: '12px',
+				lineSpacing: '1'
+			}
+		}).setScrollFactor(this.scrollFactor);
+
+		// Ensure the dialog text renders above the background
+		this.graphics.command.setDepth(1020);
 	}
 
 }

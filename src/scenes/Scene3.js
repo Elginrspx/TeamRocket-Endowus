@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { WorldProperties } from '../settings'
+import { WorldProperties, SceneEventMapping } from '../settings'
 
 export default class Scene3 extends Phaser.Scene
 {
@@ -8,13 +8,17 @@ export default class Scene3 extends Phaser.Scene
 		super('scene-3')
 	}
 
+    init(data) {
+        this.walletAmount = data.walletAmount
+        this.endowusWalletAmount = data.endowusWalletAmount
+        this.annualisedReturn = data.annualisedReturn
+        this.volatility = data.volatility
+        this.personaEvents = data.personaEvents
+        this.eventNumber = this.personaEvents[0]
+    }
+
 	preload()
     {
-        // Can call from backend to update the wallet amount here
-        this.walletAmount = 50
-        this.endowusWalletAmount = 600
-        this.eventNumber = 1
-
         this.load.baseURL = "../assets/"
 
         // Preload Scene Background
@@ -24,9 +28,9 @@ export default class Scene3 extends Phaser.Scene
         this.load.image('World Of Solaria', 'tilemaps/World Of Solaria.png')
         this.load.image('Animated', 'tilemaps/Animated.png')
         this.load.tilemapTiledJSON('scene3Tilemap', 'tilemaps/scene-3.json')
-
+        
         // Preload Plugin for Animated Tileset
-        this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');   
+        this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');
 
         // Preload Character
         this.load.atlas('player', 'characters/player.png', 'characters/player.json')
@@ -37,12 +41,23 @@ export default class Scene3 extends Phaser.Scene
         this.load.atlas('npc-5', 'characters/npc-5.png', 'characters/npc-5.json')
 
         // Preload Miscellaneous Assets
-        this.load.image('questMarker', 'images/questMarker.png')
+        this.load.atlas('questMarker', 'images/questMarker.png', 'images/questMarker.json')
         this.load.image('wallet', 'images/money.png')
+        this.load.image('endowusWallet', 'images/endowus.png')
+        
+        //Preload Scripts for event dialog
+        this.load.json('script', 'data/script.json');
+
+        this.Dialog = this.Dialog
+        this.spacePressed = false
+        this.shiftPressed = false
     }
 
     create()
     {
+        // Get script data preloaded from script.json
+        this.script = this.cache.json.get('script');
+
         // Scene Fade In Effect
         this.cameras.main.fadeIn(1000, 0, 0, 0)
 
@@ -105,8 +120,8 @@ export default class Scene3 extends Phaser.Scene
         this.walletText.setText(this.wallet.data.get('amount'))
 
         // Create EndowusWallet
-        this.endowusWallet = this.add.image(590, 155, 'wallet')
-        this.endowusWallet.setDisplaySize(38, 38)
+        this.endowusWallet = this.add.image(560, 155, 'endowusWallet')
+        this.endowusWallet.setDisplaySize(80, 16)
         this.endowusWallet.setScrollFactor(0, 0)
         this.endowusWallet.setDepth(100)
         this.endowusWallet.setDataEnabled()
@@ -138,12 +153,6 @@ export default class Scene3 extends Phaser.Scene
 
             let npc
             switch(object.name) {
-                case "scene-2":
-                    this.physics.world.enable(object)
-                    this.physics.add.overlap(this.player, object, () => {
-                        this.enterPortal(object.name)
-                    })
-                    break;
                 case "npc-1":
                     npc = this.createCharacter(object.x, object.y, 'npc-1')
                     npc.anims.play('npc1IdleDown', true)
@@ -167,6 +176,7 @@ export default class Scene3 extends Phaser.Scene
             }
         })
 
+        // Set Event Waypoints
         this.setEventCollision()
 
         // Create key inputs for movement
@@ -182,20 +192,20 @@ export default class Scene3 extends Phaser.Scene
         this.player.body.velocity.x = 0
         this.player.body.velocity.y = 0
 
-        // On Arrow Key Press, Move in Direction + Animation
-        if (this.keys.right.isDown) {
+        // On Arrow Key Press, Move in Direction + Animation when Dialog is not visible
+        if (this.keys.right.isDown && !this.Dialog.visible) {
             this.player.anims.play('runRight', true)
             this.player.body.velocity.x = WorldProperties.velocity;
             this.keyLastPressed = "right"
-        } else if (this.keys.up.isDown) {
+        } else if (this.keys.up.isDown && !this.Dialog.visible) {
             this.player.anims.play('runUp', true)
             this.player.body.velocity.y = -WorldProperties.velocity;
             this.keyLastPressed = "up"
-        } else if (this.keys.left.isDown) {
+        } else if (this.keys.left.isDown && !this.Dialog.visible) {
             this.player.anims.play('runLeft', true)
             this.player.body.velocity.x = -WorldProperties.velocity;
             this.keyLastPressed = "left"
-        } else if (this.keys.down.isDown) {
+        } else if (this.keys.down.isDown && !this.Dialog.visible) {
             this.player.anims.play('runDown', true)
             this.player.body.velocity.y = WorldProperties.velocity;
             this.keyLastPressed = "down"
@@ -216,18 +226,43 @@ export default class Scene3 extends Phaser.Scene
                     break;
             }
         }
+        // Code to only press key ONCE
+        if (this.keys.space.isDown) {
+            if (!this.spacePressed) {
+                this.dialogManager(true)
+                this.spacePressed = true
+            }
+        }
+
+        if (this.keys.space.isUp) {
+            this.spacePressed = false
+        }
+
+        if (this.keys.shift.isDown) {
+            if (!this.shiftPressed) {
+                this.dialogManager(false)
+                this.shiftPressed = true
+            }
+        }
+
+        if (this.keys.shift.isUp) {
+            this.shiftPressed = false
+        }
     }
 
-    enterPortal(sceneName) {
-        // Destroy all colliders to prevent repeated calls
-        this.physics.world.colliders.destroy()
-
+    enterScene(sceneName) {
         // Camera Transitions, Start New Scene
         this.cameras.main.fadeOut(1000, 0, 0, 0)
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
             this.time.delayedCall(1000, () => {
-                this.scene.start(sceneName)
-            })        
+                this.scene.start(sceneName, {
+                    walletAmount: this.wallet.data.values.amount,
+                    endowusWalletAmount: this.endowusWallet.data.values.amount,
+                    annualisedReturn: this.annualisedReturn,
+                    volatility: this.volatility,
+                    personaEvents: this.personaEvents
+                })
+            })
         })
     }
 
@@ -237,55 +272,91 @@ export default class Scene3 extends Phaser.Scene
     }
 
     setEventCollision() {
-        if (this.eventNumber != 0 || this.eventNumber != null) {
-            var currentEvent = "event" + this.eventNumber
-            // var eventObject = this.map.findObject('GameObjects', obj => obj.name === currentEvent)
-            var eventObject = this.gameObjects.find(event => event.name === currentEvent)
-            var questMarker = this.physics.add.sprite(eventObject.x, eventObject.y - 50, 'questMarker')
-            questMarker.setScale(0.20, 0.20)
+        var currentEvent = "event" + this.eventNumber
+        var eventObject = this.gameObjects.find(event => event.name === currentEvent)
+        var questMarker = this.physics.add.sprite(eventObject.x, eventObject.y - 50, 'questMarker')
+        questMarker.setScale(0.20, 0.20)
+        questMarker.anims.play('questMarkerAnim', true)
 
-            this.physics.world.enable(eventObject)
-            this.physics.add.overlap(this.player, eventObject, () => {
-                // Disable Game Object and Quest Marker on collision
-                this.physics.world.disable(eventObject)
-                questMarker.destroy()
+        this.physics.world.enable(eventObject)
+        this.physics.add.overlap(this.player, eventObject, () => {
+            // Disable Game Object and Quest Marker on collision
+            this.physics.world.disable(eventObject)
+            questMarker.destroy()
 
-                this.playEvent(this.eventNumber)
-            })
-        }
+            this.playEvent(this.eventNumber)
+        })
     }
 
     playEvent(eventNumber) {
-        switch(eventNumber) {
-            case 1:
-                console.log("In Event 1")
-                // Running Event 1 stuff
-                // End of Event 1
+        this.Dialog.setText(this.script["event" + eventNumber]["script"][0])
+        this.dialogEvent = "script", this.scriptNumber = 0
+    }
 
-                // After Event 1, to run Event 2
-                this.eventNumber = 2
+    // isSpace == true means Space key was pressed. isSpace != true means Shift key was pressed.
+    dialogManager(isSpace) {
+        if (this.Dialog.visible && this.dialogEvent == "script") {
+            if (isSpace) {
+                this.scriptNumber += 1
+                if (this.script["event" + this.eventNumber]["script"][this.scriptNumber] != null) {
+                    this.Dialog.setText(this.script["event" + this.eventNumber]["script"][this.scriptNumber], 1)
+                } else {
+                    this.dialogEvent = "question"
+                    this.Dialog.setText(this.script["event" + this.eventNumber]["question"], 3)
+                }
+            }
+        } else if (this.Dialog.visible && this.dialogEvent == "question") {
+            if (isSpace) {
+                // Debit or Credit event to EndowusWallet
+                this.walletManager(this.endowusWallet, this.endowusWalletText, this.script["event" + this.eventNumber]["amount"])
+                this.Dialog.setText(this.script["event" + this.eventNumber]["response"]["space"], 1)
+            }
 
-                this.setEventCollision()
-                break;
-            case 2:
-                console.log("In Event 2")
-                // Running Event 2 stuff
-                // End of Event 2
+            if (!isSpace) {
+                // Debit or Credit event to Wallet
+                this.walletManager(this.wallet, this.walletText, this.script["event" + this.eventNumber]["amount"])
+                this.Dialog.setText(this.script["event" + this.eventNumber]["response"]["shift"], 1)
+            }
+            this.dialogEvent = ""
+            this.time.delayedCall(5000, this.calculateEarnLoss, [this.endowusWallet, this.endowusWalletText], this)
+            return
+        } else if (this.Dialog.visible && this.dialogEvent == "interest") {
+            this.dialogEvent = ""
+            this.Dialog.display(false);
 
-                // After Event 2, to run Event 3
-                this.eventNumber = 3
+            // Event is completed, remove from events, Set Event Number to be new event
+            this.personaEvents.shift()
+            this.eventNumber = this.personaEvents[0]
 
-                this.setEventCollision()
-                break;
-            case 3:
-                console.log("In Event 3")
-                // Running Event 3 stuff
-                // End of Event 3
+            // Check if next Event is available in current scene, else find the scene which has it
+            var eventObject = this.gameObjects.find(event => event.name === "event" + this.eventNumber)
+            if (eventObject == null) {
+                for (var scene in SceneEventMapping) {
+                    if (SceneEventMapping[scene].includes(this.eventNumber)) {
+                        this.enterScene(scene)
+                        return
+                    }
+                }
+            }
 
-                // After Event 3, no more events OR end the game
-                this.eventNumber = 0
-                break;
+            // Event is available within current Scene
+            this.setEventCollision()
+            return
+        } else {
+            this.Dialog.display(false);
         }
+    }
+
+    calculateEarnLoss(wallet, text) {
+        let returnsPercentage = ((Math.random() - 0) / (1 - 0)) * (this.volatility) + (this.annualisedReturn - this.volatility)
+
+        let currentAmount = wallet.data.values.amount
+        let amount = Math.round(currentAmount * (returnsPercentage / 100))
+
+        this.walletManager(wallet, text, amount)
+
+        this.dialogEvent = "interest"
+        this.Dialog.setText("The year has come to an end...\n Your returns this year is " + returnsPercentage.toFixed(2) + "%. Total earnings: $" + amount, 1)
     }
 
     createCharacter(x, y, type) {
@@ -398,6 +469,14 @@ export default class Scene3 extends Phaser.Scene
         this.anims.create({
             key: 'npc5IdleDown',
             frames: this.anims.generateFrameNames('npc-5', {start: 0, end: 3, zeroPad: 0, prefix: 'npc-5-', suffix: '.png'}),
+            frameRate: 6,
+            repeat: -1
+        })
+
+        // Create Animation for Quest Marker
+        this.anims.create({
+            key: 'questMarkerAnim',
+            frames: this.anims.generateFrameNames('questMarker', {start: 0, end: 3, zeroPad: 0, prefix: 'questMarker-', suffix: '.png'}),
             frameRate: 6,
             repeat: -1
         })

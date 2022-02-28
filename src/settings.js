@@ -7,11 +7,13 @@ export const WorldProperties = {
     cameraZoom: 1.5
 }
 
-export const Persona = {
-    "student": {
-        "events": [1, 2, 4, 5, 6]
-    },
-    "familyMan": {
-        "events": [2, 3, 4, 5, 6]
-    }
+export const PersonaEvents = {
+    "student": [1, 2, 4, 3],
+    "familyMan": [4, 1, 6]
+}
+
+export const SceneEventMapping = {
+    "scene-1": [1, 2, 3],
+    "scene-2": [4, 5],
+    "scene-3": [6, 7],
 }

@@ -1,6 +1,6 @@
 {
     "equities100": {
-        "script": ["You selected 100% Equities", "A very aggressive..."],
+        "script": ["You selected 100% Equities"],
         "annualisedReturn": 12.2,
         "volatility": 11
     },
@@ -33,11 +33,64 @@
     "event1": {
         "script": ["Hi there, you've received a $1000 Bonus"],
         "question": "Would you like to invest or save your bonus?",
+        "response": {
+            "space": "You invested $1000!",
+            "shift": "You saved $1000 as cash!"
+        },
         "amount": 1000
     },
     "event2": {
         "script": ["You injured yourself, $500 medical bill!"],
         "question": "Pay medical bill using Investment or Savings?",
+        "response": {
+            "space": "You used $500 from your investments!",
+            "shift": "You used $500 from your cash!"
+        },
         "amount": -500
+    },
+    "event3": {
+        "script": ["Event 3"],
+        "question": "Investment or Savings?",
+        "response": {
+            "space": "You used $500 from your investments!",
+            "shift": "You used $500 from your cash!"
+        },
+        "amount": 600
+    },
+    "event4": {
+        "script": ["Event 4"],
+        "question": "Investment or Savings?",
+        "response": {
+            "space": "You used $500 from your investments!",
+            "shift": "You used $500 from your cash!"
+        },
+        "amount": 2500
+    },
+    "event5": {
+        "script": ["Event 5"],
+        "question": "Investment or Savings?",
+        "response": {
+            "space": "You used $500 from your investments!",
+            "shift": "You used $500 from your cash!"
+        },
+        "amount": 5500
+    },
+    "event6": {
+        "script": ["Event 6"],
+        "question": "Investment or Savings?",
+        "response": {
+            "space": "You used $500 from your investments!",
+            "shift": "You used $500 from your cash!"
+        },
+        "amount": 200
+    },
+    "event7": {
+        "script": ["Event 7"],
+        "question": "Investment or Savings?",
+        "response": {
+            "space": "You used $500 from your investments!",
+            "shift": "You used $500 from your cash!"
+        },
+        "amount": 3000
     }
 }

@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { WorldProperties } from '../settings'
+import { WorldProperties, SceneEventMapping } from '../settings'
 
 export default class Scene1 extends Phaser.Scene
 {
@@ -229,7 +229,7 @@ export default class Scene1 extends Phaser.Scene
         // Code to only press key ONCE
         if (this.keys.space.isDown) {
             if (!this.spacePressed) {
-                this.runEventDialog(true)
+                this.dialogManager(true)
                 this.spacePressed = true
             }
         }
@@ -240,7 +240,7 @@ export default class Scene1 extends Phaser.Scene
 
         if (this.keys.shift.isDown) {
             if (!this.shiftPressed) {
-                this.runEventDialog(false)
+                this.dialogManager(false)
                 this.shiftPressed = true
             }
         }
@@ -273,7 +273,6 @@ export default class Scene1 extends Phaser.Scene
 
     setEventCollision() {
         var currentEvent = "event" + this.eventNumber
-        // var eventObject = this.map.findObject('GameObjects', obj => obj.name === currentEvent)
         var eventObject = this.gameObjects.find(event => event.name === currentEvent)
         var questMarker = this.physics.add.sprite(eventObject.x, eventObject.y - 50, 'questMarker')
         questMarker.setScale(0.20, 0.20)
@@ -290,81 +289,61 @@ export default class Scene1 extends Phaser.Scene
     }
 
     playEvent(eventNumber) {
-        switch(eventNumber) {
-            case 1:
-                console.log("In Event 1")
-                this.Dialog.setText(this.script["event" + eventNumber]["script"][0])
-                this.dialogEvent = "script", this.scriptNumber = 0
-
-                // // Randomised + or - to wallet amount
-                // this.calculateEarnLoss(this.endowusWallet, this.endowusWalletText)
-
-                // // After Event 1, to run Event 2
-                // this.eventNumber = 2
-
-                // this.setEventCollision()
-                break;
-            case 2:
-                console.log("In Event 2")
-                // Running Event 2 stuff
-                // End of Event 2
-
-                // Randomised + or - to wallet amount
-                this.calculateEarnLoss(this.endowusWallet, this.endowusWalletText)
-
-                // After Event 2, to run Event 3
-                this.eventNumber = 3
-
-                this.setEventCollision()
-                break;
-            case 3:
-                console.log("In Event 3")
-                // Running Event 3 stuff
-                // End of Event 3
-
-                // Randomised + or - to wallet amount
-                this.calculateEarnLoss(this.endowusWallet, this.endowusWalletText)
-
-                // After Event 3, no more events OR end the game
-                this.eventNumber = 0
-                break;
-        }
+        this.Dialog.setText(this.script["event" + eventNumber]["script"][0])
+        this.dialogEvent = "script", this.scriptNumber = 0
     }
 
-    runEventDialog(isContinue) {
+    // isSpace == true means Space key was pressed. isSpace != true means Shift key was pressed.
+    dialogManager(isSpace) {
         if (this.Dialog.visible && this.dialogEvent == "script") {
-            if (isContinue) {
+            if (isSpace) {
                 this.scriptNumber += 1
                 if (this.script["event" + this.eventNumber]["script"][this.scriptNumber] != null) {
-                    this.Dialog.setText(this.script["event" + this.eventNumber]["script"][this.scriptNumber])
+                    this.Dialog.setText(this.script["event" + this.eventNumber]["script"][this.scriptNumber], 1)
                 } else {
                     this.dialogEvent = "question"
-                    this.Dialog.setText(this.script["event" + this.eventNumber]["question"])
+                    this.Dialog.setText(this.script["event" + this.eventNumber]["question"], 3)
                 }
             }
-            return
-        }
-
-        if (this.Dialog.visible && this.dialogEvent == "question") {
-            this.Dialog.display(false);
-            if (isContinue) {
-                // Chose to use Investments (Credit / Debit)
+        } else if (this.Dialog.visible && this.dialogEvent == "question") {
+            if (isSpace) {
+                // Debit or Credit event to EndowusWallet
                 this.walletManager(this.endowusWallet, this.endowusWalletText, this.script["event" + this.eventNumber]["amount"])
+                this.Dialog.setText(this.script["event" + this.eventNumber]["response"]["space"], 1)
             }
 
-            if (!isContinue) {
-                // Chose to use Savings (Credit / Debit)
+            if (!isSpace) {
+                // Debit or Credit event to Wallet
                 this.walletManager(this.wallet, this.walletText, this.script["event" + this.eventNumber]["amount"])
+                this.Dialog.setText(this.script["event" + this.eventNumber]["response"]["shift"], 1)
             }
-            // this.calculateEarnLoss(this.endowusWallet, this.endowusWalletText)
-            this.time.delayedCall(3000, this.calculateEarnLoss, [this.endowusWallet, this.endowusWalletText], this)
-            this.dialogEvent = "misc"
+            this.dialogEvent = ""
+            this.time.delayedCall(5000, this.calculateEarnLoss, [this.endowusWallet, this.endowusWalletText], this)
             return
-        }
-
-        if (this.Dialog.visible && this.dialogEvent == "misc") {
+        } else if (this.Dialog.visible && this.dialogEvent == "interest") {
+            this.dialogEvent = ""
             this.Dialog.display(false);
+
+            // Event is completed, remove from events, Set Event Number to be new event
+            this.personaEvents.shift()
+            this.eventNumber = this.personaEvents[0]
+
+            // Check if next Event is available in current scene, else find the scene which has it
+            var eventObject = this.gameObjects.find(event => event.name === "event" + this.eventNumber)
+            if (eventObject == null) {
+                for (var scene in SceneEventMapping) {
+                    if (SceneEventMapping[scene].includes(this.eventNumber)) {
+                        this.enterScene(scene)
+                        return
+                    }
+                }
+            }
+
+            // Event is available within current Scene
+            this.setEventCollision()
             return
+        } else {
+            this.Dialog.display(false);
         }
     }
 
@@ -375,7 +354,9 @@ export default class Scene1 extends Phaser.Scene
         let amount = Math.round(currentAmount * (returnsPercentage / 100))
 
         this.walletManager(wallet, text, amount)
-        this.Dialog.setText("The year has come to an end...\n Your returns this year is " + returnsPercentage.toFixed(2) + "%. Total earnings: $" + amount)
+
+        this.dialogEvent = "interest"
+        this.Dialog.setText("The year has come to an end...\n Your returns this year is " + returnsPercentage.toFixed(2) + "%. Total earnings: $" + amount, 1)
     }
 
     createCharacter(x, y, type) {
@@ -501,20 +482,3 @@ export default class Scene1 extends Phaser.Scene
         })
     }
 }
-
-
-//     HitScript(eventNumber, nextEventNumber) {
-//         console.log("Hitscript!")
-//         console.log(this.volatility)
-
-//         //Dont hardcode npc 2
-//         this.Dialog.setText("test " + this.volatility)
-//     }
-
-//     GetScript(eventNumber) {
-//         this.Dialog.setText(this.script["event1"]["y"]);
-//         console.log("Yes Invested")
-//         this.walletManager(this.wallet, this.walletText, 1000)
-//         console.log("$1000 added to wallet")
-        
-//   }

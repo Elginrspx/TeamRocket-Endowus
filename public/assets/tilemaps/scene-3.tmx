@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="60" height="47" tilewidth="16" tileheight="16" infinite="0" nextlayerid="20" nextobjectid="20">
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="60" height="47" tilewidth="16" tileheight="16" infinite="0" nextlayerid="20" nextobjectid="22">
  <editorsettings>
   <export target="scene-3.json" format="json"/>
  </editorsettings>
@@ -66428,12 +66428,13 @@
  </layer>
  <objectgroup id="19" name="GameObjects">
   <object id="11" name="spawn-point" x="256.667" y="696" width="16" height="16"/>
-  <object id="13" name="scene-2" x="233.333" y="737.667" width="64" height="10"/>
   <object id="14" name="npc-3" x="98.7233" y="522" width="10" height="10"/>
   <object id="15" name="npc-1" x="179.292" y="506" width="10" height="10"/>
   <object id="16" name="npc-2" x="291.375" y="538" width="10" height="10"/>
   <object id="17" name="npc-4" x="370.826" y="522" width="10" height="10"/>
   <object id="18" name="npc-3" x="307.174" y="458" width="10" height="10"/>
   <object id="19" name="npc-5" x="403.406" y="442" width="10" height="10"/>
+  <object id="20" name="event6" x="186" y="574"/>
+  <object id="21" name="event7" x="384" y="575"/>
  </objectgroup>
 </map>

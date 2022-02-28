@@ -66428,7 +66428,6 @@
  </layer>
  <objectgroup id="4" name="GameObjects">
   <object id="1" name="spawn-point" x="16.3333" y="609" width="16" height="16"/>
-  <object id="2" name="scene-2" x="947" y="408.667" width="10" height="48"/>
   <object id="3" name="npc-1" x="243.605" y="218" width="10" height="10"/>
   <object id="4" name="npc-2" x="146.938" y="122" width="10" height="10"/>
   <object id="5" name="npc-3" x="259.113" y="84" width="10" height="10"/>
