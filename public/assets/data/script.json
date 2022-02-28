@@ -55,7 +55,7 @@
     "event5": {
         "script": ["Your new home is now ready! Time to collect your keys and move in!"],
         "question": "Your new home costs $200,000. Would you like to pay with your Cash or Endowus Wallet?",
-        "amount": 200000
+        "amount": -200000
     }
 
 }
