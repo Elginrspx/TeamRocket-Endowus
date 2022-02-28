@@ -31,20 +31,13 @@
     },
     
     "event1": {
-        "intro": "Hi there, you've received a $1000 Bonus, would you like to invest it?",
-        "y": "You pressed yes! You have invested $1000",
-        "n": "No!",
-        "num":"-1000"
+        "script": ["Hi there, you've received a $1000 Bonus"],
+        "question": "Would you like to invest or save your bonus?",
+        "amount": 1000
     },
-
-    
-
-    "scene-1" : {
-        "npc-3": {
-            "intro": "Hi there, you've received a $1000 Bonus, would you like to invest it?",
-            "y": "You pressed yes! You have invested $1000",
-            "n": "No!"
-        }
-
+    "event2": {
+        "script": ["You injured yourself, $500 medical bill!"],
+        "question": "Pay medical bill using Investment or Savings?",
+        "amount": -500
     }
 }

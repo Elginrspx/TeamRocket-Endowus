@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { WorldProperties } from '../settings'
+import { WorldProperties, Persona } from '../settings'
 
 export default class Scene0 extends Phaser.Scene
 {
@@ -10,6 +10,9 @@ export default class Scene0 extends Phaser.Scene
 
 	preload()
     {
+        // From DB
+        this.persona = "student"
+
         this.walletAmount = 0
         this.endowusWalletAmount = 0
 
@@ -181,14 +184,23 @@ export default class Scene0 extends Phaser.Scene
             }
         })
 
+        this.walletManager(this.wallet, this.walletText, 1000)
+        this.walletManager(this.endowusWallet, this.endowusWalletText, 5000)
+
+        switch(this.persona) {
+            case "student":
+                this.personaEvents = Persona.student.events
+                break
+            case "familyMan":
+                this.personaEvents = Persona.familyMan.events
+                break
+        }
+
         // Create key inputs for movement
         this.keys = this.input.keyboard.createCursorKeys();
 
         // Set Starting Animation
         this.player.play("idleDown")
-
-        this.walletManager(this.wallet, this.walletText, 1000)
-        this.walletManager(this.endowusWallet, this.endowusWalletText, 5000)
     }
     
     // Update polls at 60 times a second
@@ -265,7 +277,8 @@ export default class Scene0 extends Phaser.Scene
                     walletAmount: this.wallet.data.values.amount,
                     endowusWalletAmount: this.endowusWallet.data.values.amount,
                     annualisedReturn: this.annualisedReturn,
-                    volatility: this.volatility
+                    volatility: this.volatility,
+                    personaEvents: this.personaEvents
                 })
             })
         })
@@ -305,9 +318,14 @@ export default class Scene0 extends Phaser.Scene
             }
 
             if (!isContinue) {
+                this.time.delayedCall(2000, this.reenableEvent, [this.currentObject], this)
                 this.Dialog.display(false);
             }
         }
+    }
+
+    reenableEvent(object) {
+        this.physics.world.enable(object)
     }
 
     createCharacter(x, y, type) {
