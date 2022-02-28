@@ -1,0 +1,50 @@
+{
+    "equities100": {
+        "script": ["You selected 100% Equities", "A very aggressive..."],
+        "annualisedReturn": 12.2,
+        "volatility": 11
+    },
+    "equities80": {
+        "script": ["You selected 80%, 0%!", "A aggressive..."],
+        "annualisedReturn": 10.8,
+        "volatility": 9.3
+    },
+    "equities60": {
+        "script": ["You selected 60%, 0%!", "A balanced..."],
+        "annualisedReturn": 9.4,
+        "volatility": 7.6
+    },
+    "equities40": {
+        "script": ["You selected 40%, 0%!", "A measured..."],
+        "annualisedReturn": 7.8,
+        "volatility": 5.9
+    },
+    "equities20": {
+        "script": ["You selected 20%, 0%!", "A conservative..."],
+        "annualisedReturn": 6.4,
+        "volatility": 4.6
+    },
+    "equities0": {
+        "script": ["You selected 100% Fixed Income!", "A very conservative..."],
+        "annualisedReturn": 4.8,
+        "volatility": 3.9
+    },
+    
+    "event1": {
+        "intro": "Hi there, you've received a $1000 Bonus, would you like to invest it?",
+        "y": "You pressed yes! You have invested $1000",
+        "n": "No!",
+        "num":"-1000"
+    },
+
+    
+
+    "scene-1" : {
+        "npc-3": {
+            "intro": "Hi there, you've received a $1000 Bonus, would you like to invest it?",
+            "y": "You pressed yes! You have invested $1000",
+            "n": "No!"
+        }
+
+    }
+}

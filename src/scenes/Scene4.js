@@ -1,16 +1,16 @@
 import Phaser from 'phaser'
-import { WorldProperties, PortfolioType } from '../settings'
+import { WorldProperties } from '../settings'
 
-export default class Scene1 extends Phaser.Scene
+export default class Scene4 extends Phaser.Scene
 {
 	constructor()
 	{
-		super('scene-1')
+		super('scene-3')
 	}
 
 	preload()
     {
-        // Preload data from backend
+        // Can call from backend to update the wallet amount here
         this.walletAmount = 50
         this.endowusWalletAmount = 600
         this.eventNumber = 1
@@ -23,10 +23,10 @@ export default class Scene1 extends Phaser.Scene
         // Preload Map
         this.load.image('World Of Solaria', 'tilemaps/World Of Solaria.png')
         this.load.image('Animated', 'tilemaps/Animated.png')
-        this.load.tilemapTiledJSON('scene1Tilemap', 'tilemaps/scene-1.json')
-        
+        this.load.tilemapTiledJSON('scene4Tilemap', 'tilemaps/scene-3.json')
+
         // Preload Plugin for Animated Tileset
-        this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');
+        this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');   
 
         // Preload Character
         this.load.atlas('player', 'characters/player.png', 'characters/player.json')
@@ -37,9 +37,8 @@ export default class Scene1 extends Phaser.Scene
         this.load.atlas('npc-5', 'characters/npc-5.png', 'characters/npc-5.json')
 
         // Preload Miscellaneous Assets
-        this.load.atlas('questMarker', 'images/questMarker.png', 'images/questMarker.json')
+        this.load.image('questMarker', 'images/questMarker.png')
         this.load.image('wallet', 'images/money.png')
-        this.load.image('endowusWallet', 'images/endowus.png')
     }
 
     create()
@@ -48,7 +47,7 @@ export default class Scene1 extends Phaser.Scene
         this.cameras.main.fadeIn(1000, 0, 0, 0)
 
         // Create Map
-        this.map = this.make.tilemap({ key: 'scene1Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
+        this.map = this.make.tilemap({ key: 'scene4Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
         const WorldOfSolaria = this.map.addTilesetImage('World Of Solaria', 'World Of Solaria')
         const Animated = this.map.addTilesetImage('Animated', 'Animated')
 
@@ -106,8 +105,8 @@ export default class Scene1 extends Phaser.Scene
         this.walletText.setText(this.wallet.data.get('amount'))
 
         // Create EndowusWallet
-        this.endowusWallet = this.add.image(560, 155, 'endowusWallet')
-        this.endowusWallet.setDisplaySize(80, 16)
+        this.endowusWallet = this.add.image(590, 155, 'wallet')
+        this.endowusWallet.setDisplaySize(38, 38)
         this.endowusWallet.setScrollFactor(0, 0)
         this.endowusWallet.setDepth(100)
         this.endowusWallet.setDataEnabled()
@@ -140,7 +139,6 @@ export default class Scene1 extends Phaser.Scene
             let npc
             switch(object.name) {
                 case "scene-2":
-                    object.y += 50
                     this.physics.world.enable(object)
                     this.physics.add.overlap(this.player, object, () => {
                         this.enterPortal(object.name)
@@ -169,10 +167,7 @@ export default class Scene1 extends Phaser.Scene
             }
         })
 
-        // Set Event Waypoints
         this.setEventCollision()
-
-        this.setEarningPotential()
 
         // Create key inputs for movement
         this.keys = this.input.keyboard.createCursorKeys();
@@ -224,8 +219,6 @@ export default class Scene1 extends Phaser.Scene
     }
 
     enterPortal(sceneName) {
-        // Can add a boolean to check if event is finished, if not dont allow enter portal
-
         // Destroy all colliders to prevent repeated calls
         this.physics.world.colliders.destroy()
 
@@ -233,11 +226,8 @@ export default class Scene1 extends Phaser.Scene
         this.cameras.main.fadeOut(1000, 0, 0, 0)
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
             this.time.delayedCall(1000, () => {
-                this.scene.start(sceneName, {
-                    walletAmount: this.wallet.data.values.amount ,
-                    endowusWalletAmount: this.endowusWallet.data.values.amount 
-                })
-            })
+                this.scene.start(sceneName)
+            })        
         })
     }
 
@@ -253,7 +243,6 @@ export default class Scene1 extends Phaser.Scene
             var eventObject = this.gameObjects.find(event => event.name === currentEvent)
             var questMarker = this.physics.add.sprite(eventObject.x, eventObject.y - 50, 'questMarker')
             questMarker.setScale(0.20, 0.20)
-            questMarker.anims.play('questMarkerAnim', true)
 
             this.physics.world.enable(eventObject)
             this.physics.add.overlap(this.player, eventObject, () => {
@@ -273,9 +262,6 @@ export default class Scene1 extends Phaser.Scene
                 // Running Event 1 stuff
                 // End of Event 1
 
-                // Randomised + or - to wallet amount
-                this.calculateEarnLoss(this.endowusWallet, this.endowusWalletText)
-
                 // After Event 1, to run Event 2
                 this.eventNumber = 2
 
@@ -285,9 +271,6 @@ export default class Scene1 extends Phaser.Scene
                 console.log("In Event 2")
                 // Running Event 2 stuff
                 // End of Event 2
-
-                // Randomised + or - to wallet amount
-                this.calculateEarnLoss(this.endowusWallet, this.endowusWalletText)
 
                 // After Event 2, to run Event 3
                 this.eventNumber = 3
@@ -299,42 +282,10 @@ export default class Scene1 extends Phaser.Scene
                 // Running Event 3 stuff
                 // End of Event 3
 
-                // Randomised + or - to wallet amount
-                this.calculateEarnLoss(this.endowusWallet, this.endowusWalletText)
-
                 // After Event 3, no more events OR end the game
                 this.eventNumber = 0
                 break;
         }
-    }
-
-    setEarningPotential() {
-        this.portfolioType = "portfolio1"
-        switch(this.portfolioType) {
-            case "portfolio1":
-                this.annualisedReturn = PortfolioType.portfolio1.annualisedReturn;
-                this.volatility = PortfolioType.portfolio1.volatility;
-                break;
-            case "portfolio2":
-                this.annualisedReturn = PortfolioType.portfolio2.annualisedReturn;
-                this.volatility = PortfolioType.portfolio2.volatility;
-                break;
-        }       
-    }
-
-    calculateEarnLoss(wallet, text) {
-        // Returns may be anywhere from 0% up to earning potential %
-        let returnsPercentage = ((Math.random() - 0) / (1 - 0)) * (this.annualisedReturn - this.volatility) + this.volatility
-        console.log(this.annualisedReturn)
-        console.log(this.volatility)
-        console.log(returnsPercentage)
-
-        let currentAmount = wallet.data.values.amount
-        let amount = Math.round(currentAmount * (returnsPercentage / 100))
-
-        this.walletManager(wallet, text, amount)
-
-        console.log("This year, returns percentage is " + returnsPercentage.toFixed(2) + "% out of " + this.annualisedReturn + "%.\nTotal earnings: $" + amount)
     }
 
     createCharacter(x, y, type) {
@@ -450,30 +401,5 @@ export default class Scene1 extends Phaser.Scene
             frameRate: 6,
             repeat: -1
         })
-
-        // Create Animation for Quest Marker
-        this.anims.create({
-            key: 'questMarkerAnim',
-            frames: this.anims.generateFrameNames('questMarker', {start: 0, end: 3, zeroPad: 0, prefix: 'questMarker-', suffix: '.png'}),
-            frameRate: 6,
-            repeat: -1
-        })
     }
 }
-
-
-//     HitScript(eventNumber, nextEventNumber) {
-//         console.log("Hitscript!")
-//         console.log(this.volatility)
-
-//         //Dont hardcode npc 2
-//         this.Dialog.setText("test " + this.volatility)
-//     }
-
-//     GetScript(eventNumber) {
-//         this.Dialog.setText(this.script["event1"]["y"]);
-//         console.log("Yes Invested")
-//         this.walletManager(this.wallet, this.walletText, 1000)
-//         console.log("$1000 added to wallet")
-        
-//   }

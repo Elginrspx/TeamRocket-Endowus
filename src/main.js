@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import { Dialog } from './plugins/Dialog'
 import { WorldProperties } from './settings'
 
 import Scene0 from './scenes/Scene0'
@@ -16,6 +17,11 @@ const config = {
 			debug: false
 		}
 	},
+	plugins: {
+    scene: [
+            { key: 'Dialog', plugin: Dialog, mapping: 'Dialog' }
+        ]
+    },
 	scene: [Scene0, Scene1, Scene2, Scene3]
 }
 
