@@ -31,13 +31,31 @@
     },
     
     "event1": {
-        "script": ["Hi there, you've received a $1000 Bonus"],
-        "question": "Would you like to invest or save your bonus?",
-        "amount": 1000
+        "script": ["Congratulations! You have been accepted for an exchange semester at Nabson University in the US."],
+        "question": "Please make a payment of $20,000. Would you like to pay with your Cash or Endowus Wallet?",
+        "amount": -20000,
+        "yes": "",
+        "no": ""
     },
     "event2": {
-        "script": ["You injured yourself, $500 medical bill!"],
-        "question": "Pay medical bill using Investment or Savings?",
-        "amount": -500
+        "script": ["Hooray! You have been offered a 6-month internship at MBB & Co. Enjoy your time here & learn as much as possible from your supervisors."],
+        "question": "You have been paid a total of $6000 over 6 months! Would you like to invest it with Endowus?",
+        "amount": 6000
+    },
+    "event3": {
+        "script": ["Congratulations! You have landed your first job at ShopForward! Be ready for more responsibilities!"],
+        "question": "You have earned $100,000 over 2 years of working at ShopForward! Would you like to invest it with Endowus?",
+        "amount": 100000
+    },
+    "event4": {
+        "script": ["Hard work pays off! You have been promoted to a manager at ShopForward!"],
+        "question": "Your pay has increased to $150,000 over the next 2 years of work! Would you like to invest it with Endowus?",
+        "amount": 150000
+    },
+    "event5": {
+        "script": ["Your new home is now ready! Time to collect your keys and move in!"],
+        "question": "Your new home costs $200,000. Would you like to pay with your Cash or Endowus Wallet?",
+        "amount": 200000
     }
+
 }
