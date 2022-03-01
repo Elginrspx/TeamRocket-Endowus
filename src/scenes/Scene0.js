@@ -11,7 +11,7 @@ export default class Scene0 extends Phaser.Scene
 	preload()
     {
         // From DB
-        this.persona = "student"
+        this.persona = "familyMan"
 
         this.walletAmount = 0
         this.endowusWalletAmount = 0
@@ -36,6 +36,10 @@ export default class Scene0 extends Phaser.Scene
         this.load.atlas('questMarker', 'images/questMarker.png', 'images/questMarker.json')
         this.load.image('wallet', 'images/money.png')
         this.load.image('endowusWallet', 'images/endowus.png')
+
+        // Preload Audio
+        this.load.audio("gameTheme1", "music/ambience-cave.wav");
+        this.load.audio("gameTheme2", "music/adventures-in-adventureland.wav");
 
         //Preload Scripts for event dialog
         this.load.json('script', 'data/script.json');
@@ -201,6 +205,11 @@ export default class Scene0 extends Phaser.Scene
 
         // Set Starting Animation
         this.player.play("idleDown")
+
+        // Play Game Theme
+        this.gameTheme1 = this.sound.add("gameTheme1", { loop: true });
+        this.gameTheme2 = this.sound.add("gameTheme2", { loop: true });
+        this.gameTheme1.play()
     }
     
     // Update polls at 60 times a second
@@ -271,8 +280,10 @@ export default class Scene0 extends Phaser.Scene
     enterScene(sceneName) {
         // Camera Transitions, Start New Scene
         this.cameras.main.fadeOut(1000, 0, 0, 0)
+        this.gameTheme1.stop()
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
             this.time.delayedCall(1000, () => {
+                this.gameTheme2.play()
                 this.scene.start(sceneName, {
                     walletAmount: this.wallet.data.values.amount,
                     endowusWalletAmount: this.endowusWallet.data.values.amount,
