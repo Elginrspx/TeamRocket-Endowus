@@ -107,27 +107,27 @@ export default class Scene1 extends Phaser.Scene
         MapDepthLayer.setDepth(1);
 
         // Create Wallet
-        this.wallet = this.add.image(590, 125, 'wallet')
+        this.wallet = this.add.image(570, 125, 'wallet')
         this.wallet.setDisplaySize(38, 38)
         this.wallet.setScrollFactor(0, 0)
         this.wallet.setDepth(100)
         this.wallet.setDataEnabled()
         this.wallet.data.set('amount', this.walletAmount)
 
-        this.walletText = this.add.text(605, 115, '', { font: '20px Arial' })
+        this.walletText = this.add.text(585, 115, '', { font: '20px Arial' })
         this.walletText.setScrollFactor(0, 0)
         this.walletText.setDepth(100)
         this.walletText.setText(this.wallet.data.get('amount'))
 
         // Create EndowusWallet
-        this.endowusWallet = this.add.image(560, 155, 'endowusWallet')
+        this.endowusWallet = this.add.image(540, 155, 'endowusWallet')
         this.endowusWallet.setDisplaySize(80, 16)
         this.endowusWallet.setScrollFactor(0, 0)
         this.endowusWallet.setDepth(100)
         this.endowusWallet.setDataEnabled()
         this.endowusWallet.data.set('amount', this.endowusWalletAmount)
 
-        this.endowusWalletText = this.add.text(605, 145, '', { font: '20px Arial' })
+        this.endowusWalletText = this.add.text(585, 145, '', { font: '20px Arial' })
         this.endowusWalletText.setScrollFactor(0, 0)
         this.endowusWalletText.setDepth(100)
         this.endowusWalletText.setText(this.endowusWallet.data.get('amount'))
@@ -289,7 +289,7 @@ export default class Scene1 extends Phaser.Scene
     }
 
     playEvent(eventNumber) {
-        this.Dialog.setText(this.script["event" + eventNumber]["script"][0])
+        this.Dialog.setText(this.script["event" + eventNumber]["script"][0], 1)
         this.dialogEvent = "script", this.scriptNumber = 0
     }
 

@@ -1,7 +1,7 @@
 export const WorldProperties = {
     width: 800,
     height: 600,
-    velocity: 500,
+    velocity: 200,
     tileWidth: 16,
     tileHeight: 16,
     cameraZoom: 1.5
