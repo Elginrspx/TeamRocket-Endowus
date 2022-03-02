@@ -78,7 +78,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 		} else if (commandType == 2) {
 			this.graphics.command.setText('Spacebar: Yes    Shift: No');
 		} else if (commandType == 3) {
-			this.graphics.command.setText('Spacebar: Invest    Shift: Cash');
+			this.graphics.command.setText('Spacebar: Endowus Wallet    Shift: Cash Wallet');
 		}
 		
 		
@@ -152,7 +152,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 	// Creates text holder within the dialog window
 	_drawCommand() {
 		let dimensions = this._calculateWindowDimensions();
-		let x = dimensions.x + (this.padding * 0.5) + 325;
+		let x = dimensions.x + (this.padding * 0.5) + 255;
 		let y = dimensions.y + (this.padding * 0.5) + 45;
 		let command = '';
 	   
