@@ -1,33 +1,33 @@
 {
     "equities100": {
-        "script": ["You selected 100% Equities"],
-        "annualisedReturn": 12.2,
-        "volatility": 11
+        "script": ["A very aggressive portfolio designed for longer term goals that can withstand periods of significant volatility to compound returns over the long term and achieve higher average expected returns."],
+        "annualisedReturn": 12.18,
+        "volatility": 11.03
     },
     "equities80": {
-        "script": ["You selected 80%, 0%!", "A aggressive..."],
-        "annualisedReturn": 10.8,
-        "volatility": 9.3
+        "script": ["An aggressive portfolio designed for longer term goals that can withstand periods of volatility to compound returns over the long term and achieve higher average expected returns."],
+        "annualisedReturn": 10.77,
+        "volatility": 9.27
     },
     "equities60": {
-        "script": ["You selected 60%, 0%!", "A balanced..."],
-        "annualisedReturn": 9.4,
-        "volatility": 7.6
+        "script": ["A balanced portfolio designed for mid to long term goals and cashflows that can withstand periods of some volatility to compound returns over the long term and achieve higher average risk-adjusted returns."],
+        "annualisedReturn": 9.31,
+        "volatility": 7.56
     },
     "equities40": {
-        "script": ["You selected 40%, 0%!", "A measured..."],
-        "annualisedReturn": 7.8,
-        "volatility": 5.9
+        "script": ["A measured portfolio designed for mid term to long term goals and cashflows that can withstand periods of some volatility to compound returns over the long term to achieve higher average risk-adjusted returns."],
+        "annualisedReturn": 7.78,
+        "volatility": 5.89
     },
     "equities20": {
-        "script": ["You selected 20%, 0%!", "A conservative..."],
-        "annualisedReturn": 6.4,
-        "volatility": 4.6
+        "script": ["A conservative portfolio designed for mid term goals and cashflows that are focused on capital preservation with recognition that a small allocation to equities can improve asset class diversification and long term risk-adjusted returns."],
+        "annualisedReturn": 6.26,
+        "volatility": 4.58
     },
     "equities0": {
-        "script": ["You selected 100% Fixed Income!", "A very conservative..."],
-        "annualisedReturn": 4.8,
-        "volatility": 3.9
+        "script": ["A very conservative portfolio designed for short to mid term goals focused on capital preservation and lower volatility in returns, with some long term capital appreciation to compound returns."],
+        "annualisedReturn": 4.72,
+        "volatility": 3.87
     },
     
     "event1": {

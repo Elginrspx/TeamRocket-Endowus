@@ -14,7 +14,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 		this.windowColor = 0x000000;
 		this.windowHeight = 150;
 		this.padding = 32;
-		this.dialogSpeed = 15;
+		this.dialogSpeed = 5;
 		this.scrollFactor = 0; //scrollFactor of 0 fixes to the camera
 
 		// if the dialog window is shown
@@ -72,21 +72,16 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 		this.display(true);
 		const charArray = text.split('');
 		
-		this.graphics.text.setText('');
-		if (commandType == 1) {
-			this.graphics.command.setText('Spacebar: Continue');
-		} else if (commandType == 2) {
-			this.graphics.command.setText('Spacebar: Yes    Shift: No');
-		} else if (commandType == 3) {
-			this.graphics.command.setText('Spacebar: Endowus Wallet    Shift: Cash Wallet');
-		}
-		
-		
 		this.timedEvent = this.scene.time.addEvent({
 			delay: 150 - (this.dialogSpeed * 30),
 			callback: (charArray)=>{
-				this.graphics.text.setText(this.graphics.text.text + charArray[this.graphics.text.text.length]);
-				if (this.graphics.text.text.length === charArray.length) {
+				if (charArray[this.graphics.text.text.length + 1]) {
+					this.graphics.text.setText(this.graphics.text.text + charArray[this.graphics.text.text.length] + charArray[this.graphics.text.text.length + 1]);
+				} else {
+					this.graphics.text.setText(this.graphics.text.text + charArray[this.graphics.text.text.length]);
+				}
+				
+				if (this.graphics.text.text.length >= charArray.length) {
 					this.timedEvent.remove();
 				}
 			},
@@ -94,6 +89,19 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 			callbackScope: this,
 			loop: true
 		});
+
+		this.graphics.text.setText('');
+		switch(commandType) {
+			case 1:
+				this.graphics.command.setText('Spacebar: Continue');
+				break;
+			case 2:
+				this.graphics.command.setText('Spacebar: Yes    Shift: No');
+				break;
+			case 3:
+				this.graphics.command.setText('Spacebar: Endowus Wallet    Shift: Cash Wallet');
+				break;
+		}
 	}
 
 	// Calculates where to place the dialog window based on the game size
