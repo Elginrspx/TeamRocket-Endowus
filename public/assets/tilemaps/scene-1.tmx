@@ -66434,8 +66434,8 @@
   <object id="6" name="npc-4" x="563.537" y="58" width="10" height="10"/>
   <object id="7" name="npc-5" x="627.386" y="202" width="10" height="10"/>
   <object id="8" name="npc-1" x="883" y="118" width="10" height="10"/>
-  <object id="9" name="event1" x="168.667" y="255.333"/>
-  <object id="10" name="event2" x="366" y="126"/>
-  <object id="11" name="event3" x="246.667" y="616"/>
+  <object id="9" name="event1" x="167.334" y="614.666"/>
+  <object id="10" name="event2" x="167.333" y="551.333"/>
+  <object id="11" name="event3" x="421.334" y="612"/>
  </objectgroup>
 </map>

@@ -283,7 +283,7 @@ export default class Scene0 extends Phaser.Scene
         this.gameTheme1.stop()
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
             this.time.delayedCall(1000, () => {
-                this.gameTheme2.play()
+                // this.gameTheme2.play()
                 this.scene.start(sceneName, {
                     walletAmount: this.wallet.data.values.amount,
                     endowusWalletAmount: this.endowusWallet.data.values.amount,

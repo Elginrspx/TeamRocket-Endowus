@@ -51,6 +51,8 @@ export default class Scene1 extends Phaser.Scene
         this.Dialog = this.Dialog
         this.spacePressed = false
         this.shiftPressed = false
+        this.upPressed = false
+        this.downPressed = false
     }
 
     create()
@@ -131,6 +133,11 @@ export default class Scene1 extends Phaser.Scene
         this.endowusWalletText.setScrollFactor(0, 0)
         this.endowusWalletText.setDepth(100)
         this.endowusWalletText.setText(this.endowusWallet.data.get('amount'))
+
+        // For Wallet Percentage Dialog
+        this.walletPercentageText = this.add.text(155, 478, '', { font: '12px pressstart' })
+        this.walletPercentageText.setScrollFactor(0, 0)
+        this.walletPercentageText.setDepth(1010)
 
         /* For Debug Purposes, to be deleted */
         if (this.physics.config.debug) {
@@ -227,26 +234,48 @@ export default class Scene1 extends Phaser.Scene
             }
         }
         // Code to only press key ONCE
+        // Key: SPACE
         if (this.keys.space.isDown) {
             if (!this.spacePressed) {
-                this.dialogManager(true)
+                this.dialogManager()
                 this.spacePressed = true
             }
         }
-
         if (this.keys.space.isUp) {
             this.spacePressed = false
         }
 
-        if (this.keys.shift.isDown) {
-            if (!this.shiftPressed) {
-                this.dialogManager(false)
-                this.shiftPressed = true
+        // Key: SHIFT
+        // if (this.keys.shift.isDown) {
+        //     if (!this.shiftPressed) {
+        //         this.dialogManager(false)
+        //         this.shiftPressed = true
+        //     }
+        // }
+        // if (this.keys.shift.isUp) {
+        //     this.shiftPressed = false
+        // }
+
+        // Key: UP
+        if (this.keys.up.isDown) {
+            if (!this.upPressed) {
+                this.walletPercentageManager(true)
+                this.upPressed = true
             }
         }
+        if (this.keys.up.isUp) {
+            this.upPressed = false
+        }
 
-        if (this.keys.shift.isUp) {
-            this.shiftPressed = false
+        // Key: DOWN
+        if (this.keys.down.isDown) {
+            if (!this.downPressed) {
+                this.walletPercentageManager(false)
+                this.downPressed = true
+            }
+        }
+        if (this.keys.down.isUp) {
+            this.downPressed = false
         }
     }
 
@@ -294,29 +323,25 @@ export default class Scene1 extends Phaser.Scene
     }
 
     // isSpace == true means Space key was pressed. isSpace != true means Shift key was pressed.
-    dialogManager(isSpace) {
+    dialogManager() {
         if (this.Dialog.visible && this.dialogEvent == "script") {
-            if (isSpace) {
-                this.scriptNumber += 1
-                if (this.script["event" + this.eventNumber]["script"][this.scriptNumber] != null) {
-                    this.Dialog.setText(this.script["event" + this.eventNumber]["script"][this.scriptNumber], 1)
-                } else {
-                    this.dialogEvent = "question"
-                    this.Dialog.setText(this.script["event" + this.eventNumber]["question"], 3)
-                }
-            }
-        } else if (this.Dialog.visible && this.dialogEvent == "question") {
-            if (isSpace) {
-                // Debit or Credit event to EndowusWallet
-                this.walletManager(this.endowusWallet, this.endowusWalletText, this.script["event" + this.eventNumber]["amount"])
-                this.Dialog.setText(this.script["event" + this.eventNumber]["response"]["space"], 1)
+            this.scriptNumber += 1
+            if (this.script["event" + this.eventNumber]["script"][this.scriptNumber] != null) {
+                this.Dialog.setText(this.script["event" + this.eventNumber]["script"][this.scriptNumber], 1)
+            } else {
+                this.walletPercentage = 50
+                this.walletPercentageText.setText("Cash: " + this.walletPercentage + "%    Endowus: " + (100 - this.walletPercentage) + "%")
+                this.walletPercentageText.setVisible(true)
+                this.dialogEvent = "question"
+                this.Dialog.setText(this.script["event" + this.eventNumber]["question"], 3)
             }
 
-            if (!isSpace) {
-                // Debit or Credit event to Wallet
-                this.walletManager(this.wallet, this.walletText, this.script["event" + this.eventNumber]["amount"])
-                this.Dialog.setText(this.script["event" + this.eventNumber]["response"]["shift"], 1)
-            }
+        } else if (this.Dialog.visible && this.dialogEvent == "question") {
+            this.walletPercentageText.setVisible(false)
+            this.walletManager(this.wallet, this.walletText, this.script["event" + this.eventNumber]["amount"] * (this.walletPercentage / 100))
+            this.walletManager(this.endowusWallet, this.endowusWalletText, this.script["event" + this.eventNumber]["amount"] * (1 - (this.walletPercentage / 100)))
+            this.Dialog.setText(this.script["event" + this.eventNumber]["response"], 1)
+
             this.dialogEvent = ""
             this.time.delayedCall(5000, this.calculateEarnLoss, [this.endowusWallet, this.endowusWalletText], this)
         } else if (this.Dialog.visible && this.dialogEvent == "interest") {
@@ -338,7 +363,6 @@ export default class Scene1 extends Phaser.Scene
                         }
                     }
                 }
-
                 // Event is available within current Scene
                 this.setEventCollision()
             } else {
@@ -346,6 +370,17 @@ export default class Scene1 extends Phaser.Scene
             }
         } else {
             this.Dialog.display(false);
+        }
+    }
+
+    walletPercentageManager(isUp) {
+        if (this.Dialog.visible && this.dialogEvent == "question") {
+            if (isUp && this.walletPercentage < 100) {
+                this.walletPercentage += 10
+            } else if (!isUp && this.walletPercentage > 0) {
+                this.walletPercentage -= 10
+            }
+            this.walletPercentageText.setText("Cash: " + this.walletPercentage + "%    Endowus: " + (100 - this.walletPercentage) + "%")
         }
     }
 

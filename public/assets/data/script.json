@@ -32,48 +32,33 @@
     
     "event1": {
         "script": ["Congratulations! You have been accepted for an exchange semester at Nabson University in the US."],
-        "question": "Please make a payment of $20,000. Would you like to pay with your Cash or Endowus Wallet?",
-        "amount": -20000,
-        "response": {
-            "space": "You paid $20,000 using your investments!",
-            "shift": "You paid $20,000 using your cash!"
-        }
+        "question": "You are required to make a payment of $20,000. How would you like to make your payment?",
+        "response": "Payment has been made!",
+        "amount": -20000
     },
     "event2": {
         "script": ["Hooray! You have been offered a 6-month internship at MBB & Co. Enjoy your time here & learn as much as possible from your supervisors."],
-        "question": "You have been paid a total of $6,000 over 6 months! Would you like to invest it with Endowus?",
+        "question": "You have been paid a total of $6,000 over 6 months! How would you like to distribute your salary?",
         "amount": 6000,
-        "response": {
-            "space": "You added $6,000 to your investments!",
-            "shift": "You added $6,000 to your cash!"
-        }
+        "response": "You have distributed your salary!"
     },
     "event3": {
         "script": ["Congratulations! You have landed your first job at ShopForward! Be ready for more responsibilities!"],
-        "question": "You have earned $100,000 over 2 years of working at ShopForward! Would you like to invest it with Endowus?",
+        "question": "You have earned $100,000 over 2 years of working at ShopForward! How would you like to distribute your salary?",
         "amount": 100000,
-        "response": {
-            "space": "You added $100,000 to your investments!",
-            "shift": "You added $100,000 to your cash!"
-        }
+        "response": "You have distributed your salary!"
     },
     "event4": {
         "script": ["Hard work pays off! You have been promoted to a manager at ShopForward!"],
-        "question": "Your pay has increased to $150,000 over the next 2 years of work! Would you like to invest it with Endowus?",
+        "question": "Your pay has increased to $150,000 over the next 2 years of work! How would you like to distribute your salary?",
         "amount": 150000,
-        "response": {
-            "space": "You added $150,000 to your investments!",
-            "shift": "You added $150,000 to your cash!"
-        }
+        "response": "You have distributed your salary!"
     },
     "event5": {
         "script": ["Your new home is now ready! Time to collect your keys and move in!"],
-        "question": "Your new home costs $200,000. Would you like to pay with your Cash or Endowus Wallet?",
+        "question": "Your new home costs $200,000. How would you like to make your payment?",
         "amount": -200000,
-        "response": {
-            "space": "You paid $200,000 using your investments!",
-            "shift": "You paid $200,000 using your cash!"
-        }
+        "response": "Payment has been made!"
     }
 
 }
