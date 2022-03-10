@@ -11,6 +11,10 @@ const config = {
 	type: Phaser.AUTO,
 	width: WorldProperties.width,
 	height: WorldProperties.height,
+	parent: 'phaser-container',
+	dom: {
+        createContainer: true
+    },
 	physics: {
 		default: 'arcade',
 		arcade: {

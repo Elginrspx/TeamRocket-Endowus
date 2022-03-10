@@ -21,9 +21,6 @@ export default class Scene1 extends Phaser.Scene
     {
         this.load.baseURL = "../assets/"
 
-        // Preload Scene Background
-        this.load.image('background', 'tilemaps/background.png');
-
         // Preload Map
         this.load.image('World Of Solaria', 'tilemaps/World Of Solaria.png')
         this.load.image('Animated', 'tilemaps/Animated.png')
@@ -57,9 +54,6 @@ export default class Scene1 extends Phaser.Scene
 
     create()
     {
-        // Get script data preloaded from script.json
-        this.script = this.cache.json.get('script');
-
         // Scene Fade In Effect
         this.cameras.main.fadeIn(1000, 0, 0, 0)
 
@@ -67,11 +61,6 @@ export default class Scene1 extends Phaser.Scene
         this.map = this.make.tilemap({ key: 'scene1Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
         const WorldOfSolaria = this.map.addTilesetImage('World Of Solaria', 'World Of Solaria')
         const Animated = this.map.addTilesetImage('Animated', 'Animated')
-
-        // Create Scrolling Background
-        this.add.tileSprite(0, 0, WorldProperties.width, WorldProperties.height, 'background')
-            .setOrigin(0)
-            .setScrollFactor(0,0);
 
         // Layers on Tiled to be referenced here
         const MapGroundLayer = this.map.createLayer('Ground', [WorldOfSolaria, Animated])
@@ -94,19 +83,17 @@ export default class Scene1 extends Phaser.Scene
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
         this.player.setCollideWorldBounds(true)
 
-        // Set Bounds of the Camera, Follow Movement of Player
-        this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
-        this.cameras.main.setZoom(WorldProperties.cameraZoom, WorldProperties.cameraZoom)
-        this.cameras.main.startFollow(this.player)
-
-        this.gameObjects = this.map.createFromObjects('GameObjects', null)
-        
         // Set Collision with <Objects> Layers
         MapObjectsLayer.setCollisionByProperty({ collides: true })
         this.physics.add.collider(this.player, MapObjectsLayer)
 
         // Set Layer for Depth Perception
         MapDepthLayer.setDepth(1);
+
+        // Set Bounds of the Camera, Follow Movement of Player
+        this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
+        this.cameras.main.setZoom(WorldProperties.cameraZoom, WorldProperties.cameraZoom)
+        this.cameras.main.startFollow(this.player)
 
         // Create Wallet
         this.wallet = this.add.image(570, 125, 'wallet')
@@ -139,19 +126,10 @@ export default class Scene1 extends Phaser.Scene
         this.walletPercentageText.setScrollFactor(0, 0)
         this.walletPercentageText.setDepth(1010)
 
-        /* For Debug Purposes, to be deleted */
-        if (this.physics.config.debug) {
-            const debugGraphics = this.add.graphics().setAlpha(0.7);
-            MapObjectsLayer.renderDebug(debugGraphics, {
-                tileColor: null,
-                collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-                faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
-            })
-        }
+        // Get script data preloaded from script.json
+        this.script = this.cache.json.get('script');
 
-        // /* Use these commands to get exact frame names for animations, to be deleted */
-        // // var frameNames = this.textures.get('player').getFrameNames();
-        // // console.log(frameNames)
+        this.gameObjects = this.map.createFromObjects('GameObjects', null)
 
         this.gameObjects.forEach(object => {
             if (!this.physics.config.debug) {
@@ -191,6 +169,16 @@ export default class Scene1 extends Phaser.Scene
 
         // Set Starting Animation
         this.player.play("idleDown")
+
+        /* For Debug Purposes, to be deleted */
+        if (this.physics.config.debug) {
+            const debugGraphics = this.add.graphics().setAlpha(0.7);
+            MapObjectsLayer.renderDebug(debugGraphics, {
+                tileColor: null,
+                collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+                faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+            })
+        }
     }
 
     // Update polls at 60 times a second
@@ -244,17 +232,6 @@ export default class Scene1 extends Phaser.Scene
         if (this.keys.space.isUp) {
             this.spacePressed = false
         }
-
-        // Key: SHIFT
-        // if (this.keys.shift.isDown) {
-        //     if (!this.shiftPressed) {
-        //         this.dialogManager(false)
-        //         this.shiftPressed = true
-        //     }
-        // }
-        // if (this.keys.shift.isUp) {
-        //     this.shiftPressed = false
-        // }
 
         // Key: UP
         if (this.keys.up.isDown) {
@@ -324,52 +301,53 @@ export default class Scene1 extends Phaser.Scene
 
     // isSpace == true means Space key was pressed. isSpace != true means Shift key was pressed.
     dialogManager() {
-        if (this.Dialog.visible && this.dialogEvent == "script") {
-            this.scriptNumber += 1
-            if (this.script["event" + this.eventNumber]["script"][this.scriptNumber] != null) {
-                this.Dialog.setText(this.script["event" + this.eventNumber]["script"][this.scriptNumber], 1)
-            } else {
-                this.walletPercentage = 50
-                this.walletPercentageText.setText("Cash: " + this.walletPercentage + "%    Endowus: " + (100 - this.walletPercentage) + "%")
-                this.walletPercentageText.setVisible(true)
-                this.dialogEvent = "question"
-                this.Dialog.setText(this.script["event" + this.eventNumber]["question"], 3)
-            }
-
-        } else if (this.Dialog.visible && this.dialogEvent == "question") {
-            this.walletPercentageText.setVisible(false)
-            this.walletManager(this.wallet, this.walletText, this.script["event" + this.eventNumber]["amount"] * (this.walletPercentage / 100))
-            this.walletManager(this.endowusWallet, this.endowusWalletText, this.script["event" + this.eventNumber]["amount"] * (1 - (this.walletPercentage / 100)))
-            this.Dialog.setText(this.script["event" + this.eventNumber]["response"], 1)
-
-            this.dialogEvent = ""
-            this.time.delayedCall(5000, this.calculateEarnLoss, [this.endowusWallet, this.endowusWalletText], this)
-        } else if (this.Dialog.visible && this.dialogEvent == "interest") {
-            this.dialogEvent = ""
-            this.Dialog.display(false);
-
-            // Event is completed, remove from events, Set Event Number to be new event
-            this.personaEvents.shift()
-            this.eventNumber = this.personaEvents[0]
-            
-            if (this.eventNumber != null) {
-                // Check if next Event is available in current scene, else find the scene which has it
-                var eventObject = this.gameObjects.find(event => event.name === "event" + this.eventNumber)
-                if (eventObject == null) {
-                    for (var scene in SceneEventMapping) {
-                        if (SceneEventMapping[scene].includes(this.eventNumber)) {
-                            this.enterScene(scene)
-                            return
+        if (this.Dialog.visible) {
+            if (this.dialogEvent == "script") {
+                this.scriptNumber += 1
+                if (this.script["event" + this.eventNumber]["script"][this.scriptNumber] != null) {
+                    this.Dialog.setText(this.script["event" + this.eventNumber]["script"][this.scriptNumber], 1)
+                } else {
+                    this.walletPercentage = 50
+                    this.walletPercentageText.setText("Cash: " + this.walletPercentage + "%    Endowus: " + (100 - this.walletPercentage) + "%")
+                    this.walletPercentageText.setVisible(true)
+                    this.dialogEvent = "question"
+                    this.Dialog.setText(this.script["event" + this.eventNumber]["question"], 3)
+                }
+            } else if (this.dialogEvent == "question") {
+                this.walletPercentageText.setVisible(false)
+                this.walletManager(this.wallet, this.walletText, this.script["event" + this.eventNumber]["amount"] * (this.walletPercentage / 100))
+                this.walletManager(this.endowusWallet, this.endowusWalletText, this.script["event" + this.eventNumber]["amount"] * (1 - (this.walletPercentage / 100)))
+                this.Dialog.setText(this.script["event" + this.eventNumber]["response"], 1)
+    
+                this.dialogEvent = ""
+                this.time.delayedCall(5000, this.calculateEarnLoss, [this.endowusWallet, this.endowusWalletText], this)
+            } else if (this.dialogEvent == "interest") {
+                this.dialogEvent = ""
+                this.Dialog.display(false);
+    
+                // Event is completed, remove from events, Set Event Number to be new event
+                this.personaEvents.shift()
+                this.eventNumber = this.personaEvents[0]
+                
+                if (this.eventNumber != null) {
+                    // Check if next Event is available in current scene, else find the scene which has it
+                    var eventObject = this.gameObjects.find(event => event.name === "event" + this.eventNumber)
+                    if (eventObject == null) {
+                        for (var scene in SceneEventMapping) {
+                            if (SceneEventMapping[scene].includes(this.eventNumber)) {
+                                this.enterScene(scene)
+                                return
+                            }
                         }
                     }
+                    // Event is available within current Scene
+                    this.setEventCollision()
+                } else {
+                    console.log("Game has ended")
                 }
-                // Event is available within current Scene
-                this.setEventCollision()
             } else {
-                console.log("Game has ended")
+                this.Dialog.display(false);
             }
-        } else {
-            this.Dialog.display(false);
         }
     }
 

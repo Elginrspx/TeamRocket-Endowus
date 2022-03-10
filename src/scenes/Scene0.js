@@ -13,13 +13,7 @@ export default class Scene0 extends Phaser.Scene
         // From DB
         this.persona = "student"
 
-        this.walletAmount = 0
-        this.endowusWalletAmount = 0
-
         this.load.baseURL = "../assets/"
-
-        // Preload Scene Background
-        this.load.image('background', 'tilemaps/background.png');
 
         // Preload Map
         this.load.image('World Of Solaria', 'tilemaps/World Of Solaria.png')
@@ -41,9 +35,13 @@ export default class Scene0 extends Phaser.Scene
         this.load.audio("gameTheme1", "music/ambience-cave.wav");
         this.load.audio("gameTheme2", "music/adventures-in-adventureland.wav");
 
-        //Preload Scripts for event dialog
+        // Preload Scripts for event dialog
         this.load.json('script', 'data/script.json');
 
+        // Preload Input Form
+        this.load.html("walletInput", "form/walletInput.html");
+
+        // Preload Miscellaneous
         this.Dialog = this.Dialog
         this.spacePressed = false
         this.shiftPressed = false
@@ -51,9 +49,6 @@ export default class Scene0 extends Phaser.Scene
 
     create()
     {
-        // Get script data preloaded from script.json
-        this.script = this.cache.json.get('script');
-
         // Scene Fade In Effect
         this.cameras.main.fadeIn(1000, 0, 0, 0)
 
@@ -61,11 +56,6 @@ export default class Scene0 extends Phaser.Scene
         this.map = this.make.tilemap({ key: 'scene0Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
         const WorldOfSolaria = this.map.addTilesetImage('World Of Solaria', 'World Of Solaria')
         const Animated = this.map.addTilesetImage('Animated', 'Animated')
-
-        // Create Scrolling Background
-        this.add.tileSprite(0, 0, WorldProperties.width, WorldProperties.height, 'background')
-            .setOrigin(0)
-            .setScrollFactor(0,0);
 
         // Layers on Tiled to be referenced here
         const MapGroundLayer = this.map.createLayer('Ground', [WorldOfSolaria, Animated])
@@ -88,13 +78,6 @@ export default class Scene0 extends Phaser.Scene
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
         this.player.setCollideWorldBounds(true)
 
-        // Set Bounds of the Camera, Follow Movement of Player
-        this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
-        this.cameras.main.setZoom(WorldProperties.cameraZoom, WorldProperties.cameraZoom)
-        this.cameras.main.startFollow(this.player)
-
-        this.gameObjects = this.map.createFromObjects('GameObjects', null)
-        
         // Set Collision with <Objects> Layers
         MapObjectsLayer.setCollisionByProperty({ collides: true })
         this.physics.add.collider(this.player, MapObjectsLayer)
@@ -102,13 +85,18 @@ export default class Scene0 extends Phaser.Scene
         // Set Layer for Depth Perception
         MapDepthLayer.setDepth(1);
 
+        // Set Bounds of the Camera, Follow Movement of Player
+        this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
+        this.cameras.main.setZoom(WorldProperties.cameraZoom, WorldProperties.cameraZoom)
+        this.cameras.main.startFollow(this.player)
+
         // Create Wallet
         this.wallet = this.add.image(570, 125, 'wallet')
         this.wallet.setDisplaySize(38, 38)
         this.wallet.setScrollFactor(0, 0)
         this.wallet.setDepth(100)
         this.wallet.setDataEnabled()
-        this.wallet.data.set('amount', this.walletAmount)
+        this.wallet.data.set('amount', 0)
 
         this.walletText = this.add.text(585, 115, '', { font: '20px Arial' })
         this.walletText.setScrollFactor(0, 0)
@@ -121,26 +109,21 @@ export default class Scene0 extends Phaser.Scene
         this.endowusWallet.setScrollFactor(0, 0)
         this.endowusWallet.setDepth(100)
         this.endowusWallet.setDataEnabled()
-        this.endowusWallet.data.set('amount', this.endowusWalletAmount)
+        this.endowusWallet.data.set('amount', 0)
 
         this.endowusWalletText = this.add.text(585, 145, '', { font: '20px Arial' })
         this.endowusWalletText.setScrollFactor(0, 0)
         this.endowusWalletText.setDepth(100)
         this.endowusWalletText.setText(this.endowusWallet.data.get('amount'))
 
-        /* For Debug Purposes, to be deleted */
-        if (this.physics.config.debug) {
-            const debugGraphics = this.add.graphics().setAlpha(0.7);
-            MapObjectsLayer.renderDebug(debugGraphics, {
-                tileColor: null,
-                collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-                faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
-            })
-        }
+        this.walletInput = this.add.dom(350, 735).createFromCache("walletInput");
+        this.walletInput.setDepth(1020)
+        this.walletInput.setVisible(false)
 
-        // /* Use these commands to get exact frame names for animations, to be deleted */
-        // // var frameNames = this.textures.get('player').getFrameNames();
-        // // console.log(frameNames)
+        // Get script data preloaded from script.json
+        this.script = this.cache.json.get('script');
+
+        this.gameObjects = this.map.createFromObjects('GameObjects', null)
 
         this.gameObjects.forEach(object => {
             if (!this.physics.config.debug) {
@@ -188,9 +171,6 @@ export default class Scene0 extends Phaser.Scene
             }
         })
 
-        this.walletManager(this.wallet, this.walletText, 100000)
-        this.walletManager(this.endowusWallet, this.endowusWalletText, 100000)
-
         switch(this.persona) {
             case "student":
                 this.personaEvents = PersonaEvents.student
@@ -206,10 +186,23 @@ export default class Scene0 extends Phaser.Scene
         // Set Starting Animation
         this.player.play("idleDown")
 
+        // Run Introductory Script
+        this.introductionEvent()
+
         // Play Game Theme
         this.gameTheme1 = this.sound.add("gameTheme1", { loop: true });
         this.gameTheme2 = this.sound.add("gameTheme2", { loop: true });
         this.gameTheme1.play()
+
+        /* For Debug Purposes */
+        if (this.physics.config.debug) {
+            const debugGraphics = this.add.graphics().setAlpha(0.7);
+            MapObjectsLayer.renderDebug(debugGraphics, {
+                tileColor: null,
+                collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+                faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+            })
+        }
     }
     
     // Update polls at 60 times a second
@@ -254,24 +247,24 @@ export default class Scene0 extends Phaser.Scene
         }
 
         // Code to only press key ONCE
+        // Key: SPACE
         if (this.keys.space.isDown) {
             if (!this.spacePressed) {
                 this.dialogManager(true)
                 this.spacePressed = true
             }
         }
-
         if (this.keys.space.isUp) {
             this.spacePressed = false
         }
 
+        // Key: SHIFT
         if (this.keys.shift.isDown) {
             if (!this.shiftPressed) {
                 this.dialogManager(false)
                 this.shiftPressed = true
             }
         }
-
         if (this.keys.shift.isUp) {
             this.shiftPressed = false
         }
@@ -303,43 +296,84 @@ export default class Scene0 extends Phaser.Scene
     playEvent(object) {
         this.physics.world.disable(object)
         this.Dialog.setText(this.script[object.name]["script"][0], 1)
-        this.currentObject = object, this.isScript = true, this.scriptNumber = 0
+        this.dialogEvent = "script", this.scriptNumber = 0, this.currentObject = object
+    }
+
+    introductionEvent() {
+        this.Dialog.setText(this.script["introduction"]["script"][0], 1)
+        this.dialogEvent = "introduction", this.scriptNumber = 0
     }
 
     dialogManager(isSpace) {
-        if (this.Dialog.visible && this.isScript) {
-            if (isSpace) {
-                this.scriptNumber += 1
-                if (this.script[this.currentObject.name]["script"][this.scriptNumber] != null) {
-                    this.Dialog.setText(this.script[this.currentObject.name]["script"][this.scriptNumber], 1)
-                } else {
-                    this.isScript = false
-                    this.Dialog.setText("Do you want to select this portfolio?", 2)
-                }
-                return
-            }
-        }
-
-        if (this.Dialog.visible && !this.isScript) {
-            if (isSpace) {
-                this.annualisedReturn = this.script[this.currentObject.name]["annualisedReturn"]
-                this.volatility = this.script[this.currentObject.name]["volatility"]
-                this.Dialog.display(false);
-
-                this.eventNumber = this.personaEvents[0]
-
-                // Check and start scene which contains first event
-                for (var scene in SceneEventMapping) {
-                    if (SceneEventMapping[scene].includes(this.eventNumber)) {
-                        this.enterScene(scene)
-                        return
+        if (this.Dialog.visible) {
+            if (this.dialogEvent == "introduction") {
+                if (isSpace) {
+                    this.scriptNumber += 1
+                    if (this.script["introduction"]["script"][this.scriptNumber] != null) {
+                        this.Dialog.setText(this.script["introduction"]["script"][this.scriptNumber], 1)
+                    } else {
+                        this.walletInput.setVisible(true)
+                        this.Dialog.setText("Set the total amount of cash you have on hand")
+                        this.dialogEvent = "setWallet"
                     }
                 }
-            }
-
-            if (!isSpace) {
-                this.time.delayedCall(2000, this.reenableEvent, [this.currentObject], this)
-                this.Dialog.display(false);
+            } else if (this.dialogEvent == "setWallet") {
+                if (isSpace) {
+                    var amount = parseInt(this.walletInput.getChildByName("walletInput").value)
+                    if (isNaN(amount) || amount < 1000) {
+                        this.Dialog.setText("Please set an amount above $1,000!")
+                    } else {
+                        this.walletManager(this.wallet, this.walletText, amount)
+                        this.Dialog.setText("Out of the total amount of cash you have on hand, how much do you plan to set aside in your investments?")
+                        this.dialogEvent = "setEndowusWallet"
+                        this.walletInput.getChildByName("walletInput").value = ""
+                    }
+                }
+            } else if (this.dialogEvent == "setEndowusWallet") {
+                if (isSpace) {
+                    var amount = parseInt(this.walletInput.getChildByName("walletInput").value)
+                    if (isNaN(amount)) {
+                        amount = 0
+                    }
+                    if (amount > this.wallet.data.values.amount) {
+                        this.Dialog.setText("You don't have that much cash on hand!")
+                    } else {
+                        this.walletManager(this.wallet, this.walletText, -amount)
+                        this.walletManager(this.endowusWallet, this.endowusWalletText, amount)
+                        this.walletInput.setVisible(false)
+                        this.dialogEvent = ""
+                        this.Dialog.display(false)
+                    }
+                }
+            } else if (this.dialogEvent == "script") {
+                if (isSpace) {
+                    this.scriptNumber += 1
+                    if (this.script[this.currentObject.name]["script"][this.scriptNumber] != null) {
+                        this.Dialog.setText(this.script[this.currentObject.name]["script"][this.scriptNumber], 1)
+                    } else {
+                        this.dialogEvent = "question"
+                        this.Dialog.setText("Do you want to select this portfolio?", 2)
+                    }
+                }
+            } else if (this.dialogEvent == "question") {
+                if (isSpace) {
+                    this.annualisedReturn = this.script[this.currentObject.name]["annualisedReturn"]
+                    this.volatility = this.script[this.currentObject.name]["volatility"]
+                    this.Dialog.display(false);
+    
+                    this.eventNumber = this.personaEvents[0]
+    
+                    // Check and start scene which contains first event
+                    for (var scene in SceneEventMapping) {
+                        if (SceneEventMapping[scene].includes(this.eventNumber)) {
+                            this.enterScene(scene)
+                            return
+                        }
+                    }
+                } else {
+                    this.time.delayedCall(2000, this.reenableEvent, [this.currentObject], this)
+                    this.Dialog.display(false);
+                }
             }
         }
     }
