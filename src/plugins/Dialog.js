@@ -108,8 +108,8 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 	_calculateWindowDimensions() {
 		var gameHeight = this.scene.sys.game.config.height;
 		var gameWidth = this.scene.sys.game.config.width;
-		var x = 135;
-		var y = gameHeight - this.windowHeight - this.padding;
+		var x = 5;
+		var y = gameHeight - this.windowHeight - 5;
 		var width = gameWidth - (x*2);
 		var height = this.windowHeight;
 		return {
@@ -148,7 +148,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 			style: {
 				wordWrap: { width: dimensions.width - this.padding },
 				fontFamily: 'pressstart',
-				fontSize: '12px',
+				fontSize: '18px',
 				lineSpacing: '1'
 			}
 		}).setScrollFactor(this.scrollFactor);
@@ -160,8 +160,8 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 	// Creates text holder within the dialog window
 	_drawCommand() {
 		let dimensions = this._calculateWindowDimensions();
-		let x = dimensions.x + (this.padding * 0.5) + 235;
-		let y = dimensions.y + (this.padding * 0.5) + 45;
+		let x = dimensions.x + (this.padding * 0.5) + 360;
+		let y = dimensions.y + (this.padding * 0.5) + 105;
 		let command = '';
 	   
 		this.graphics.command = this.scene.make.text({
@@ -171,7 +171,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 			style: {
 				wordWrap: { width: dimensions.width - this.padding },
 				fontFamily: 'pressstart',
-				fontSize: '12px',
+				fontSize: '18px',
 				lineSpacing: '1'
 			}
 		}).setScrollFactor(this.scrollFactor);
