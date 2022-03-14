@@ -19,27 +19,36 @@ export default class Scene0 extends Phaser.Scene
         this.load.image('World Of Solaria', 'tilemaps/World Of Solaria.png')
         this.load.image('Animated', 'tilemaps/Animated.png')
         this.load.tilemapTiledJSON('scene0Tilemap', 'tilemaps/scene-0.json')
+        this.load.tilemapTiledJSON('scene1Tilemap', 'tilemaps/scene-1.json')
+        this.load.tilemapTiledJSON('scene2Tilemap', 'tilemaps/scene-2.json')
+        this.load.tilemapTiledJSON('scene3Tilemap', 'tilemaps/scene-3.json')
         
         // Preload Plugin for Animated Tileset
         this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');
 
-        // Preload Character
+        // Preload Character and NPCs
         this.load.atlas('player', 'characters/player.png', 'characters/player.json')
+        this.load.atlas('npc-1', 'characters/npc-1.png', 'characters/npc-1.json')
+        this.load.atlas('npc-2', 'characters/npc-2.png', 'characters/npc-2.json')
+        this.load.atlas('npc-3', 'characters/npc-3.png', 'characters/npc-3.json')
+        this.load.atlas('npc-4', 'characters/npc-4.png', 'characters/npc-4.json')
+        this.load.atlas('npc-5', 'characters/npc-5.png', 'characters/npc-5.json')
 
         // Preload Miscellaneous Assets
         this.load.atlas('questMarker', 'images/questMarker.png', 'images/questMarker.json')
         this.load.image('wallet', 'images/money.png')
         this.load.image('endowusWallet', 'images/endowus.png')
+        this.load.image('recurringInvestment', 'images/recurringInvestment.png')
 
         // Preload Audio
         this.load.audio("gameTheme1", "music/ambience-cave.wav");
         this.load.audio("gameTheme2", "music/adventures-in-adventureland.wav");
 
+        // Preload Input Form
+        this.load.html("amountInput", "form/amountInput.html");
+
         // Preload Scripts for event dialog
         this.load.json('script', 'data/script.json');
-
-        // Preload Input Form
-        this.load.html("walletInput", "form/walletInput.html");
 
         // Preload Miscellaneous
         this.Dialog = this.Dialog
@@ -90,35 +99,10 @@ export default class Scene0 extends Phaser.Scene
         this.cameras.main.setZoom(WorldProperties.cameraZoom, WorldProperties.cameraZoom)
         this.cameras.main.startFollow(this.player)
 
-        // Create Wallet
-        this.wallet = this.add.image(570, 125, 'wallet')
-        this.wallet.setDisplaySize(38, 38)
-        this.wallet.setScrollFactor(0, 0)
-        this.wallet.setDepth(100)
-        this.wallet.setDataEnabled()
-        this.wallet.data.set('amount', 0)
-
-        this.walletText = this.add.text(585, 115, '', { font: '20px Arial' })
-        this.walletText.setScrollFactor(0, 0)
-        this.walletText.setDepth(100)
-        this.walletText.setText(this.wallet.data.get('amount'))
-
-        // Create EndowusWallet
-        this.endowusWallet = this.add.image(540, 155, 'endowusWallet')
-        this.endowusWallet.setDisplaySize(80, 16)
-        this.endowusWallet.setScrollFactor(0, 0)
-        this.endowusWallet.setDepth(100)
-        this.endowusWallet.setDataEnabled()
-        this.endowusWallet.data.set('amount', 0)
-
-        this.endowusWalletText = this.add.text(585, 145, '', { font: '20px Arial' })
-        this.endowusWalletText.setScrollFactor(0, 0)
-        this.endowusWalletText.setDepth(100)
-        this.endowusWalletText.setText(this.endowusWallet.data.get('amount'))
-
-        this.walletInput = this.add.dom(350, 735).createFromCache("walletInput");
-        this.walletInput.setDepth(1020)
-        this.walletInput.setVisible(false)
+        // Amount Input Form
+        this.amountInput = this.add.dom(350, 735).createFromCache("amountInput");
+        this.amountInput.setDepth(1020)
+        this.amountInput.setVisible(false)
 
         // Get script data preloaded from script.json
         this.script = this.cache.json.get('script');
@@ -280,6 +264,7 @@ export default class Scene0 extends Phaser.Scene
                 this.scene.start(sceneName, {
                     walletAmount: this.wallet.data.values.amount,
                     endowusWalletAmount: this.endowusWallet.data.values.amount,
+                    recurringInvestmentAmount: this.recurringInvestment.data.values.amount,
                     annualisedReturn: this.annualisedReturn,
                     volatility: this.volatility,
                     personaEvents: this.personaEvents
@@ -296,7 +281,7 @@ export default class Scene0 extends Phaser.Scene
     playEvent(object) {
         this.physics.world.disable(object)
         this.Dialog.setText(this.script[object.name]["script"][0], 1)
-        this.dialogEvent = "script", this.scriptNumber = 0, this.currentObject = object
+        this.dialogEvent = "selectPortfolio", this.scriptNumber = 0, this.currentObject = object
     }
 
     introductionEvent() {
@@ -312,50 +297,127 @@ export default class Scene0 extends Phaser.Scene
                     if (this.script["introduction"]["script"][this.scriptNumber] != null) {
                         this.Dialog.setText(this.script["introduction"]["script"][this.scriptNumber], 1)
                     } else {
-                        this.walletInput.setVisible(true)
+                        this.amountInput.setVisible(true)
                         this.Dialog.setText("Set the total amount of cash you have on hand")
                         this.dialogEvent = "setWallet"
                     }
                 }
             } else if (this.dialogEvent == "setWallet") {
                 if (isSpace) {
-                    var amount = parseInt(this.walletInput.getChildByName("walletInput").value)
+                    var amount = parseInt(this.amountInput.getChildByName("amountInput").value)
                     if (isNaN(amount) || amount < 1000) {
                         this.Dialog.setText("Please set an amount above $1,000!")
                     } else {
-                        this.walletManager(this.wallet, this.walletText, amount)
-                        this.Dialog.setText("Out of the total amount of cash you have on hand, how much do you plan to set aside in your investments?")
+                        // Create Wallet
+                        this.wallet = this.add.image(570, 130, 'wallet')
+                            .setDisplaySize(28, 28)
+                            .setScrollFactor(0, 0)
+                            .setDepth(100)
+                            .setDataEnabled()
+                        this.wallet.data.set('amount', amount)
+
+                        this.walletText = this.add.text(585, 120, '', { font: '16px Arial' })
+                            .setScrollFactor(0, 0)
+                            .setDepth(100)
+                            .setText(this.wallet.data.get('amount'))
+
+                        this.Dialog.setText("Out of the total amount of cash you have on hand, how much do you plan to set aside in your investments?", 1)
                         this.dialogEvent = "setEndowusWallet"
-                        this.walletInput.getChildByName("walletInput").value = ""
+                        this.amountInput.getChildByName("amountInput").value = ""
                     }
                 }
             } else if (this.dialogEvent == "setEndowusWallet") {
                 if (isSpace) {
-                    var amount = parseInt(this.walletInput.getChildByName("walletInput").value)
+                    var amount = parseInt(this.amountInput.getChildByName("amountInput").value)
                     if (isNaN(amount)) {
                         amount = 0
                     }
+
                     if (amount > this.wallet.data.values.amount) {
-                        this.Dialog.setText("You don't have that much cash on hand!")
+                        this.Dialog.setText("You don't have that much cash on hand!", 1)
                     } else {
+                        // Create EndowusWallet
+                        this.endowusWallet = this.add.image(540, 150, 'endowusWallet')
+                            .setDisplaySize(70, 14)
+                            .setScrollFactor(0, 0)
+                            .setDepth(100)
+                            .setDataEnabled()
+                        this.endowusWallet.data.set('amount', amount)
+
+                        this.endowusWalletText = this.add.text(585, 142, '', { font: '16px Arial' })
+                            .setScrollFactor(0, 0)
+                            .setDepth(100)
+                            .setText(this.endowusWallet.data.get('amount'))
+
+                        // Remove stated amount from Cash Wallet
                         this.walletManager(this.wallet, this.walletText, -amount)
-                        this.walletManager(this.endowusWallet, this.endowusWalletText, amount)
-                        this.walletInput.setVisible(false)
-                        this.dialogEvent = ""
-                        this.Dialog.display(false)
+
+                        this.Dialog.setText("Make Investing a habit by setting up Recurring Investments! At the end of every game event, the amount will be automatically transferred from your cash wallet to your investments!", 1)
+                        this.dialogEvent = "setRecurring"
+                        this.amountInput.getChildByName("amountInput").value = ""
                     }
                 }
-            } else if (this.dialogEvent == "script") {
+            } else if (this.dialogEvent == "setRecurring") {
+                if (isSpace) {
+                    var amount = parseInt(this.amountInput.getChildByName("amountInput").value)
+                    if (isNaN(amount)) {
+                        amount = 0
+                    }
+
+                    if (amount > this.wallet.data.values.amount) {
+                        this.Dialog.setText("You don't have that much cash on hand!", 1)
+                    } else {
+                        // Create Recurring Investments
+                        this.recurringInvestment = this.add.image(165, 130, 'recurringInvestment')
+                            .setDisplaySize(22, 22)
+                            .setScrollFactor(0, 0)
+                            .setDepth(100)
+                            .setDataEnabled()
+                            .setInteractive( { useHandCursor: true } )
+                            .on('pointerdown', () => { this.setRecurringInvestment() })
+                        this.recurringInvestment.data.set('amount', amount)
+
+                        this.recurringInvestmentText = this.add.text(188, 120, '', { font: '16px Arial' })
+                            .setScrollFactor(0, 0)
+                            .setDepth(100)
+                            .setText(this.recurringInvestment.data.get('amount'))
+
+                        this.amountInput.setVisible(false)
+                        this.Dialog.setText("To adjust Recurring Investments, click the Icon on the top-left!", 1)
+                        this.dialogEvent = ""
+                        this.amountInput.getChildByName("amountInput").value = ""
+                    }
+                }
+            } else if (this.dialogEvent == "changeRecurring") {
+                if (isSpace) {
+                    var amount = parseInt(this.amountInput.getChildByName("amountInput").value)
+                    if (isNaN(amount)) {
+                        amount = 0
+                    }
+
+                    if (amount > this.wallet.data.values.amount) {
+                        this.Dialog.setText("You don't have that much cash on hand!", 1)
+                    } else {
+                        this.recurringInvestment.data.set('amount', amount)
+                        this.recurringInvestmentText.setText(this.recurringInvestment.data.get('amount'))
+
+                        this.amountInput.setVisible(false)
+                        this.Dialog.display(false);
+                        this.dialogEvent = ""
+                        this.amountInput.getChildByName("amountInput").value = ""
+                    }
+                }
+            } else if (this.dialogEvent == "selectPortfolio") {
                 if (isSpace) {
                     this.scriptNumber += 1
                     if (this.script[this.currentObject.name]["script"][this.scriptNumber] != null) {
                         this.Dialog.setText(this.script[this.currentObject.name]["script"][this.scriptNumber], 1)
                     } else {
-                        this.dialogEvent = "question"
+                        this.dialogEvent = "selectPortfolioQuestion"
                         this.Dialog.setText("Do you want to select this portfolio?", 2)
                     }
                 }
-            } else if (this.dialogEvent == "question") {
+            } else if (this.dialogEvent == "selectPortfolioQuestion") {
                 if (isSpace) {
                     this.annualisedReturn = this.script[this.currentObject.name]["annualisedReturn"]
                     this.volatility = this.script[this.currentObject.name]["volatility"]
@@ -374,8 +436,18 @@ export default class Scene0 extends Phaser.Scene
                     this.time.delayedCall(2000, this.reenableEvent, [this.currentObject], this)
                     this.Dialog.display(false);
                 }
+            } else {
+                if (isSpace) {
+                    this.Dialog.display(false);
+                }
             }
         }
+    }
+
+    setRecurringInvestment() {
+        this.amountInput.setVisible(true)
+        this.Dialog.setText("Set the new Recurring Investment Amount!", 1)
+        this.dialogEvent = "changeRecurring"
     }
 
     reenableEvent(object) {

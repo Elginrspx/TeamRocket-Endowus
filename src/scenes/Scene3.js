@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import { WorldProperties, SceneEventMapping } from '../settings'
 
-export default class Scene3 extends Phaser.Scene
+export default class Scene1 extends Phaser.Scene
 {
 	constructor()
 	{
@@ -11,6 +11,7 @@ export default class Scene3 extends Phaser.Scene
     init(data) {
         this.walletAmount = data.walletAmount
         this.endowusWalletAmount = data.endowusWalletAmount
+        this.recurringInvestmentAmount = data.recurringInvestmentAmount
         this.annualisedReturn = data.annualisedReturn
         this.volatility = data.volatility
         this.personaEvents = data.personaEvents
@@ -20,44 +21,19 @@ export default class Scene3 extends Phaser.Scene
 	preload()
     {
         this.load.baseURL = "../assets/"
-
-        // Preload Scene Background
-        this.load.image('background', 'tilemaps/background.png');
-
-        // Preload Map
-        this.load.image('World Of Solaria', 'tilemaps/World Of Solaria.png')
-        this.load.image('Animated', 'tilemaps/Animated.png')
-        this.load.tilemapTiledJSON('scene3Tilemap', 'tilemaps/scene-3.json')
         
         // Preload Plugin for Animated Tileset
         this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');
 
-        // Preload Character
-        this.load.atlas('player', 'characters/player.png', 'characters/player.json')
-        this.load.atlas('npc-1', 'characters/npc-1.png', 'characters/npc-1.json')
-        this.load.atlas('npc-2', 'characters/npc-2.png', 'characters/npc-2.json')
-        this.load.atlas('npc-3', 'characters/npc-3.png', 'characters/npc-3.json')
-        this.load.atlas('npc-4', 'characters/npc-4.png', 'characters/npc-4.json')
-        this.load.atlas('npc-5', 'characters/npc-5.png', 'characters/npc-5.json')
-
-        // Preload Miscellaneous Assets
-        this.load.atlas('questMarker', 'images/questMarker.png', 'images/questMarker.json')
-        this.load.image('wallet', 'images/money.png')
-        this.load.image('endowusWallet', 'images/endowus.png')
-        
-        //Preload Scripts for event dialog
-        this.load.json('script', 'data/script.json');
-
         this.Dialog = this.Dialog
         this.spacePressed = false
         this.shiftPressed = false
+        this.upPressed = false
+        this.downPressed = false
     }
 
     create()
     {
-        // Get script data preloaded from script.json
-        this.script = this.cache.json.get('script');
-
         // Scene Fade In Effect
         this.cameras.main.fadeIn(1000, 0, 0, 0)
 
@@ -65,11 +41,6 @@ export default class Scene3 extends Phaser.Scene
         this.map = this.make.tilemap({ key: 'scene3Tilemap', tileWidth: WorldProperties.tileWidth, tileHeight: WorldProperties.tileHeight })
         const WorldOfSolaria = this.map.addTilesetImage('World Of Solaria', 'World Of Solaria')
         const Animated = this.map.addTilesetImage('Animated', 'Animated')
-
-        // Create Scrolling Background
-        this.add.tileSprite(0, 0, WorldProperties.width, WorldProperties.height, 'background')
-            .setOrigin(0)
-            .setScrollFactor(0,0);
 
         // Layers on Tiled to be referenced here
         const MapGroundLayer = this.map.createLayer('Ground', [WorldOfSolaria, Animated])
@@ -92,13 +63,6 @@ export default class Scene3 extends Phaser.Scene
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
         this.player.setCollideWorldBounds(true)
 
-        // Set Bounds of the Camera, Follow Movement of Player
-        this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
-        this.cameras.main.setZoom(WorldProperties.cameraZoom, WorldProperties.cameraZoom)
-        this.cameras.main.startFollow(this.player)
-
-        this.gameObjects = this.map.createFromObjects('GameObjects', null)
-        
         // Set Collision with <Objects> Layers
         MapObjectsLayer.setCollisionByProperty({ collides: true })
         this.physics.add.collider(this.player, MapObjectsLayer)
@@ -106,45 +70,66 @@ export default class Scene3 extends Phaser.Scene
         // Set Layer for Depth Perception
         MapDepthLayer.setDepth(1);
 
+        // Set Bounds of the Camera, Follow Movement of Player
+        this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
+        this.cameras.main.setZoom(WorldProperties.cameraZoom, WorldProperties.cameraZoom)
+        this.cameras.main.startFollow(this.player)
+
         // Create Wallet
-        this.wallet = this.add.image(570, 125, 'wallet')
-        this.wallet.setDisplaySize(38, 38)
-        this.wallet.setScrollFactor(0, 0)
-        this.wallet.setDepth(100)
-        this.wallet.setDataEnabled()
+        this.wallet = this.add.image(570, 130, 'wallet')
+            .setDisplaySize(28, 28)
+            .setScrollFactor(0, 0)
+            .setDepth(100)
+            .setDataEnabled()
         this.wallet.data.set('amount', this.walletAmount)
 
-        this.walletText = this.add.text(585, 115, '', { font: '20px Arial' })
-        this.walletText.setScrollFactor(0, 0)
-        this.walletText.setDepth(100)
-        this.walletText.setText(this.wallet.data.get('amount'))
+        this.walletText = this.add.text(585, 120, '', { font: '16px Arial' })
+            .setScrollFactor(0, 0)
+            .setDepth(100)
+            .setText(this.wallet.data.get('amount'))
 
         // Create EndowusWallet
-        this.endowusWallet = this.add.image(540, 155, 'endowusWallet')
-        this.endowusWallet.setDisplaySize(80, 16)
-        this.endowusWallet.setScrollFactor(0, 0)
-        this.endowusWallet.setDepth(100)
-        this.endowusWallet.setDataEnabled()
+        this.endowusWallet = this.add.image(540, 150, 'endowusWallet')
+            .setDisplaySize(70, 14)
+            .setScrollFactor(0, 0)
+            .setDepth(100)
+            .setDataEnabled()
         this.endowusWallet.data.set('amount', this.endowusWalletAmount)
 
-        this.endowusWalletText = this.add.text(585, 145, '', { font: '20px Arial' })
-        this.endowusWalletText.setScrollFactor(0, 0)
-        this.endowusWalletText.setDepth(100)
-        this.endowusWalletText.setText(this.endowusWallet.data.get('amount'))
+        this.endowusWalletText = this.add.text(585, 142, '', { font: '16px Arial' })
+            .setScrollFactor(0, 0)
+            .setDepth(100)
+            .setText(this.endowusWallet.data.get('amount'))
 
-        /* For Debug Purposes, to be deleted */
-        if (this.physics.config.debug) {
-            const debugGraphics = this.add.graphics().setAlpha(0.7);
-            MapObjectsLayer.renderDebug(debugGraphics, {
-                tileColor: null,
-                collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-                faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
-            })
-        }
+        // Create Recurring Investments
+        this.recurringInvestment = this.add.image(165, 130, 'recurringInvestment')
+            .setDisplaySize(22, 22)
+            .setScrollFactor(0, 0)
+            .setDepth(100)
+            .setDataEnabled()
+            .setInteractive( { useHandCursor: true } )
+            .on('pointerdown', () => { this.setRecurringInvestment() })
+        this.recurringInvestment.data.set('amount', this.recurringInvestmentAmount)
 
-        // /* Use these commands to get exact frame names for animations, to be deleted */
-        // // var frameNames = this.textures.get('player').getFrameNames();
-        // // console.log(frameNames)
+        this.recurringInvestmentText = this.add.text(188, 120, '', { font: '16px Arial' })
+            .setScrollFactor(0, 0)
+            .setDepth(100)
+            .setText(this.recurringInvestment.data.get('amount'))
+
+        // Amount Input Form
+        this.amountInput = this.add.dom(85, 735).createFromCache("amountInput");
+        this.amountInput.setDepth(1020)
+        this.amountInput.setVisible(false)
+
+        // For Wallet Percentage Dialog
+        this.walletPercentageText = this.add.text(155, 478, '', { font: '12px pressstart' })
+            .setScrollFactor(0, 0)
+            .setDepth(1010)
+
+        // Get script data preloaded from script.json
+        this.script = this.cache.json.get('script');
+
+        this.gameObjects = this.map.createFromObjects('GameObjects', null)
 
         this.gameObjects.forEach(object => {
             if (!this.physics.config.debug) {
@@ -184,6 +169,16 @@ export default class Scene3 extends Phaser.Scene
 
         // Set Starting Animation
         this.player.play("idleDown")
+
+        /* For Debug Purposes, to be deleted */
+        if (this.physics.config.debug) {
+            const debugGraphics = this.add.graphics().setAlpha(0.7);
+            MapObjectsLayer.renderDebug(debugGraphics, {
+                tileColor: null,
+                collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+                faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+            })
+        }
     }
 
     // Update polls at 60 times a second
@@ -227,26 +222,37 @@ export default class Scene3 extends Phaser.Scene
             }
         }
         // Code to only press key ONCE
+        // Key: SPACE
         if (this.keys.space.isDown) {
             if (!this.spacePressed) {
-                this.dialogManager(true)
+                this.dialogManager()
                 this.spacePressed = true
             }
         }
-
         if (this.keys.space.isUp) {
             this.spacePressed = false
         }
 
-        if (this.keys.shift.isDown) {
-            if (!this.shiftPressed) {
-                this.dialogManager(false)
-                this.shiftPressed = true
+        // Key: UP
+        if (this.keys.up.isDown) {
+            if (!this.upPressed) {
+                this.walletPercentageManager(true)
+                this.upPressed = true
             }
         }
+        if (this.keys.up.isUp) {
+            this.upPressed = false
+        }
 
-        if (this.keys.shift.isUp) {
-            this.shiftPressed = false
+        // Key: DOWN
+        if (this.keys.down.isDown) {
+            if (!this.downPressed) {
+                this.walletPercentageManager(false)
+                this.downPressed = true
+            }
+        }
+        if (this.keys.down.isUp) {
+            this.downPressed = false
         }
     }
 
@@ -258,6 +264,7 @@ export default class Scene3 extends Phaser.Scene
                 this.scene.start(sceneName, {
                     walletAmount: this.wallet.data.values.amount,
                     endowusWalletAmount: this.endowusWallet.data.values.amount,
+                    recurringInvestmentAmount: this.recurringInvestment.data.values.amount,
                     annualisedReturn: this.annualisedReturn,
                     volatility: this.volatility,
                     personaEvents: this.personaEvents
@@ -293,72 +300,110 @@ export default class Scene3 extends Phaser.Scene
         this.dialogEvent = "script", this.scriptNumber = 0
     }
 
-    // isSpace == true means Space key was pressed. isSpace != true means Shift key was pressed.
-    dialogManager(isSpace) {
-        if (this.Dialog.visible && this.dialogEvent == "script") {
-            if (isSpace) {
+    dialogManager() {
+        if (this.Dialog.visible) {
+            if (this.dialogEvent == "script") {
                 this.scriptNumber += 1
                 if (this.script["event" + this.eventNumber]["script"][this.scriptNumber] != null) {
                     this.Dialog.setText(this.script["event" + this.eventNumber]["script"][this.scriptNumber], 1)
                 } else {
+                    this.walletPercentage = 50
+                    this.walletPercentageText.setText("Cash: " + this.walletPercentage + "%    Endowus: " + (100 - this.walletPercentage) + "%")
                     this.dialogEvent = "question"
                     this.Dialog.setText(this.script["event" + this.eventNumber]["question"], 3)
                 }
-            }
-        } else if (this.Dialog.visible && this.dialogEvent == "question") {
-            if (isSpace) {
-                // Debit or Credit event to EndowusWallet
-                this.walletManager(this.endowusWallet, this.endowusWalletText, this.script["event" + this.eventNumber]["amount"])
-                this.Dialog.setText(this.script["event" + this.eventNumber]["response"]["space"], 1)
-            }
-
-            if (!isSpace) {
-                // Debit or Credit event to Wallet
-                this.walletManager(this.wallet, this.walletText, this.script["event" + this.eventNumber]["amount"])
-                this.Dialog.setText(this.script["event" + this.eventNumber]["response"]["shift"], 1)
-            }
-            this.dialogEvent = ""
-            this.time.delayedCall(5000, this.calculateEarnLoss, [this.endowusWallet, this.endowusWalletText], this)
-        } else if (this.Dialog.visible && this.dialogEvent == "interest") {
-            this.dialogEvent = ""
-            this.Dialog.display(false);
-
-            // Event is completed, remove from events, Set Event Number to be new event
-            this.personaEvents.shift()
-            this.eventNumber = this.personaEvents[0]
-
-            if (this.eventNumber != null) {
-                // Check if next Event is available in current scene, else find the scene which has it
-                var eventObject = this.gameObjects.find(event => event.name === "event" + this.eventNumber)
-                if (eventObject == null) {
-                    for (var scene in SceneEventMapping) {
-                        if (SceneEventMapping[scene].includes(this.eventNumber)) {
-                            this.enterScene(scene)
-                            return
+            } else if (this.dialogEvent == "question") {
+                this.walletPercentageText.setVisible(false)
+                this.walletManager(this.wallet, this.walletText, this.script["event" + this.eventNumber]["amount"] * (this.walletPercentage / 100))
+                this.walletManager(this.endowusWallet, this.endowusWalletText, this.script["event" + this.eventNumber]["amount"] * (1 - (this.walletPercentage / 100)))
+                this.Dialog.setText(this.script["event" + this.eventNumber]["response"], 1)
+    
+                this.dialogEvent = ""
+                this.time.delayedCall(5000, this.calculateRecurringInvestment, [], this)
+            } else if (this.dialogEvent == "recurringInvestment") {
+                this.calculateInterest()
+            } else if (this.dialogEvent == "interest") {
+                this.dialogEvent = ""
+                this.Dialog.display(false);
+    
+                // Event is completed, remove from events, Set Event Number to be new event
+                this.personaEvents.shift()
+                this.eventNumber = this.personaEvents[0]
+                
+                if (this.eventNumber != null) {
+                    // Check if next Event is available in current scene, else find the scene which has it
+                    var eventObject = this.gameObjects.find(event => event.name === "event" + this.eventNumber)
+                    if (eventObject == null) {
+                        for (var scene in SceneEventMapping) {
+                            if (SceneEventMapping[scene].includes(this.eventNumber)) {
+                                this.enterScene(scene)
+                                return
+                            }
                         }
                     }
+                    // Event is available within current Scene
+                    this.setEventCollision()
+                } else {
+                    console.log("Game has ended")
+                }
+            } else if (this.dialogEvent == "changeRecurring") {
+                var amount = parseInt(this.amountInput.getChildByName("amountInput").value)
+                if (isNaN(amount)) {
+                    amount = 0
                 }
 
-                // Event is available within current Scene
-                this.setEventCollision()
+                if (amount > this.wallet.data.values.amount) {
+                    this.Dialog.setText("You don't have that much cash on hand!", 1)
+                } else {
+                    this.recurringInvestment.data.set('amount', amount)
+                    this.recurringInvestmentText.setText(this.recurringInvestment.data.get('amount'))
+
+                    this.amountInput.setVisible(false)
+                    this.Dialog.display(false);
+                    this.dialogEvent = ""
+                    this.amountInput.getChildByName("amountInput").value = ""
+                }
             } else {
-                console.log("Game has ended")
+                this.Dialog.display(false);
             }
-        } else {
-            this.Dialog.display(false);
         }
     }
 
-    calculateEarnLoss(wallet, text) {
+    walletPercentageManager(isUp) {
+        if (this.Dialog.visible && this.dialogEvent == "question") {
+            if (isUp && this.walletPercentage < 100) {
+                this.walletPercentage += 10
+            } else if (!isUp && this.walletPercentage > 0) {
+                this.walletPercentage -= 10
+            }
+            this.walletPercentageText.setText("Cash: " + this.walletPercentage + "%    Endowus: " + (100 - this.walletPercentage) + "%")
+        }
+    }
+
+    calculateRecurringInvestment() {
+        let recurringInvestmentAmount = this.recurringInvestment.data.get('amount')
+        this.walletManager(this.wallet, this.walletText, -recurringInvestmentAmount)
+        this.walletManager(this.endowusWallet, this.endowusWalletText, recurringInvestmentAmount)
+        this.Dialog.setText("Based on your recurring investments, $" + recurringInvestmentAmount + " has been transferred from your Cash wallet to your Investments!", 1)
+        this.dialogEvent = "recurringInvestment"
+    }
+
+    calculateInterest() {
         let returnsPercentage = ((Math.random() - 0) / (1 - 0)) * (this.volatility) + (this.annualisedReturn - this.volatility)
 
-        let currentAmount = wallet.data.values.amount
+        let currentAmount = this.endowusWallet.data.values.amount
         let amount = Math.round(currentAmount * (returnsPercentage / 100))
 
-        this.walletManager(wallet, text, amount)
-
+        this.walletManager(this.endowusWallet, this.endowusWalletText, amount)
+        
+        this.Dialog.setText("The year has come to an end...\nYour returns this year is " + returnsPercentage.toFixed(2) + "%. Total earnings: $" + amount, 1)
         this.dialogEvent = "interest"
-        this.Dialog.setText("The year has come to an end...\n Your returns this year is " + returnsPercentage.toFixed(2) + "%. Total earnings: $" + amount, 1)
+    }
+
+    setRecurringInvestment() {
+        this.amountInput.setVisible(true)
+        this.Dialog.setText("Set the new Recurring Investment Amount!", 1)
+        this.dialogEvent = "changeRecurring"
     }
 
     createCharacter(x, y, type) {

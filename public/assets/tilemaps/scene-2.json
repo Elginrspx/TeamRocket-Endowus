@@ -153,17 +153,6 @@
                  "width":0,
                  "x":155,
                  "y":308
-                }, 
-                {
-                 "height":0,
-                 "id":17,
-                 "name":"event5",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":605,
-                 "y":511.5
                 }],
          "opacity":1,
          "type":"objectgroup",

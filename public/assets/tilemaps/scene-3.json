@@ -157,24 +157,13 @@
                 {
                  "height":0,
                  "id":20,
-                 "name":"event6",
+                 "name":"event5",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":0,
                  "x":186,
                  "y":574
-                }, 
-                {
-                 "height":0,
-                 "id":21,
-                 "name":"event7",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":384,
-                 "y":575
                 }],
          "opacity":1,
          "type":"objectgroup",

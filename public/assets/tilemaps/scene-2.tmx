@@ -66434,6 +66434,5 @@
   <object id="14" name="npc-1" x="410.917" y="294" width="10" height="10"/>
   <object id="15" name="npc-4" x="688.667" y="470" width="10" height="10"/>
   <object id="16" name="event4" x="155" y="308"/>
-  <object id="17" name="event5" x="605" y="511.5"/>
  </objectgroup>
 </map>
