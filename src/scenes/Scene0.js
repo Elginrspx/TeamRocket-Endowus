@@ -50,15 +50,16 @@ export default class Scene0 extends Phaser.Scene
 
         // Preload Scripts for event dialog
         this.load.json('script', 'data/script.json');
-
-        // Preload Miscellaneous
-        this.spacePressed = false
-        this.shiftPressed = false
-        this.dialogVisible = false
     }
 
     create()
     {
+        // Set Persona Events based on Persona Type
+        this.personaEvents = PersonaEvents[this.persona]
+
+        // Get script data preloaded from script.json
+        this.script = this.cache.json.get('script');
+
         // Scene Fade In Effect
         this.cameras.main.fadeIn(1000, 0, 0, 0)
 
@@ -76,9 +77,6 @@ export default class Scene0 extends Phaser.Scene
 
         // Animate Tiles (Ignore the error)
         this.animatedTiles.init(this.map);
-
-        // Create All Animations
-        this.createAnimations()
 
         // Create Character
         const SpawnPoint = this.map.findObject('GameObjects', obj => obj.name === 'spawn-point')
@@ -99,6 +97,9 @@ export default class Scene0 extends Phaser.Scene
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
         this.cameras.main.setZoom(WorldProperties.cameraZoom, WorldProperties.cameraZoom)
         this.cameras.main.startFollow(this.player)
+
+        // Create All Character Animations
+        this.createAnimations()
         
         this.gameObjects = this.map.createFromObjects('GameObjects', null)
 
@@ -120,45 +121,14 @@ export default class Scene0 extends Phaser.Scene
                 questMarker.setScale(0.10, 0.10)
                 questMarker.anims.play('questMarkerAnim', true)
 
-                switch(object.name) {
-                    case "equities100":
-                        this.add.text(object.x - 35, object.y + 20, '100% Equities', { font: '11px Arial' })
-                        break;
-                    case "equities80":
-                        this.add.text(object.x - 45, object.y + 20, '    80% Equities\n20% Fixed Income', { font: '11px Arial' })
-                        break;
-                    case "equities60":
-                        this.add.text(object.x - 45, object.y + 20, '    60% Equities\n40% Fixed Income', { font: '11px Arial' })
-                        break;
-                    case "equities40":
-                        this.add.text(object.x - 45, object.y + 20, '    40% Equities\n60% Fixed Income', { font: '11px Arial' })
-                        break;
-                    case "equities20":
-                        this.add.text(object.x - 45, object.y + 20, '    20% Equities\n80% Fixed Income', { font: '11px Arial' })
-                        break;
-                    case "equities0":
-                        this.add.text(object.x - 55, object.y + 20, '    100% Fixed Income', { font: '11px Arial' })
-                        break;
-                }
+                this.add.text(object.x - 40, object.y + 20, this.script[object.name]["description"], { font: '11px Arial' , align: 'center'})
 
                 this.physics.world.enable(object)
                 this.physics.add.overlap(this.player, object, () => {
-                    this.selectPortfolio(object)
+                    this.physics.world.disable(object)
+                    eventsCenter.emit('selectPortfolio', object)
                 })
             }
-        })
-
-        switch(this.persona) {
-            case "student":
-                this.personaEvents = PersonaEvents.student
-                break
-            case "familyMan":
-                this.personaEvents = PersonaEvents.familyMan
-                break
-        }
-
-        this.scene.launch('HUD', {
-            personaFirstEvent: this.personaEvents[0]
         })
 
         // Create key inputs for movement
@@ -172,10 +142,18 @@ export default class Scene0 extends Phaser.Scene
         this.gameTheme2 = this.sound.add("gameTheme2", { loop: true });
         this.gameTheme1.play()
 
+        // Launch HUD scene to run in parallel
+        this.scene.launch('HUD')
+
         // Setup Event Listeners
-        eventsCenter.on('enterScene', this.enterScene, this)
+        eventsCenter.on('changeEvent', this.changeEvent , this)
         eventsCenter.on('reenableObject', this.reenableObject, this)
         eventsCenter.on('dialogVisible', (isDialogVisible) => this.dialogVisible = isDialogVisible)
+
+        // Create Miscellaneous Variables
+        this.spacePressed = false
+        this.shiftPressed = false
+        this.dialogVisible = false
 
         /* For Debug Purposes */
         if (this.physics.config.debug) {
@@ -253,28 +231,36 @@ export default class Scene0 extends Phaser.Scene
         }
     }
 
-    enterScene(sceneName) {
-        // Camera Transitions, Start New Scene
-        this.cameras.main.fadeOut(1000, 0, 0, 0)
-        this.gameTheme1.stop()
-        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            this.time.delayedCall(1000, () => {
-                // this.gameTheme2.play()
-                this.scene.start(sceneName, {
-                    personaEvents: this.personaEvents
-                })
-            })
+    changeEvent() {
+        this.gameObjects.forEach(object => {
+            object.destroy()
         })
-    }
 
-    selectPortfolio(object) {
-        this.physics.world.disable(object)
-        this.currentObject = object
-        eventsCenter.emit('selectPortfolio', object)
+        // Check and start scene which contains first event
+        for (var scene in SceneEventMapping) {
+            if (SceneEventMapping[scene].includes(this.personaEvents[0])) {
+                let newScene = scene
+
+                // Camera Transition
+                this.cameras.main.fadeOut(1000, 0, 0, 0)
+                this.cameras.main.on(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                    // Upon Fadeout Complete, change Game Theme, start scene containing next event
+                    this.gameTheme1.stop()
+                    // this.gameTheme2.play()
+
+                    this.scene.start(newScene, {
+                        personaEvents: this.personaEvents
+                    })
+                })
+            }
+        }
     }
 
     reenableObject(object) {
-        this.physics.world.enable(object)
+        if (this.scene.isActive()) {
+            // Reenable Object after 2 seconds
+            this.time.delayedCall(2000, () => this.physics.world.enable(object))
+        }   
     }
 
     createCharacter(x, y, type) {

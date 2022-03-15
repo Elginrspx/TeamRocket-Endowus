@@ -1,5 +1,4 @@
 import Phaser from 'phaser'
-import { WorldProperties, SceneEventMapping } from '../settings'
 import eventsCenter from './../EventsCenter'
 
 export default class HUD extends Phaser.Scene
@@ -9,15 +8,10 @@ export default class HUD extends Phaser.Scene
 		super('HUD')
 	}
 
-    init(data) {
-        this.personaFirstEvent = data.personaFirstEvent
-    }
-
-    preload() {
-        this.Dialog = this.Dialog
-    }
-
     create() {
+        // Get script data preloaded from script.json
+        this.script = this.cache.json.get('script');
+
         // Amount Input Form
         this.amountInput = this.add.dom(70, 570).createFromCache("amountInput");
         this.amountInput.setDepth(1020)
@@ -30,26 +24,22 @@ export default class HUD extends Phaser.Scene
 
         this.dialogVisible = false
 
-        // Get script data preloaded from script.json
-        this.script = this.cache.json.get('script');
-
         // HUD scene is launched with Scene 0, run Introduction Event on launch
         this.introductionEvent()
 
         // Setup Event Listeners
         eventsCenter.on('selectPortfolio', this.selectPortfolio, this)
         eventsCenter.on('playEvent', this.playEvent, this)
-        eventsCenter.on('dialogManager', this.dialogManager, this)
 
-        eventsCenter.on('wallet', this.updateWallet, this)
-        eventsCenter.on('endowusWallet', this.updateEndowusWallet, this)
-        eventsCenter.on('calculateRecurringInvestment', this.calculateRecurringInvestment, this)
+        eventsCenter.on('dialogManager', this.dialogManager, this)
         eventsCenter.on('walletPercentageManager', this.walletPercentageManager, this)
+
+        // Create Miscellaneous Variables
+        this.Dialog = this.Dialog
     }
 
     update() {
         if (this.Dialog.visible != this.dialogVisible) {
-            console.log("Dialog visible: " + this.Dialog.visible)
             this.dialogVisible = this.Dialog.visible
             eventsCenter.emit('dialogVisible', this.dialogVisible)
         }
@@ -164,9 +154,9 @@ export default class HUD extends Phaser.Scene
                                 .setScrollFactor(0, 0)
                                 .setDepth(100)
                                 .setText(this.recurringInvestment.data.get('amount'))
-    
-                            this.amountInput.setVisible(false)
+                                
                             this.Dialog.setText("To adjust Recurring Investments, click the Icon on the top-left!", 1)
+                            this.amountInput.setVisible(false)
                             this.dialogEvent = ""
                             this.amountInput.getChildByName("amountInput").value = ""
                         }
@@ -174,21 +164,23 @@ export default class HUD extends Phaser.Scene
                     break
                 
                 case "changeRecurring":
-                    var amount = parseInt(this.amountInput.getChildByName("amountInput").value)
-                    if (isNaN(amount)) {
-                        amount = 0
-                    }
+                    if (isSpace) {
+                        var amount = parseInt(this.amountInput.getChildByName("amountInput").value)
+                        if (isNaN(amount)) {
+                            amount = 0
+                        }
 
-                    if (amount > this.wallet.data.values.amount) {
-                        this.Dialog.setText("You don't have that much cash on hand!", 1)
-                    } else {
-                        this.recurringInvestment.data.set('amount', amount)
-                        this.recurringInvestmentText.setText(this.recurringInvestment.data.get('amount'))
+                        if (amount > this.wallet.data.values.amount) {
+                            this.Dialog.setText("You don't have that much cash on hand!", 1)
+                        } else {
+                            this.recurringInvestment.data.set('amount', amount)
+                            this.recurringInvestmentText.setText(this.recurringInvestment.data.get('amount'))
 
-                        this.amountInput.setVisible(false)
-                        this.dialogEvent = ""
-                        this.amountInput.getChildByName("amountInput").value = ""
-                        this.Dialog.display(false);
+                            this.Dialog.display(false);
+                            this.amountInput.setVisible(false)
+                            this.dialogEvent = ""
+                            this.amountInput.getChildByName("amountInput").value = ""
+                        }
                     }
                     break
 
@@ -209,19 +201,11 @@ export default class HUD extends Phaser.Scene
                         this.annualisedReturn = this.script[this.portfolio.name]["annualisedReturn"]
                         this.volatility = this.script[this.portfolio.name]["volatility"]
                         this.Dialog.display(false);
-        
-                        this.eventNumber = this.personaFirstEvent
-        
-                        // Check and start scene which contains first event
-                        for (var scene in SceneEventMapping) {
-                            if (SceneEventMapping[scene].includes(this.eventNumber)) {
-                                // this.enterScene(scene)
-                                eventsCenter.emit('enterScene', scene)
-                                return
-                            }
-                        }
+
+                        // Start Next Event
+                        eventsCenter.emit('changeEvent')
                     } else {
-                        this.time.delayedCall(2000, () => eventsCenter.emit('reenableObject', this.portfolio))
+                        eventsCenter.emit('reenableObject', this.portfolio)
                         this.Dialog.display(false);
                     }
                     break
@@ -241,10 +225,10 @@ export default class HUD extends Phaser.Scene
                 
                 case "question":
                     this.walletPercentageText.setVisible(false)
-                    eventsCenter.emit('wallet', this.script["event" + this.eventNumber]["amount"] * (this.walletPercentage / 100))
-                    eventsCenter.emit('endowusWallet', this.script["event" + this.eventNumber]["amount"] * (this.walletPercentage / 100))
+                    this.updateWallet(this.script["event" + this.eventNumber]["amount"] * (this.walletPercentage / 100))
+                    this.updateEndowusWallet(this.script["event" + this.eventNumber]["amount"] * (1 - this.walletPercentage / 100))
+
                     this.Dialog.setText(this.script["event" + this.eventNumber]["response"], 1)
-        
                     this.dialogEvent = ""
                     this.time.delayedCall(1000, this.calculateRecurringInvestment, [], this)
                     break
@@ -277,9 +261,12 @@ export default class HUD extends Phaser.Scene
     }
 
     changeRecurringInvestment() {
-        this.amountInput.setVisible(true)
-        this.Dialog.setText("Set the new Recurring Investment Amount!", 1)
-        this.dialogEvent = "changeRecurring"
+        // Only allow change if Dialog Box is not visible
+        if (!this.Dialog.visible) {
+            this.amountInput.setVisible(true)
+            this.Dialog.setText("Set the new Recurring Investment Amount!", 1)
+            this.dialogEvent = "changeRecurring"
+        }
     }
 
     calculateRecurringInvestment() {
@@ -288,7 +275,6 @@ export default class HUD extends Phaser.Scene
         this.updateEndowusWallet(recurringInvestmentAmount)
         this.Dialog.setText("Based on your recurring investments, $" + recurringInvestmentAmount + " has been transferred from your Cash wallet to your Investments!", 1)
         this.dialogEvent = "recurringInvestment"
-        // eventsCenter.emit('dialogEvent', "recurringInvestment")
     }
 
     calculateInterest() {
