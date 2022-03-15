@@ -178,6 +178,17 @@ export default class Scene2 extends Phaser.Scene
             this.spacePressed = false
         }
 
+        // Key: SHIFT
+        if (this.keys.shift.isDown) {
+            if (!this.shiftPressed) {
+                eventsCenter.emit('dialogManager', false)
+                this.shiftPressed = true
+            }
+        }
+        if (this.keys.shift.isUp) {
+            this.shiftPressed = false
+        }
+
         // Key: UP
         if (this.keys.up.isDown) {
             if (!this.upPressed) {

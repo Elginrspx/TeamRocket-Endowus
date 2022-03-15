@@ -13,7 +13,7 @@ export default class HUD extends Phaser.Scene
         this.script = this.cache.json.get('script');
 
         // Amount Input Form
-        this.amountInput = this.add.dom(70, 570).createFromCache("amountInput");
+        this.amountInput = this.add.dom(80, 570).createFromCache("amountInput");
         this.amountInput.setDepth(1020)
         this.amountInput.setVisible(false)
 
@@ -190,8 +190,8 @@ export default class HUD extends Phaser.Scene
                         if (this.script[this.portfolio.name]["script"][this.scriptNumber] != null) {
                             this.Dialog.setText(this.script[this.portfolio.name]["script"][this.scriptNumber], 1)
                         } else {
-                            this.dialogEvent = "selectPortfolioQuestion"
                             this.Dialog.setText("Do you want to select this portfolio?", 2)
+                            this.dialogEvent = "selectPortfolioQuestion"
                         }
                     }
                     break
@@ -211,38 +211,47 @@ export default class HUD extends Phaser.Scene
                     break
 
                 case "script":
-                    this.scriptNumber += 1
-                    if (this.script["event" + this.eventNumber]["script"][this.scriptNumber] != null) {
-                        this.Dialog.setText(this.script["event" + this.eventNumber]["script"][this.scriptNumber], 1)
-                    } else {
-                        this.walletPercentage = 50
-                        this.walletPercentageText.setText("Cash: " + this.walletPercentage + "%    Endowus: " + (100 - this.walletPercentage) + "%")
-                        this.walletPercentageText.setVisible(true)
-                        this.dialogEvent = "question"
-                        this.Dialog.setText(this.script["event" + this.eventNumber]["question"], 3)
+                    if (isSpace) {
+                        this.scriptNumber += 1
+                        if (this.script["event" + this.eventNumber]["script"][this.scriptNumber] != null) {
+                            this.Dialog.setText(this.script["event" + this.eventNumber]["script"][this.scriptNumber], 1)
+                        } else {
+                            this.walletPercentage = 50
+                            this.walletPercentageText.setText("Cash: " + this.walletPercentage + "%    Endowus: " + (100 - this.walletPercentage) + "%")
+                            this.walletPercentageText.setVisible(true)
+                            
+                            this.Dialog.setText(this.script["event" + this.eventNumber]["question"], 3)
+                            this.dialogEvent = "question"
+                        }
                     }
                     break
                 
                 case "question":
-                    this.walletPercentageText.setVisible(false)
-                    this.updateWallet(this.script["event" + this.eventNumber]["amount"] * (this.walletPercentage / 100))
-                    this.updateEndowusWallet(this.script["event" + this.eventNumber]["amount"] * (1 - this.walletPercentage / 100))
+                    if (isSpace) {
+                        this.walletPercentageText.setVisible(false)
+                        this.updateWallet(this.script["event" + this.eventNumber]["amount"] * (this.walletPercentage / 100))
+                        this.updateEndowusWallet(this.script["event" + this.eventNumber]["amount"] * (1 - this.walletPercentage / 100))
 
-                    this.Dialog.setText(this.script["event" + this.eventNumber]["response"], 1)
-                    this.dialogEvent = ""
-                    this.time.delayedCall(1000, this.calculateRecurringInvestment, [], this)
+                        this.Dialog.setText(this.script["event" + this.eventNumber]["response"], 1)
+                        this.dialogEvent = ""
+                        this.time.delayedCall(1000, this.calculateRecurringInvestment, [], this)
+                    }
                     break
 
                 case "recurringInvestment":
-                    this.calculateInterest()
+                    if (isSpace) {
+                        this.calculateInterest()
+                    }
                     break
                 
                 case "interest":
-                    this.dialogEvent = ""
-                    this.Dialog.display(false);
+                    if (isSpace) {
+                        this.dialogEvent = ""
+                        this.Dialog.display(false);
 
-                    eventsCenter.emit('changeEvent')
+                        eventsCenter.emit('changeEvent')
                     break
+                    }
 
                 default:
                     this.Dialog.display(false);
@@ -273,7 +282,7 @@ export default class HUD extends Phaser.Scene
         let recurringInvestmentAmount = this.recurringInvestment.data.get('amount')
         this.updateWallet(-recurringInvestmentAmount)
         this.updateEndowusWallet(recurringInvestmentAmount)
-        this.Dialog.setText("Based on your recurring investments, $" + recurringInvestmentAmount + " has been transferred from your Cash wallet to your Investments!", 1)
+        this.Dialog.setText("The year has come to an end...\nBased on your recurring investments, $" + recurringInvestmentAmount + " has been transferred from your Cash wallet to your Investments!", 1)
         this.dialogEvent = "recurringInvestment"
     }
 
@@ -285,7 +294,7 @@ export default class HUD extends Phaser.Scene
 
         this.updateEndowusWallet(amount)
         
-        this.Dialog.setText("The year has come to an end...\nYour returns this year is " + returnsPercentage.toFixed(2) + "%. Total earnings: $" + amount, 1)
+        this.Dialog.setText("Your returns this year is " + returnsPercentage.toFixed(2) + "%. Total earnings: $" + amount, 1)
         this.dialogEvent = "interest"
     }
 
