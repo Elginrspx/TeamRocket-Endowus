@@ -242,7 +242,7 @@ export default class Scene1 extends Phaser.Scene
             }
         // Next Event does not exist == End of Game
         } else {
-            console.log("Game has ended")
+            this.time.delayedCall(3000, () => eventsCenter.emit('gameOver'))
         }
     }
 

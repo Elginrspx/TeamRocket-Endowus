@@ -30,12 +30,15 @@ export default class HUD extends Phaser.Scene
         // Setup Event Listeners
         eventsCenter.on('selectPortfolio', this.selectPortfolio, this)
         eventsCenter.on('playEvent', this.playEvent, this)
+        eventsCenter.on('gameOver', this.gameOver, this)
 
         eventsCenter.on('dialogManager', this.dialogManager, this)
         eventsCenter.on('walletPercentageManager', this.walletPercentageManager, this)
 
         // Create Miscellaneous Variables
         this.Dialog = this.Dialog
+        this.recurringInvestmentTotal = 0
+        this.interestEarnedTotal = 0
     }
 
     update() {
@@ -234,7 +237,7 @@ export default class HUD extends Phaser.Scene
 
                         this.Dialog.setText(this.script["event" + this.eventNumber]["response"], 1)
                         this.dialogEvent = ""
-                        this.time.delayedCall(1000, this.calculateRecurringInvestment, [], this)
+                        this.time.delayedCall(3000, this.calculateRecurringInvestment, [], this)
                     }
                     break
 
@@ -282,19 +285,21 @@ export default class HUD extends Phaser.Scene
         let recurringInvestmentAmount = this.recurringInvestment.data.get('amount')
         this.updateWallet(-recurringInvestmentAmount)
         this.updateEndowusWallet(recurringInvestmentAmount)
+        this.recurringInvestmentTotal += recurringInvestmentAmount
+
         this.Dialog.setText("The year has come to an end...\nBased on your recurring investments, $" + recurringInvestmentAmount + " has been transferred from your Cash wallet to your Investments!", 1)
         this.dialogEvent = "recurringInvestment"
     }
 
     calculateInterest() {
         let returnsPercentage = ((Math.random() - 0) / (1 - 0)) * (this.volatility) + (this.annualisedReturn - this.volatility)
-
         let currentAmount = this.endowusWallet.data.values.amount
-        let amount = Math.round(currentAmount * (returnsPercentage / 100))
+        let interestEarnedAmount = Math.round(currentAmount * (returnsPercentage / 100))
 
-        this.updateEndowusWallet(amount)
+        this.updateEndowusWallet(interestEarnedAmount)
+        this.interestEarnedTotal += interestEarnedAmount
         
-        this.Dialog.setText("Your returns this year is " + returnsPercentage.toFixed(2) + "%. Total earnings: $" + amount, 1)
+        this.Dialog.setText("Your returns this year is " + returnsPercentage.toFixed(2) + "%. Total earnings: $" + interestEarnedAmount, 1)
         this.dialogEvent = "interest"
     }
 
@@ -302,6 +307,11 @@ export default class HUD extends Phaser.Scene
         this.eventNumber = eventNumber
         this.Dialog.setText(this.script["event" + eventNumber]["script"][0], 1)
         this.dialogEvent = "script", this.scriptNumber = 0
+    }
+
+    gameOver() {
+        this.Dialog.setText("The game has ended. Over the years, your Recurring Investments helped you save an additional $" + this.recurringInvestmentTotal + "! Total interest earned is $" + this.interestEarnedTotal + ".\n\nYou may proceed to close or restart the game. Thanks for playing!", 1)
+        this.dialogEvent = ""
     }
 
     walletPercentageManager(isUp) {
