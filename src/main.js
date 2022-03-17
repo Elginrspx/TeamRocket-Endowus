@@ -1,12 +1,15 @@
 import Phaser from 'phaser'
 import { Dialog } from './plugins/Dialog'
 import { WorldProperties } from './settings'
+import "core-js/stable"
+import "regenerator-runtime/runtime"
 
 import Scene0 from './scenes/Scene0'
 import Scene1 from './scenes/Scene1'
 import Scene2 from './scenes/Scene2'
 import Scene3 from './scenes/Scene3'
 import HUD from './scenes/HUD'
+import LoginScene from './scenes/LoginScene'
 
 const config = {
 	type: Phaser.AUTO,
