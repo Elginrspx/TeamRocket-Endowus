@@ -213,6 +213,7 @@ export default class HUD extends Phaser.Scene
                     }
                     break
 
+                // Normal Events
                 case "script":
                     if (isSpace) {
                         this.scriptNumber += 1
@@ -220,7 +221,9 @@ export default class HUD extends Phaser.Scene
                             this.Dialog.setText(this.script["event" + this.eventNumber]["script"][this.scriptNumber], 1)
                         } else {
                             this.walletPercentage = 50
-                            this.walletPercentageText.setText("Cash: " + this.walletPercentage + "%    Endowus: " + (100 - this.walletPercentage) + "%")
+                            let amount = this.script["event" + this.eventNumber]["amount"]
+                            let cashAmount = Math.round(amount * (this.walletPercentage / 100)), investmentAmount = Math.round(amount * (1 - this.walletPercentage / 100))
+                            this.walletPercentageText.setText("Cash: $" + cashAmount + "    Endowus: $" + investmentAmount)
                             this.walletPercentageText.setVisible(true)
                             
                             this.Dialog.setText(this.script["event" + this.eventNumber]["question"], 3)
@@ -256,6 +259,70 @@ export default class HUD extends Phaser.Scene
                     break
                     }
 
+                // Volatility Events
+                case "volatilityScript":
+                    if (isSpace) {
+                        this.scriptNumber += 1
+                        if (this.script["event" + this.eventNumber]["script"][this.scriptNumber] != null) {
+                            this.Dialog.setText(this.script["event" + this.eventNumber]["script"][this.scriptNumber], 1)
+                        } else {
+                            // Volatility Events immediately add or remove a portion of invested amount
+                            let amount = this.script["event" + this.eventNumber]["amount"]
+                            this.updateEndowusWallet(amount, "percentage")
+
+                            if (this.script["event" + this.eventNumber]["question"] != null) {
+                                // Is a Debit event, ask volatility question
+                                this.Dialog.setText(this.script["event" + this.eventNumber]["question"], 2)
+                                this.dialogEvent = "volatilityQuestion"
+                            } else {
+                                // Is a Credit event, no further statements needed
+                                this.time.delayedCall(3000, () => eventsCenter.emit('changeEvent'), [], this)
+                                
+                                this.Dialog.display(false);
+                                this.dialogEvent = ""
+                            }
+                        }
+                    }
+                    break
+                
+                case "volatilityQuestion":
+                    if (isSpace) {
+                        this.amountInput.setVisible(true)
+
+                        this.Dialog.setText("How much would you like to withdraw from your investments?", 1)
+                        this.dialogEvent = "volatilityAnswer"
+                    } else {
+                        this.Dialog.setText("You have chosen to not withdraw your investments.", 1)
+                        this.dialogEvent = ""
+                        this.time.delayedCall(3000, () => eventsCenter.emit('changeEvent'), [], this)
+                    }
+                    break
+
+                case "volatilityAnswer":
+                    if (isSpace) {
+                        var amount = parseInt(this.amountInput.getChildByName("amountInput").value)
+                        if (isNaN(amount)) {
+                            amount = 0
+                        }
+
+                        if (amount > this.endowusWallet.data.values.amount) {
+                            this.Dialog.setText("You don't have that much cash in your investments!", 1)
+                        } else {
+                            // Transfer Amount from Investment to Cash
+                            this.updateWallet(amount)
+                            this.updateEndowusWallet(-amount)
+
+                            this.amountInput.setVisible(false)
+
+                            this.Dialog.setText("You have transferred $" + amount + " from your Investments to your Cash wallet!", 1)
+                            this.dialogEvent = ""
+                            this.amountInput.getChildByName("amountInput").value = ""
+
+                            this.time.delayedCall(3000, () => eventsCenter.emit('changeEvent'), [], this)
+                        }
+                    }
+                    break
+
                 default:
                     this.Dialog.display(false);
             }
@@ -267,9 +334,14 @@ export default class HUD extends Phaser.Scene
         this.walletText.setText(this.wallet.data.get('amount'))
     }
 
-    updateEndowusWallet(amount) {
-        this.endowusWallet.data.values.amount += amount
-        this.endowusWalletText.setText(this.endowusWallet.data.get('amount'))
+    updateEndowusWallet(amount, type = "integer") {
+        if (type == "integer") {
+            this.endowusWallet.data.values.amount += amount
+            this.endowusWalletText.setText(this.endowusWallet.data.get('amount'))
+        } else if (type == "percentage") {
+            this.endowusWallet.data.values.amount = Math.round(this.endowusWallet.data.values.amount * ((100 + amount)/100))
+            this.endowusWalletText.setText(this.endowusWallet.data.get('amount'))
+        }
     }
 
     changeRecurringInvestment() {
@@ -306,7 +378,13 @@ export default class HUD extends Phaser.Scene
     playEvent(eventNumber) {
         this.eventNumber = eventNumber
         this.Dialog.setText(this.script["event" + eventNumber]["script"][0], 1)
-        this.dialogEvent = "script", this.scriptNumber = 0
+
+        // Normal events and Volatility events play out differently
+        if (this.script["event" + eventNumber]["isVolatilityEvent"] == true) {
+            this.dialogEvent = "volatilityScript", this.scriptNumber = 0
+        } else {
+            this.dialogEvent = "script", this.scriptNumber = 0
+        }
     }
 
     gameOver() {
@@ -321,7 +399,9 @@ export default class HUD extends Phaser.Scene
             } else if (!isUp && this.walletPercentage > 0) {
                 this.walletPercentage -= 10
             }
-            this.walletPercentageText.setText("Cash: " + this.walletPercentage + "%    Endowus: " + (100 - this.walletPercentage) + "%")
+            let amount = this.script["event" + this.eventNumber]["amount"]
+            let cashAmount = Math.round(amount * (this.walletPercentage / 100)), investmentAmount = Math.round(amount * (1 - this.walletPercentage / 100))
+            this.walletPercentageText.setText("Cash: $" + cashAmount + "    Endowus: $" + investmentAmount)
         }
     }
 }

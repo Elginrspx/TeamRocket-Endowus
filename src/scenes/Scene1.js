@@ -249,7 +249,8 @@ export default class Scene1 extends Phaser.Scene
     setEventCollision() {
         var eventObject = this.gameObjects.find(event => event.name === "event" + this.personaEvents[0])
         var questMarker = this.physics.add.sprite(eventObject.x, eventObject.y - 50, 'questMarker')
-        questMarker.setScale(0.20, 0.20)
+            .setScale(0.20, 0.20)
+            .setDepth(2)
         questMarker.anims.play('questMarkerAnim', true)
 
         this.physics.world.enable(eventObject)

@@ -8,12 +8,12 @@ export const WorldProperties = {
 }
 
 export const PersonaEvents = {
-    "student": [1, 2, 4],
+    "student": [1, 2, 6, 4, 7, 5],
     "familyMan": [4, 1, 5]
 }
 
 export const SceneEventMapping = {
-    "scene-1": [1, 2, 3],
+    "scene-1": [1, 2, 3, 6, 7],
     "scene-2": [4],
     "scene-3": [5]
 }

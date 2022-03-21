@@ -69,5 +69,16 @@
         "question": "Your new home costs $200,000. How would you like to make your payment?",
         "amount": -200000,
         "response": "Payment has been made!"
+    },
+    "event6": {
+        "script": ["Oh no, the world has been hit by a drought! The semiconductor industry is now facing a shortage affecting tech stocks worldwide. Your Endowus portfolio has dipped by 20%"],
+        "question": "Would you like to withdraw your funds from your Endowus wallet? Please keep in mind that doing so will affect your overall returns.",
+        "isVolatilityEvent": true,
+        "amount": -20
+    },
+    "event7": {
+        "script": ["The drought is over! The semiconductor industry has gotten back on its feet and is looking as strong as ever. Your Endowus portfolio has increased by 20%"],
+        "isVolatilityEvent": true,
+        "amount": 20
     }
 }
