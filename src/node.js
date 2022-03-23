@@ -16,7 +16,7 @@ var collection;
 //Getting Persona from User DB
 server.get("/get", async (request, response) => {
     try {
-        let result = await collection.find({email: "jessie.ng.2019@smu.edu.sg"});
+        let result = await collection.find({email: "jessieng2013@gmail.com"});
         response.send(result);
     } catch (e) {
         response.status(500).send({ message: e.message });
@@ -29,7 +29,7 @@ server.listen("3000", async () => {
         collection = client.db("Game1").collection("user");
         //collection.createIndex({ "location": "2dsphere" });
         //console.log(collection)
-        await  listDatabases(client);
+        //await  listDatabases(client);
     } catch (e) {
         console.error(e);
     }
