@@ -1,33 +1,40 @@
 {
     "introduction": {
-        "script" : ["Welcome to the world of Endowus, Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,", "This is a flavour text"]
+        "script" : ["Welcome to the world of Endowus, ...", "This is a flavour text"]
     },
+
     "equities100": {
+        "description": "100% Equities",
         "script": ["A very aggressive portfolio designed for longer term goals that can withstand periods of significant volatility to compound returns over the long term and achieve higher average expected returns."],
         "annualisedReturn": 12.18,
         "volatility": 11.03
     },
     "equities80": {
+        "description": "80% Equities\n20% Fixed Income",
         "script": ["An aggressive portfolio designed for longer term goals that can withstand periods of volatility to compound returns over the long term and achieve higher average expected returns."],
         "annualisedReturn": 10.77,
         "volatility": 9.27
     },
     "equities60": {
+        "description": "60% Equities\n40% Fixed Income",
         "script": ["A balanced portfolio designed for mid to long term goals and cashflows that can withstand periods of some volatility to compound returns over the long term and achieve higher average risk-adjusted returns."],
         "annualisedReturn": 9.31,
         "volatility": 7.56
     },
     "equities40": {
+        "description": "40% Equities\n60% Fixed Income",
         "script": ["A measured portfolio designed for mid term to long term goals and cashflows that can withstand periods of some volatility to compound returns over the long term to achieve higher average risk-adjusted returns."],
         "annualisedReturn": 7.78,
         "volatility": 5.89
     },
     "equities20": {
+        "description": "20% Equities\n80% Fixed Income",
         "script": ["A conservative portfolio designed for mid term goals and cashflows that are focused on capital preservation with recognition that a small allocation to equities can improve asset class diversification and long term risk-adjusted returns."],
         "annualisedReturn": 6.26,
         "volatility": 4.58
     },
     "equities0": {
+        "description": "100% Fixed Income",
         "script": ["A very conservative portfolio designed for short to mid term goals focused on capital preservation and lower volatility in returns, with some long term capital appreciation to compound returns."],
         "annualisedReturn": 4.72,
         "volatility": 3.87
@@ -62,6 +69,16 @@
         "question": "Your new home costs $200,000. How would you like to make your payment?",
         "amount": -200000,
         "response": "Payment has been made!"
+    },
+    "event6": {
+        "script": ["Oh no, the world has been hit by a drought! The semiconductor industry is now facing a shortage affecting tech stocks worldwide. Your Endowus portfolio has dipped by 20%"],
+        "question": "Would you like to withdraw your funds from your Endowus wallet? Please keep in mind that doing so will affect your overall returns.",
+        "isVolatilityEvent": true,
+        "amount": -20
+    },
+    "event7": {
+        "script": ["The drought is over! The semiconductor industry has gotten back on its feet and is looking as strong as ever. Your Endowus portfolio has increased by 20%"],
+        "isVolatilityEvent": true,
+        "amount": 20
     }
-
 }

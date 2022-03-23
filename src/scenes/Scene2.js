@@ -11,21 +11,12 @@ export default class Scene2 extends Phaser.Scene
 
     init(data) {
         this.personaEvents = data.personaEvents
-        this.eventNumber = this.personaEvents[0]
     }
 
 	preload()
     {
-        this.load.baseURL = "../assets/"
-        
         // Preload Plugin for Animated Tileset
         this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');
-
-        this.spacePressed = false
-        this.shiftPressed = false
-        this.upPressed = false
-        this.downPressed = false
-        this.dialogVisible = false
     }
 
     create()
@@ -48,9 +39,6 @@ export default class Scene2 extends Phaser.Scene
         // Animate Tiles (Ignore the error)
         this.animatedTiles.init(this.map);
 
-        // Create All Animations
-        this.createAnimations()
-
         // Create Character
         const SpawnPoint = this.map.findObject('GameObjects', obj => obj.name === 'spawn-point')
         this.player = this.createCharacter(SpawnPoint.x, SpawnPoint.y, 'player')
@@ -70,6 +58,9 @@ export default class Scene2 extends Phaser.Scene
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
         this.cameras.main.setZoom(WorldProperties.cameraZoom, WorldProperties.cameraZoom)
         this.cameras.main.startFollow(this.player)
+
+        // Create All Animations
+        this.createAnimations()
 
         this.gameObjects = this.map.createFromObjects('GameObjects', null)
 
@@ -103,18 +94,26 @@ export default class Scene2 extends Phaser.Scene
             }            
         })
 
-        // Set Event Waypoints
-        this.setEventCollision()
-
         // Create key inputs for movement
         this.keys = this.input.keyboard.createCursorKeys();
 
         // Set Starting Animation
         this.player.play("idleDown")
 
+        // Set Event Waypoints
+        this.setEventCollision()
+
         // Setup Event Listeners
+        eventsCenter.removeListener('changeEvent')
         eventsCenter.on('changeEvent', this.changeEvent, this)
         eventsCenter.on('dialogVisible', (isDialogVisible) => this.dialogVisible = isDialogVisible)
+
+        // Create Miscellaneous Variables
+        this.spacePressed = false
+        this.shiftPressed = false
+        this.upPressed = false
+        this.downPressed = false
+        this.dialogVisible = false
 
         /* For Debug Purposes, to be deleted */
         if (this.physics.config.debug) {
@@ -179,6 +178,17 @@ export default class Scene2 extends Phaser.Scene
             this.spacePressed = false
         }
 
+        // Key: SHIFT
+        if (this.keys.shift.isDown) {
+            if (!this.shiftPressed) {
+                eventsCenter.emit('dialogManager', false)
+                this.shiftPressed = true
+            }
+        }
+        if (this.keys.shift.isUp) {
+            this.shiftPressed = false
+        }
+
         // Key: UP
         if (this.keys.up.isDown) {
             if (!this.upPressed) {
@@ -203,47 +213,44 @@ export default class Scene2 extends Phaser.Scene
     }
 
     changeEvent() {
-        // Event is completed, remove from events, Set Event Number to be new event
+        // Event is completed, remove from events
         this.personaEvents.shift()
-        this.eventNumber = this.personaEvents[0]
 
-        if (this.eventNumber != null) {
-            // Check if next Event is available in current scene, else find the scene which has it
-            var eventObject = this.gameObjects.find(event => event.name === "event" + this.eventNumber)
+        // Check if Next Event exists
+        if (this.personaEvents[0] != null) {
+            // Check if next Event is available in current scene
+            var eventObject = this.gameObjects.find(event => event.name === "event" + this.personaEvents[0])
+
+            // Event does not exist within current scene, find and start scene that contains event
             if (eventObject == null) {
                 for (var scene in SceneEventMapping) {
-                    if (SceneEventMapping[scene].includes(this.eventNumber)) {
-                        this.enterScene(scene)
-                        return
+                    let newScene = scene
+
+                    if (SceneEventMapping[scene].includes(this.personaEvents[0])) {
+                        // Camera Transition
+                        this.cameras.main.fadeOut(1000, 0, 0, 0)
+                        this.cameras.main.on(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                            this.scene.start(newScene, {
+                                personaEvents: this.personaEvents
+                            })
+                        })
                     }
                 }
+            // Event is within current scene
+            } else {
+                this.setEventCollision()
             }
-            // Event is available within current Scene
-            this.setEventCollision()
+        // Next Event does not exist == End of Game
         } else {
-            console.log("Game has ended")
+            this.time.delayedCall(3000, () => eventsCenter.emit('gameOver'))
         }
     }
 
-    enterScene(sceneName) {
-        // Camera Transitions, Start New Scene
-        this.cameras.main.fadeOut(1000, 0, 0, 0)
-        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            eventsCenter.off('changeEvent', this.changeEvent)
-
-            this.time.delayedCall(1000, () => {
-                this.scene.start(sceneName, {
-                    personaEvents: this.personaEvents
-                })
-            })
-        })
-    }
-
     setEventCollision() {
-        var currentEvent = "event" + this.eventNumber
-        var eventObject = this.gameObjects.find(event => event.name === currentEvent)
+        var eventObject = this.gameObjects.find(event => event.name === "event" + this.personaEvents[0])
         var questMarker = this.physics.add.sprite(eventObject.x, eventObject.y - 50, 'questMarker')
-        questMarker.setScale(0.20, 0.20)
+            .setScale(0.20, 0.20)
+            .setDepth(2)
         questMarker.anims.play('questMarkerAnim', true)
 
         this.physics.world.enable(eventObject)
@@ -252,7 +259,7 @@ export default class Scene2 extends Phaser.Scene
             this.physics.world.disable(eventObject)
             questMarker.destroy()
 
-            eventsCenter.emit('playEvent', this.eventNumber)
+            eventsCenter.emit('playEvent', this.personaEvents[0])
         })
     }
 
