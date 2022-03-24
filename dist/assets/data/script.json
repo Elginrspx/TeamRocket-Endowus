@@ -1,0 +1,67 @@
+{
+    "introduction": {
+        "script" : ["Welcome to the world of Endowus, Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,", "This is a flavour text"]
+    },
+    "equities100": {
+        "script": ["A very aggressive portfolio designed for longer term goals that can withstand periods of significant volatility to compound returns over the long term and achieve higher average expected returns."],
+        "annualisedReturn": 12.18,
+        "volatility": 11.03
+    },
+    "equities80": {
+        "script": ["An aggressive portfolio designed for longer term goals that can withstand periods of volatility to compound returns over the long term and achieve higher average expected returns."],
+        "annualisedReturn": 10.77,
+        "volatility": 9.27
+    },
+    "equities60": {
+        "script": ["A balanced portfolio designed for mid to long term goals and cashflows that can withstand periods of some volatility to compound returns over the long term and achieve higher average risk-adjusted returns."],
+        "annualisedReturn": 9.31,
+        "volatility": 7.56
+    },
+    "equities40": {
+        "script": ["A measured portfolio designed for mid term to long term goals and cashflows that can withstand periods of some volatility to compound returns over the long term to achieve higher average risk-adjusted returns."],
+        "annualisedReturn": 7.78,
+        "volatility": 5.89
+    },
+    "equities20": {
+        "script": ["A conservative portfolio designed for mid term goals and cashflows that are focused on capital preservation with recognition that a small allocation to equities can improve asset class diversification and long term risk-adjusted returns."],
+        "annualisedReturn": 6.26,
+        "volatility": 4.58
+    },
+    "equities0": {
+        "script": ["A very conservative portfolio designed for short to mid term goals focused on capital preservation and lower volatility in returns, with some long term capital appreciation to compound returns."],
+        "annualisedReturn": 4.72,
+        "volatility": 3.87
+    },
+    
+    "event1": {
+        "script": ["Congratulations! You have been accepted for an exchange semester at Nabson University in the US."],
+        "question": "You are required to make a payment of $20,000. How would you like to make your payment?",
+        "response": "Payment has been made!",
+        "amount": -20000
+    },
+    "event2": {
+        "script": ["Hooray! You have been offered a 6-month internship at MBB & Co. Enjoy your time here & learn as much as possible from your supervisors."],
+        "question": "You have been paid a total of $6,000 over 6 months! How would you like to distribute your salary?",
+        "amount": 6000,
+        "response": "You have distributed your salary!"
+    },
+    "event3": {
+        "script": ["Congratulations! You have landed your first job at ShopForward! Be ready for more responsibilities!"],
+        "question": "You have earned $100,000 over 2 years of working at ShopForward! How would you like to distribute your salary?",
+        "amount": 100000,
+        "response": "You have distributed your salary!"
+    },
+    "event4": {
+        "script": ["Hard work pays off! You have been promoted to a manager at ShopForward!"],
+        "question": "Your pay has increased to $150,000 over the next 2 years of work! How would you like to distribute your salary?",
+        "amount": 150000,
+        "response": "You have distributed your salary!"
+    },
+    "event5": {
+        "script": ["Your new home is now ready! Time to collect your keys and move in!"],
+        "question": "Your new home costs $200,000. How would you like to make your payment?",
+        "amount": -200000,
+        "response": "Payment has been made!"
+    }
+
+}
