@@ -6,6 +6,8 @@ const { request } = require("express");
 
 const client = new MongoClient("mongodb+srv://fyp1:RacH3nBu9ER2NW2o@clusterfyp.dwacg.mongodb.net/test");
 const server = Express();
+//mongodb+srv://fyp1:RacH3nBu9ER2NW2o@clusterfyp.dwacg.mongodb.net/test
+//mongodb+srv://fyp1:RacH3nBu9ER2NW2o@clusterfyp.dwacg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
 
 server.use(BodyParser.json());
 server.use(BodyParser.urlencoded({ extended: true }));
@@ -16,7 +18,7 @@ var collection;
 //Getting Persona from User DB
 server.get("/get", async (request, response) => {
     try {
-        let result = await collection.find({email: "jessieng2013@gmail.com"});
+        let result = await collection.find({});
         response.send(result);
     } catch (e) {
         response.status(500).send({ message: e.message });
