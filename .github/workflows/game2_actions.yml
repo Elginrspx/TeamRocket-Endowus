@@ -28,6 +28,11 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: echo Hello, world!
+        
+      #Runs script to automatically update dependencies  
+      - name: npm/yarn/pnpm install
+        uses: Jaid/action-npm-install@v1.2.4
+
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
