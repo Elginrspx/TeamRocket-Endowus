@@ -8,17 +8,17 @@ const client = new MongoClient("mongodb+srv://fyp1:RacH3nBu9ER2NW2o@clusterfyp.d
 const server = Express();
 //mongodb+srv://fyp1:RacH3nBu9ER2NW2o@clusterfyp.dwacg.mongodb.net/test
 //mongodb+srv://fyp1:RacH3nBu9ER2NW2o@clusterfyp.dwacg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
-
+//mongodb+srv://fyp1:RacH3nBu9ER2NW2o@clusterfyp.dwacg.mongodb.net/test?retryWrites=true&w=majority
 server.use(BodyParser.json());
 server.use(BodyParser.urlencoded({ extended: true }));
 server.use(Cors());
 
-var collection;
+var collection = client.db("Game1").collection("user");
 
 //Getting Persona from User DB
 server.get("/get", async (request, response) => {
     try {
-        let result = await collection.find({});
+        let result = await collection.find({}).toArray();
         response.send(result);
     } catch (e) {
         response.status(500).send({ message: e.message });
