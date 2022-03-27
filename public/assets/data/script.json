@@ -1,11 +1,11 @@
 {
     "introduction": {
-        "script" : ["Welcome to the world of Endowus, ...", "This is a flavour text"]
+        "script" : ["Welcome to the world of Endowus. This game is a simulation in which you will be able to test out different portfolios in mock scenarios, this will allow you to find the portfolio that you are the most comfortable with.", "We all have different risk appetites or risk tolerance. If you invest in a way that is not compatible with the amount of volatility or short-term loss you are comfortable taking, you are setting up for failure when the markets inevitably move against you as you may make investment decisions that go against your long-term financial well-being. ", "As it is a simulation, feel free to restart by refreshing the browser to test out another portfolio!"]
     },
 
     "equities100": {
         "description": "100% Equities",
-        "script": ["A very aggressive portfolio designed for longer term goals that can withstand periods of significant volatility to compound returns over the long term and achieve higher average expected returns."],
+        "script": ["A very aggressive portfolio designed for longer term goals that can withstand periods of significant volatility to compound returns over the long term and achieve higher average expected returns.", "This portfolio has a High Risk Tolerance of 50%. In the event of a financial crisis, this portfolio, based on the worst 12-month period"],
         "annualisedReturn": 12.18,
         "volatility": 11.03,
         "riskTolerance": 50
