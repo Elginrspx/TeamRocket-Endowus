@@ -13,9 +13,18 @@ export default class HUD extends Phaser.Scene
         this.script = this.cache.json.get('script');
 
         // Amount Input Form
-        this.amountInput = this.add.dom(80, 570).createFromCache("amountInput");
-        this.amountInput.setDepth(1020)
-        this.amountInput.setVisible(false)
+        this.amountInput = this.add.dom(80, 570)
+            .createFromCache("amountInput")
+            .setDepth(1020)
+            .setVisible(false)
+
+        this.moreInfoBtn = this.add.image(725, 575, 'moreInfoBtn')
+            .setInteractive( { useHandCursor: true } )
+            .setScrollFactor(0, 0)
+            .setDepth(1010)
+            .setScale(0.5, 0.5)
+            .setVisible(false)
+        this.moreInfoBtn.on('pointerup', () => window.open(this.externalURL), this)
 
         // For Wallet Percentage Dialog
         this.walletPercentageText = this.add.text(20, 565, '', { font: '18px pressstart' })
@@ -51,11 +60,15 @@ export default class HUD extends Phaser.Scene
     introductionEvent() {
         this.Dialog.setText(this.script["introduction"]["script"][0], 1)
         this.dialogEvent = "introduction", this.scriptNumber = 0
+        
     }
 
     selectPortfolio(portfolio) {
         this.Dialog.setText(this.script[portfolio.name]["script"][0], 1)
         this.dialogEvent = "selectPortfolio", this.scriptNumber = 0, this.portfolio = portfolio
+
+        this.moreInfoBtn.setVisible(true)
+        this.externalURL = this.script[this.portfolio.name]["externalURL"]
     }
 
     dialogManager(isSpace) {
@@ -70,6 +83,14 @@ export default class HUD extends Phaser.Scene
                             this.amountInput.setVisible(true)
                             this.Dialog.setText("Set the total amount of savings you have on hand")
                             this.dialogEvent = "setWallet"
+                        }
+
+                        // Only show more info button at 2nd script
+                        if (this.scriptNumber == 1) {
+                            this.moreInfoBtn.setVisible(true)
+                            this.externalURL = this.script["introduction"]["externalURL"]
+                        } else {
+                            this.moreInfoBtn.setVisible(false)
                         }
                     }
                     break
@@ -236,6 +257,9 @@ export default class HUD extends Phaser.Scene
                 case "selectPortfolio":
                     if (isSpace) {
                         this.scriptNumber += 1
+                        // Close More Info Button
+                        this.moreInfoBtn.setVisible(false)
+
                         if (this.script[this.portfolio.name]["script"][this.scriptNumber] != null) {
                             this.Dialog.setText(this.script[this.portfolio.name]["script"][this.scriptNumber], 1)
                         } else {

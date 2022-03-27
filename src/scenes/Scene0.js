@@ -40,6 +40,7 @@ export default class Scene0 extends Phaser.Scene
         this.load.image('wallet', 'images/money.png')
         this.load.image('endowusWallet', 'images/endowus.png')
         this.load.image('recurringInvestment', 'images/recurringInvestment.png')
+        this.load.image('moreInfoBtn', 'images/moreInfoBtn.png')
 
         // Preload Audio
         this.load.audio("gameTheme1", "music/ambience-cave.wav");
