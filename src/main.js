@@ -30,7 +30,7 @@ const config = {
             { key: 'Dialog', plugin: Dialog, mapping: 'Dialog' }
         ]
     },
-	scene: [Scene0, Scene1, Scene2, Scene3, HUD]
+	scene: [LoginScene, Scene0, Scene1, Scene2, Scene3, HUD]
 }
 
 export default new Phaser.Game(config)
