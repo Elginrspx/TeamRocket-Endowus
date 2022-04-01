@@ -17,7 +17,9 @@ export default class LoginScene extends Phaser.Scene
 
 	preload()
     {
-        this.load.html("form", "src/form.html");
+        this.load.baseURL = "../assets/"
+        // this.load.html("form", "src/form.html");
+        this.load.html("form", "form/form.html");
     }   
 
     async create()
