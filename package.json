@@ -26,7 +26,8 @@
 	"dependencies": {
 		"node": "^17.3.0",
 		"parcel-bundler": "^1.12.5",
-		"phaser": "^3.55.2"
+		"phaser": "^3.55.2",
+		"signals": "^1.0.0"
 	},
 	"parcelCleanPaths": [
 		"dist"
