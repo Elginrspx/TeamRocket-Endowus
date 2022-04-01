@@ -99,7 +99,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 				this.graphics.command.setText('Spacebar: Yes    Shift: No');
 				break;
 			case 3:
-				this.graphics.command.setText('Spacebar: Continue    Up: Cash    Down: Investment');
+				this.graphics.command.setText('Spacebar: Continue    Up: Savings    Down: Investment');
 				break;
 		}
 	}

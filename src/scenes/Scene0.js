@@ -40,6 +40,7 @@ export default class Scene0 extends Phaser.Scene
         this.load.image('wallet', 'images/money.png')
         this.load.image('endowusWallet', 'images/endowus.png')
         this.load.image('recurringInvestment', 'images/recurringInvestment.png')
+        this.load.image('moreInfoBtn', 'images/moreInfoBtn.png')
 
         // Preload Audio
         this.load.audio("gameTheme1", "music/ambience-cave.wav");
@@ -130,6 +131,11 @@ export default class Scene0 extends Phaser.Scene
                 })
             }
         })
+
+        // Add Text for Risk Tolerance Area
+        this.add.text(600, 515, "High Risk Tolerance Portfolios", { font: '11px Arial', color: '#8a0000', align: 'center'})
+        this.add.text(615, 625, "Medium Risk Tolerance Portfolios", { font: '11px Arial', color: '#96a100', align: 'center'})
+        this.add.text(430, 610, "Low Risk Tolerance Portfolios", { font: '11px Arial', color: '#00520b', align: 'center'})
 
         // Create key inputs for movement
         this.keys = this.input.keyboard.createCursorKeys();
