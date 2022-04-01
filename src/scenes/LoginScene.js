@@ -27,8 +27,9 @@ export default class LoginScene extends Phaser.Scene
 
     this.returnKey.on("down", event => {
         let username = this.usernameInput.getChildByName("username");
-        if(username.value != "") {
+        if(username != "") {
             this.scene.start("Scene0");
+            this.scene.start("MainScene", { username: username.value });
         }
     })
     }

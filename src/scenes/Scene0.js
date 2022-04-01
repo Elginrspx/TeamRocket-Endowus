@@ -12,7 +12,7 @@ export default class Scene0 extends Phaser.Scene
 	preload()
     {
         // From DB
-        this.persona = "student"
+        this.persona = this.playerPersona
 
         this.load.baseURL = "../assets/"
 
@@ -171,21 +171,11 @@ export default class Scene0 extends Phaser.Scene
             })
         }
 
+        //Calling Player's Persona from Game 1 Mongo DB
         try {
-            // if (this.player.username && this.player.score) {
-            //     await fetch("http://localhost:3000/create", {
-            //         "method": "POST",
-            //         "headers": {
-            //             "content-type": "application/json"
-            //         },
-            //         "body": JSON.stringify(this.player)
-            //     });
-            // }
-    
-            this.playerPersona = await fetch("http://localhost:3000/get")
+            this.playerJSON = await fetch("http://localhost:3000/get")
                 .then(response => response.json());
-            console.log(this,this.playerPersona)
-    
+           this.playerPersona = this.playerJSON[0]["lifestage"]
         } catch (e) {
             console.error(e);
         }
