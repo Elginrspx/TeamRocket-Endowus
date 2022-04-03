@@ -12,7 +12,7 @@ export default class Scene0 extends Phaser.Scene
 	preload()
     {
         // From DB
-        this.persona = "familyMan"
+        this.persona = "demo"
 
         this.load.baseURL = "../assets/"
 

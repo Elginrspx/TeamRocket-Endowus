@@ -33,9 +33,6 @@ export default class HUD extends Phaser.Scene
 
         this.dialogVisible = false
 
-        // HUD scene is launched with Scene 0, run Introduction Event on launch
-        this.introductionEvent()
-
         // Setup Event Listeners
         eventsCenter.on('selectPortfolio', this.selectPortfolio, this)
         eventsCenter.on('playEvent', this.playEvent, this)
@@ -48,6 +45,10 @@ export default class HUD extends Phaser.Scene
         this.Dialog = this.Dialog
         this.recurringInvestmentTotal = 0
         this.interestEarnedTotal = 0
+        this.volatilityWithdraw = false
+
+        // HUD scene is launched with Scene 0, run Introduction Event on launch
+        this.introductionEvent()
     }
 
     update() {
@@ -359,8 +360,6 @@ export default class HUD extends Phaser.Scene
                                 this.Dialog.display(false);
                                 this.dialogEvent = ""
                                 this.time.delayedCall(3000, () => eventsCenter.emit('changeEvent'), [], this)
-
-                                
                             }
                         }
                     }
@@ -371,6 +370,7 @@ export default class HUD extends Phaser.Scene
                         this.amountInput.setVisible(true)
 
                         this.Dialog.setText("How much would you like to withdraw from your investments?", 1)
+                        this.volatilityWithdraw = true
                         this.dialogEvent = "volatilityAnswer"
                     } else {
                         // this.Dialog.setText("You have chosen to not withdraw your investments.", 1)
@@ -425,6 +425,8 @@ export default class HUD extends Phaser.Scene
 
                 default:
                     this.Dialog.display(false);
+                    this.Dialog.displaySummary(false);
+                    this.moreInfoBtn.setVisible(false)
             }
         }
     }
@@ -538,8 +540,34 @@ export default class HUD extends Phaser.Scene
     }
 
     gameOver() {
-        this.Dialog.setText("The game has ended. Over the years, your Recurring Investments helped you save an additional $" + this.recurringInvestmentTotal + "! Total interest earned is $" + this.interestEarnedTotal + ".\n\nYou may proceed to close or restart the game. Thanks for playing!", 1)
+        let volatilityWithdrawText = ""
+
+        if (this.volatilityWithdraw) {
+            volatilityWithdrawText = "You chose to withdraw your investments during a volatility event! Volatility events do not last forever, as you have seen, markets will tend to recover over time. You may wish to reconsider withdrawing investments in the future."
+        } else {
+            volatilityWithdrawText = "You chose to keep your investments during a volatility event! Volatility events do not last forever, as you have seen, markets will tend to recover over time. Good job!"
+        }
+        
+        let summaryText = `Congraulations for completing Endowus Walkthrough! Hope you will now have a better understanding about managing risks and rewards. Now let us review your journey...
+        
+Over the course of the game, your Recurring Investments adds up to a total of $${ this.recurringInvestmentTotal }. Based on the portfolio's return of up to ${ this.annualisedReturn }% per annum, you earned $${ this.interestEarnedTotal } interest.
+        
+${ volatilityWithdrawText }
+
+It is so interesting what investment does to help conserve and build your wealth! 
+Here are 3 takeaways as you embark on your journey with Endowus:
+
+1) Time in market beats timing the market. Even when you buy at peaks, historical records show you are still able to outperform investors who time the market.
+2) Allocate a sufficient amount for your expenses & save the rest. Black swan events rarely occur, but when they do, you will be glad to have kept a portion of cash aside to help tide you through your daily lives. 
+3) Discipline. Having the discipline to constantly invest really helps to compound your money & let it grow. 
+
+All the best in your financial journey!
+        `
+        this.Dialog.setSummaryText(summaryText, 1)
         this.dialogEvent = ""
+
+        this.moreInfoBtn.setVisible(true)
+        this.externalURL = "https://endowus.com/flagship"
     }
 
     walletPercentageManager(isUp) {

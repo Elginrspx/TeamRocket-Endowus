@@ -22,7 +22,7 @@
     },
     "equities60": {
         "description": "60% Equities\n40% Fixed Income",
-        "script": ["A balanced portfolio designed for mid to long term goals and cashflows that can withstand periods of some volatility to compound returns over the long term and achieve higher average risk-adjusted returns.", "This portfolio has a High Risk Tolerance of 35%. This means that this portfolio may lose up to 35% in the worst case scenarios, based on historical 12-month percentage loss."],
+        "script": ["A balanced portfolio designed for mid to long term goals and cashflows that can withstand periods of some volatility to compound returns over the long term and achieve higher average risk-adjusted returns.", "This portfolio has a Medium Risk Tolerance of 35%. This means that this portfolio may lose up to 35% in the worst case scenarios, based on historical 12-month percentage loss."],
         "annualisedReturn": 9.31,
         "volatility": 7.56,
         "riskTolerance": 35,
@@ -30,7 +30,7 @@
     },
     "equities40": {
         "description": "40% Equities\n60% Fixed Income",
-        "script": ["A measured portfolio designed for mid term to long term goals and cashflows that can withstand periods of some volatility to compound returns over the long term to achieve higher average risk-adjusted returns.", "This portfolio has a High Risk Tolerance of 30%. This means that this portfolio may lose up to 30% in the worst case scenarios, based on historical 12-month percentage loss."],
+        "script": ["A measured portfolio designed for mid term to long term goals and cashflows that can withstand periods of some volatility to compound returns over the long term to achieve higher average risk-adjusted returns.", "This portfolio has a Medium Risk Tolerance of 30%. This means that this portfolio may lose up to 30% in the worst case scenarios, based on historical 12-month percentage loss."],
         "annualisedReturn": 7.78,
         "volatility": 5.89,
         "riskTolerance": 30,
@@ -38,7 +38,7 @@
     },
     "equities20": {
         "description": "20% Equities\n80% Fixed Income",
-        "script": ["A conservative portfolio designed for mid term goals and cashflows that are focused on capital preservation with recognition that a small allocation to equities can improve asset class diversification and long term risk-adjusted returns.", "This portfolio has a High Risk Tolerance of 25%. This means that this portfolio may lose up to 25% in the worst case scenarios, based on historical 12-month percentage loss."],
+        "script": ["A conservative portfolio designed for mid term goals and cashflows that are focused on capital preservation with recognition that a small allocation to equities can improve asset class diversification and long term risk-adjusted returns.", "This portfolio has a Low Risk Tolerance of 25%. This means that this portfolio may lose up to 25% in the worst case scenarios, based on historical 12-month percentage loss."],
         "annualisedReturn": 6.26,
         "volatility": 4.58,
         "riskTolerance": 25,
@@ -46,7 +46,7 @@
     },
     "equities0": {
         "description": "100% Fixed Income",
-        "script": ["A very conservative portfolio designed for short to mid term goals focused on capital preservation and lower volatility in returns, with some long term capital appreciation to compound returns.", "This portfolio has a High Risk Tolerance of 12%. This means that this portfolio may lose up to 12% in the worst case scenarios, based on historical 12-month percentage loss."],
+        "script": ["A very conservative portfolio designed for short to mid term goals focused on capital preservation and lower volatility in returns, with some long term capital appreciation to compound returns.", "This portfolio has a Low Risk Tolerance of 12%. This means that this portfolio may lose up to 12% in the worst case scenarios, based on historical 12-month percentage loss."],
         "annualisedReturn": 4.72,
         "volatility": 3.87,
         "riskTolerance": 12,

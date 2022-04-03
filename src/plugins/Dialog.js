@@ -25,7 +25,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 			text: null,
 			command: null
 		};
-
+		
 		// Summary Dialog Box
 		this.summaryDialogBox = {
 			background: null,
@@ -233,7 +233,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 		var gameHeight = this.scene.sys.game.config.height;
 		var gameWidth = this.scene.sys.game.config.width;
 		var x = 15;
-		var y = 15;
+		var y = 5;
 		var width = gameWidth - (x*2);
 		var height = gameHeight - (y*2);
 		return {
@@ -285,7 +285,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 	_drawSummaryCommand() {
 		let dimensions = this._calculateSummaryWindowDimensions();
 		let x = dimensions.x + (this.padding * 0.5) + 360;
-		let y = dimensions.y + (this.padding * 0.5) + 525;
+		let y = dimensions.y + (this.padding * 0.5) + 545;
 		let command = '';
 	   
 		this.summaryDialogBox.command = this.scene.make.text({
