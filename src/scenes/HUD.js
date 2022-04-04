@@ -373,10 +373,6 @@ export default class HUD extends Phaser.Scene
                         this.volatilityWithdraw = true
                         this.dialogEvent = "volatilityAnswer"
                     } else {
-                        // this.Dialog.setText("You have chosen to not withdraw your investments.", 1)
-                        // this.dialogEvent = ""
-                        // this.time.delayedCall(3000, () => eventsCenter.emit('changeEvent'), [], this)
-
                         this.Dialog.setText("Would you like to change your recurring investments?", 2)
                         this.dialogEvent = "volatilityRecurring"
                     }
@@ -421,6 +417,13 @@ export default class HUD extends Phaser.Scene
                         this.dialogEvent = ""
                     }
                     eventsCenter.emit('changeEvent')
+                    break
+
+                case "gameOver":
+                    if (isSpace) {
+                        this.Dialog.setSummaryText(this.summaryText[1].toString(), 1)
+                        this.dialogEvent = ""
+                    }
                     break
 
                 default:
@@ -548,24 +551,25 @@ export default class HUD extends Phaser.Scene
             volatilityWithdrawText = "You chose to keep your investments during a volatility event! Volatility events do not last forever, as you have seen, markets will tend to recover over time. Good job!"
         }
         
-        let summaryText = `Congraulations for completing Endowus Walkthrough! Hope you will now have a better understanding about managing risks and rewards. Now let us review your journey...
+        this.summaryText = [
+[`Congratulations for completing Endowus Walkthrough! Hope you will now have a better understanding about managing risks and rewards. Now let us review your journey...
         
 Over the course of the game, your Recurring Investments adds up to a total of $${ this.recurringInvestmentTotal }. Based on the portfolio's return of up to ${ this.annualisedReturn }% per annum, you earned $${ this.interestEarnedTotal } interest.
         
-${ volatilityWithdrawText }
-
-It is so interesting what investment does to help conserve and build your wealth! 
+${ volatilityWithdrawText }`],
+[`It is so interesting what investment does to help conserve and build your wealth! 
 Here are 3 takeaways as you embark on your journey with Endowus:
 
 1) Time in market beats timing the market. Even when you buy at peaks, historical records show you are still able to outperform investors who time the market.
 2) Allocate a sufficient amount for your expenses & save the rest. Black swan events rarely occur, but when they do, you will be glad to have kept a portion of cash aside to help tide you through your daily lives. 
 3) Discipline. Having the discipline to constantly invest really helps to compound your money & let it grow. 
 
-All the best in your financial journey!
-        `
-        this.Dialog.setSummaryText(summaryText, 1)
-        this.dialogEvent = ""
+All the best in your financial journey!`]
+]
+        this.Dialog.setSummaryText(this.summaryText[0].toString(), 1)
+        this.dialogEvent = "gameOver"
 
+        this.moreInfoBtn.setY(440)
         this.moreInfoBtn.setVisible(true)
         this.externalURL = "https://endowus.com/flagship"
     }
