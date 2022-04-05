@@ -6,16 +6,14 @@ const { request } = require("express");
 
 const client = new MongoClient("mongodb+srv://fyp1:RacH3nBu9ER2NW2o@clusterfyp.dwacg.mongodb.net/test");
 const server = Express();
-//mongodb+srv://fyp1:RacH3nBu9ER2NW2o@clusterfyp.dwacg.mongodb.net/test
-//mongodb+srv://fyp1:RacH3nBu9ER2NW2o@clusterfyp.dwacg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
-//mongodb+srv://fyp1:RacH3nBu9ER2NW2o@clusterfyp.dwacg.mongodb.net/test?retryWrites=true&w=majority
+
 server.use(BodyParser.json());
 server.use(BodyParser.urlencoded({ extended: true }));
 server.use(Cors());
 
 var collection = client.db("Game1").collection("user");
 
-//Getting Persona from User DB
+//GET fucntions: Getting Persona from User DB
 server.get("/get", async (request, response) => {
     try {
         let result = await collection.find({}).toArray();
@@ -25,21 +23,13 @@ server.get("/get", async (request, response) => {
     }
 });
 
+//Listen Function
 server.listen("3000", async () => {
     try {
         await client.connect();
         collection = client.db("Game1").collection("user");
-        //collection.createIndex({ "location": "2dsphere" });
-        //console.log(collection)
-        //await  listDatabases(client);
     } catch (e) {
         console.error(e);
     }
 });
 
-// async function listDatabases(client){
-//     databasesList = await client.db().admin().listDatabases();
- 
-//     console.log("Databases:");
-//     databasesList.databases.forEach(db => console.log(` - ${db.name}`));
-// };
