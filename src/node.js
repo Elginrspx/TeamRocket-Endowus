@@ -18,7 +18,7 @@ var collection = client.db("Game1").collection("user");
 //Getting Persona from User DB
 server.get("/get", async (request, response) => {
     try {
-        let result = await collection.find({ email: "jessieng2103@gmail.com" }).toArray();
+        let result = await collection.find({}).toArray();
         response.send(result);
     } catch (e) {
         response.status(500).send({ message: e.message });
