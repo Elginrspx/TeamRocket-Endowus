@@ -9,6 +9,10 @@ export default class Scene0 extends Phaser.Scene
 		super('scene-0')
 	}
 
+    init(data) {
+        this.persona = data.persona
+    }
+
 	preload()
     {
         // From DB
