@@ -19,8 +19,15 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 
 		// if the dialog window is shown
 		this.visible = false;
-		// the text that will be displayed in the window
-		this.graphics = {
+		// Normal Dialog Box
+		this.dialogBox = {
+			background: null,
+			text: null,
+			command: null
+		};
+		
+		// Summary Dialog Box
+		this.summaryDialogBox = {
 			background: null,
 			text: null,
 			command: null
@@ -29,12 +36,19 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 
 	//  Called when the Plugin is booted by the PluginManager.
 	boot() {
-		// Create the dialog window
+		// Create the Dialog window
 		this._drawBackground();
 		this._drawText();
 		this._drawCommand();
 		
 		this.display(false);
+
+		// Create the Summary Dialog window
+		this._drawSummaryBackground();
+		this._drawSummaryText();
+		this._drawSummaryCommand();
+		
+		this.displaySummary(false);
 		
 		let eventEmitter = this.systems.events;
 		eventEmitter.on('shutdown', this.shutdown, this);
@@ -43,8 +57,11 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 	//  Called when a Scene shuts down, it may then come back again later (which will invoke the 'start' event) but should be considered dormant.
 	shutdown() {
 		if (this.timedEvent) this.timedEvent.remove();
-		if (this.graphics.text) this.graphics.text.destroy();
-		if (this.graphics.command) this.graphics.command.destroy();
+		if (this.dialogBox.text) this.dialogBox.text.destroy();
+		if (this.dialogBox.command) this.dialogBox.command.destroy();
+
+		if (this.summaryDialogBox.text) this.summaryDialogBox.text.destroy();
+		if (this.summaryDialogBox.command) this.summaryDialogBox.command.destroy();
 	}
 
 	//  Called when a Scene is destroyed by the Scene Manager. There is no coming back from a destroyed Scene, so clear up all resources here.
@@ -53,15 +70,14 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 		this.scene = undefined;
 	}
 
-
-	// Hide/Show the dialog window
+	// Hide/Show the Dialog window
 	display(showMe) {
 		if(typeof showMe === 'undefined') this.visible = !this.visible;
 		else this.visible = showMe;
 
-		if (this.graphics.text) this.graphics.text.visible = this.visible;
-		if (this.graphics.command) this.graphics.command.visible = this.visible;
-		if (this.graphics.background) this.graphics.background.visible = this.visible;
+		if (this.dialogBox.text) this.dialogBox.text.visible = this.visible;
+		if (this.dialogBox.command) this.dialogBox.command.visible = this.visible;
+		if (this.dialogBox.background) this.dialogBox.background.visible = this.visible;
 	}
 
 	// Sets the text for the dialog window
@@ -75,13 +91,13 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 		this.timedEvent = this.scene.time.addEvent({
 			delay: 150 - (this.dialogSpeed * 30),
 			callback: (charArray)=>{
-				if (charArray[this.graphics.text.text.length + 1]) {
-					this.graphics.text.setText(this.graphics.text.text + charArray[this.graphics.text.text.length] + charArray[this.graphics.text.text.length + 1]);
+				if (charArray[this.dialogBox.text.text.length + 1]) {
+					this.dialogBox.text.setText(this.dialogBox.text.text + charArray[this.dialogBox.text.text.length] + charArray[this.dialogBox.text.text.length + 1]);
 				} else {
-					this.graphics.text.setText(this.graphics.text.text + charArray[this.graphics.text.text.length]);
+					this.dialogBox.text.setText(this.dialogBox.text.text + charArray[this.dialogBox.text.text.length]);
 				}
 				
-				if (this.graphics.text.text.length >= charArray.length) {
+				if (this.dialogBox.text.text.length >= charArray.length) {
 					this.timedEvent.remove();
 				}
 			},
@@ -90,16 +106,16 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 			loop: true
 		});
 
-		this.graphics.text.setText('');
+		this.dialogBox.text.setText('');
 		switch(commandType) {
 			case 1:
-				this.graphics.command.setText('Spacebar: Continue');
+				this.dialogBox.command.setText('Spacebar: Continue');
 				break;
 			case 2:
-				this.graphics.command.setText('Spacebar: Yes    Shift: No');
+				this.dialogBox.command.setText('Spacebar: Yes    Shift: No');
 				break;
 			case 3:
-				this.graphics.command.setText('Spacebar: Continue    Up: Savings    Down: Investment');
+				this.dialogBox.command.setText('Spacebar: Continue    Up: Savings    Down: Investment');
 				break;
 		}
 	}
@@ -123,15 +139,15 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 	// Creates the dialog window
 	_drawBackground() {
 		let dimensions = this._calculateWindowDimensions();
-		this.graphics.background = this.scene.add.graphics().setScrollFactor(this.scrollFactor);
+		this.dialogBox.background = this.scene.add.graphics().setScrollFactor(this.scrollFactor);
 
-		this.graphics.background.lineStyle(this.borderThickness, this.borderColor, this.borderAlpha);
-		this.graphics.background.fillStyle(this.windowColor, this.windowAlpha);
-		this.graphics.background.strokeRoundedRect(dimensions.x, dimensions.y, dimensions.width, dimensions.height, 5);
-		this.graphics.background.fillRoundedRect(dimensions.x, dimensions.y, dimensions.width, dimensions.height, 5);
+		this.dialogBox.background.lineStyle(this.borderThickness, this.borderColor, this.borderAlpha);
+		this.dialogBox.background.fillStyle(this.windowColor, this.windowAlpha);
+		this.dialogBox.background.strokeRoundedRect(dimensions.x, dimensions.y, dimensions.width, dimensions.height, 5);
+		this.dialogBox.background.fillRoundedRect(dimensions.x, dimensions.y, dimensions.width, dimensions.height, 5);
 
 		// Ensure the dialog box renders above everything else
-		this.graphics.background.setDepth(1000);
+		this.dialogBox.background.setDepth(1000);
 	}
 
 	// Creates text holder within the dialog window
@@ -141,7 +157,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 		let y = dimensions.y + (this.padding * 0.5);
 		let text = '';
 	   
-		this.graphics.text = this.scene.make.text({
+		this.dialogBox.text = this.scene.make.text({
 			x,
 			y,
 			text,
@@ -154,7 +170,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 		}).setScrollFactor(this.scrollFactor);
 
 		// Ensure the dialog text renders above the background
-		this.graphics.text.setDepth(1010);
+		this.dialogBox.text.setDepth(1010);
 	}
 
 	// Creates text holder within the dialog window
@@ -164,7 +180,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 		let y = dimensions.y + (this.padding * 0.5) + 105;
 		let command = '';
 	   
-		this.graphics.command = this.scene.make.text({
+		this.dialogBox.command = this.scene.make.text({
 			x,
 			y,
 			command,
@@ -177,9 +193,116 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 		}).setScrollFactor(this.scrollFactor);
 
 		// Ensure the dialog text renders above the background
-		this.graphics.command.setDepth(1020);
+		this.dialogBox.command.setDepth(1020);
 	}
 
+	/* For Summary Dialog */
+
+	// Hide/Show the Summary window
+	displaySummary(showMe) {
+		if(typeof showMe === 'undefined') this.visible = !this.visible;
+		else this.visible = showMe;
+
+		if (this.summaryDialogBox.text) this.summaryDialogBox.text.visible = this.visible;
+		if (this.summaryDialogBox.command) this.summaryDialogBox.command.visible = this.visible;
+		if (this.summaryDialogBox.background) this.summaryDialogBox.background.visible = this.visible;
+	}
+
+	// Sets the text for the dialog window
+	setSummaryText(text, commandType) {
+		if(!text || !text.split) return;
+
+		this.displaySummary(true);
+		this.summaryDialogBox.text.setText(text)
+
+		switch(commandType) {
+			case 1:
+				this.summaryDialogBox.command.setText('Spacebar: Continue');
+				break;
+			case 2:
+				this.summaryDialogBox.command.setText('Spacebar: Yes    Shift: No');
+				break;
+			case 3:
+				this.summaryDialogBox.command.setText('Spacebar: Continue    Up: Savings    Down: Investment');
+				break;
+		}
+	}
+
+	// Calculates where to place the Summary Dialog window based on the game size
+	_calculateSummaryWindowDimensions() {
+		var gameHeight = this.scene.sys.game.config.height;
+		var gameWidth = this.scene.sys.game.config.width;
+		var x = 15;
+		var y = 140;
+		var width = gameWidth - (x*2);
+		var height = gameHeight - (y*2);
+		return {
+			x,
+			y,
+			width,
+			height
+		};
+	}
+
+	// Creates the Summary Dialog window
+	_drawSummaryBackground() {
+		let dimensions = this._calculateSummaryWindowDimensions();
+		this.summaryDialogBox.background = this.scene.add.graphics().setScrollFactor(this.scrollFactor);
+
+		this.summaryDialogBox.background.lineStyle(this.borderThickness, this.borderColor, this.borderAlpha);
+		this.summaryDialogBox.background.fillStyle(this.windowColor, this.windowAlpha);
+		this.summaryDialogBox.background.strokeRoundedRect(dimensions.x, dimensions.y, dimensions.width, dimensions.height, 5);
+		this.summaryDialogBox.background.fillRoundedRect(dimensions.x, dimensions.y, dimensions.width, dimensions.height, 5);
+
+		// Ensure the Summary Dialog box renders above everything else
+		this.summaryDialogBox.background.setDepth(1000);
+	}
+
+	// Creates text holder within the Summary Dialog window
+	_drawSummaryText() {
+		let dimensions = this._calculateSummaryWindowDimensions();
+		let x = dimensions.x + (this.padding * 0.5);
+		let y = dimensions.y + (this.padding * 0.5);
+		let text = '';
+	   
+		this.summaryDialogBox.text = this.scene.make.text({
+			x,
+			y,
+			text,
+			style: {
+				wordWrap: { width: dimensions.width - this.padding },
+				fontFamily: 'pressstart',
+				fontSize: '18px',
+				lineSpacing: '1'
+			}
+		}).setScrollFactor(this.scrollFactor);
+
+		// Ensure the Summary Dialog text renders above the background
+		this.summaryDialogBox.text.setDepth(1010);
+	}
+
+	// Creates text holder within the Summary Dialog window
+	_drawSummaryCommand() {
+		let dimensions = this._calculateSummaryWindowDimensions();
+		let x = dimensions.x + (this.padding * 0.5) + 360;
+		let y = dimensions.y + (this.padding * 0.5) + 275;
+		let command = '';
+	   
+		this.summaryDialogBox.command = this.scene.make.text({
+			x,
+			y,
+			command,
+			style: {
+				wordWrap: { width: dimensions.width - this.padding },
+				fontFamily: 'pressstart',
+				fontSize: '18px',
+				lineSpacing: '1'
+			}
+		}).setScrollFactor(this.scrollFactor);
+
+		// Ensure the Summary Dialog text renders above the background
+		this.summaryDialogBox.command.setDepth(1020);
+	}
 }
 
 

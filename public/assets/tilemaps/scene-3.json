@@ -157,13 +157,46 @@
                 {
                  "height":0,
                  "id":20,
-                 "name":"event5",
+                 "name":"event3",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":186,
-                 "y":574
+                 "x":194,
+                 "y":571
+                }, 
+                {
+                 "height":0,
+                 "id":22,
+                 "name":"event6",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":203,
+                 "y":256
+                }, 
+                {
+                 "height":0,
+                 "id":23,
+                 "name":"event9",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":751,
+                 "y":592
+                }, 
+                {
+                 "height":0,
+                 "id":24,
+                 "name":"event12",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":387,
+                 "y":570
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -172,7 +205,7 @@
          "y":0
         }],
  "nextlayerid":20,
- "nextobjectid":22,
+ "nextobjectid":26,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.2",
