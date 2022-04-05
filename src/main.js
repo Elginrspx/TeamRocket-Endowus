@@ -26,9 +26,9 @@ const config = {
 		}
 	},
 	plugins: {
-    scene: [
-            { key: 'Dialog', plugin: Dialog, mapping: 'Dialog' }
-        ]
+		scene: [
+				{ key: 'Dialog', plugin: Dialog, mapping: 'Dialog' }
+			]
     },
 	scene: [LoginScene, Scene0, Scene1, Scene2, Scene3, HUD]
 }
