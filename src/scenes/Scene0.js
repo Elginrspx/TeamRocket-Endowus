@@ -9,10 +9,15 @@ export default class Scene0 extends Phaser.Scene
 		super('scene-0')
 	}
 
+    init(data) {
+        this.persona = data.persona
+    }
+
 	preload()
     {
         // From DB
-        this.persona = "student"
+        this.persona = this.playerPersona
+        //this.persona = "demo"
 
         this.load.baseURL = "../assets/"
 
@@ -40,6 +45,7 @@ export default class Scene0 extends Phaser.Scene
         this.load.image('wallet', 'images/money.png')
         this.load.image('endowusWallet', 'images/endowus.png')
         this.load.image('recurringInvestment', 'images/recurringInvestment.png')
+        this.load.image('moreInfoBtn', 'images/moreInfoBtn.png')
 
         // Preload Audio
         this.load.audio("gameTheme1", "music/ambience-cave.wav");
@@ -52,7 +58,7 @@ export default class Scene0 extends Phaser.Scene
         this.load.json('script', 'data/script.json');
     }
 
-    create()
+    async create()
     {
         // Set Persona Events based on Persona Type
         this.personaEvents = PersonaEvents[this.persona]
@@ -131,6 +137,11 @@ export default class Scene0 extends Phaser.Scene
             }
         })
 
+        // Add Text for Risk Tolerance Area
+        this.add.text(600, 515, "High Risk Tolerance Portfolios", { font: '11px Arial', color: '#8a0000', align: 'center'})
+        this.add.text(615, 625, "Medium Risk Tolerance Portfolios", { font: '11px Arial', color: '#96a100', align: 'center'})
+        this.add.text(430, 610, "Low Risk Tolerance Portfolios", { font: '11px Arial', color: '#00520b', align: 'center'})
+
         // Create key inputs for movement
         this.keys = this.input.keyboard.createCursorKeys();
 
@@ -163,6 +174,15 @@ export default class Scene0 extends Phaser.Scene
                 collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
                 faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
             })
+        }
+
+        //Calling Player's Persona from Game 1 Mongo DB
+        try {
+            this.playerJSON = await fetch("http://localhost:3000/get")
+                .then(response => response.json());
+           this.playerPersona = this.playerJSON[0]["lifestage"]
+        } catch (e) {
+            console.error(e);
         }
     }
     

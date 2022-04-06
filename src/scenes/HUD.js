@@ -13,9 +13,18 @@ export default class HUD extends Phaser.Scene
         this.script = this.cache.json.get('script');
 
         // Amount Input Form
-        this.amountInput = this.add.dom(80, 570).createFromCache("amountInput");
-        this.amountInput.setDepth(1020)
-        this.amountInput.setVisible(false)
+        this.amountInput = this.add.dom(80, 570)
+            .createFromCache("amountInput")
+            .setDepth(1020)
+            .setVisible(false)
+
+        this.moreInfoBtn = this.add.image(725, 575, 'moreInfoBtn')
+            .setInteractive( { useHandCursor: true } )
+            .setScrollFactor(0, 0)
+            .setDepth(1010)
+            .setScale(0.5, 0.5)
+            .setVisible(false)
+        this.moreInfoBtn.on('pointerup', () => window.open(this.externalURL), this)
 
         // For Wallet Percentage Dialog
         this.walletPercentageText = this.add.text(20, 565, '', { font: '18px pressstart' })
@@ -23,9 +32,6 @@ export default class HUD extends Phaser.Scene
             .setDepth(1010)
 
         this.dialogVisible = false
-
-        // HUD scene is launched with Scene 0, run Introduction Event on launch
-        this.introductionEvent()
 
         // Setup Event Listeners
         eventsCenter.on('selectPortfolio', this.selectPortfolio, this)
@@ -39,6 +45,10 @@ export default class HUD extends Phaser.Scene
         this.Dialog = this.Dialog
         this.recurringInvestmentTotal = 0
         this.interestEarnedTotal = 0
+        this.volatilityWithdraw = false
+
+        // HUD scene is launched with Scene 0, run Introduction Event on launch
+        this.introductionEvent()
     }
 
     update() {
@@ -51,11 +61,15 @@ export default class HUD extends Phaser.Scene
     introductionEvent() {
         this.Dialog.setText(this.script["introduction"]["script"][0], 1)
         this.dialogEvent = "introduction", this.scriptNumber = 0
+        
     }
 
     selectPortfolio(portfolio) {
         this.Dialog.setText(this.script[portfolio.name]["script"][0], 1)
         this.dialogEvent = "selectPortfolio", this.scriptNumber = 0, this.portfolio = portfolio
+
+        this.moreInfoBtn.setVisible(true)
+        this.externalURL = this.script[this.portfolio.name]["externalURL"]
     }
 
     dialogManager(isSpace) {
@@ -68,8 +82,16 @@ export default class HUD extends Phaser.Scene
                             this.Dialog.setText(this.script["introduction"]["script"][this.scriptNumber], 1)
                         } else {
                             this.amountInput.setVisible(true)
-                            this.Dialog.setText("Set the total amount of cash you have on hand")
+                            this.Dialog.setText("Set the total amount of savings you have on hand")
                             this.dialogEvent = "setWallet"
+                        }
+
+                        // Only show more info button at 2nd script
+                        if (this.scriptNumber == 1) {
+                            this.moreInfoBtn.setVisible(true)
+                            this.externalURL = this.script["introduction"]["externalURL"]
+                        } else {
+                            this.moreInfoBtn.setVisible(false)
                         }
                     }
                     break
@@ -95,7 +117,7 @@ export default class HUD extends Phaser.Scene
                                 .setDepth(100)
                                 .setText(this.wallet.data.get('amount'))
     
-                            this.Dialog.setText("Out of the total amount of cash you have on hand, how much do you plan to set aside in your investments? You may transfer funds between the two wallets at any time by clicking on the relevant wallet!", 1)
+                            this.Dialog.setText("Out of the total amount of savings you have on hand, how much do you plan to set aside in your investments? You may transfer funds between the two wallets at any time by clicking on the relevant wallet!", 1)
                             this.dialogEvent = "setEndowusWallet"
                             this.amountInput.getChildByName("amountInput").value = ""
                         }
@@ -110,7 +132,7 @@ export default class HUD extends Phaser.Scene
                         }
 
                         if (amount > this.wallet.data.values.amount) {
-                            this.Dialog.setText("You don't have that much cash on hand!", 1)
+                            this.Dialog.setText("You don't have that much savings on hand!", 1)
                         } else {
                             // Create EndowusWallet
                             this.endowusWallet = this.add.image(635, 70, 'endowusWallet')
@@ -127,10 +149,10 @@ export default class HUD extends Phaser.Scene
                                 .setDepth(100)
                                 .setText(this.endowusWallet.data.get('amount'))
 
-                            // Remove stated amount from Cash Wallet
+                            // Remove stated amount from Savings Wallet
                             this.updateWallet(-amount)
 
-                            this.Dialog.setText("Make Investing a habit by setting up Recurring Investments! At the end of every game event, the amount will be automatically transferred from your cash wallet to your investments!", 1)
+                            this.Dialog.setText("Make Investing a habit by setting up Recurring Investments! At the end of every game event, the amount will be automatically transferred from your savings wallet to your investments!", 1)
                             this.dialogEvent = "setRecurring"
                             this.amountInput.getChildByName("amountInput").value = ""
                         }
@@ -145,7 +167,7 @@ export default class HUD extends Phaser.Scene
                         }
     
                         if (amount > this.wallet.data.values.amount) {
-                            this.Dialog.setText("You don't have that much cash on hand!", 1)
+                            this.Dialog.setText("You don't have that much savings on hand!", 1)
                         } else {
                             // Create Recurring Investments
                             this.recurringInvestment = this.add.image(40, 40, 'recurringInvestment')
@@ -178,7 +200,7 @@ export default class HUD extends Phaser.Scene
                         }
 
                         if (amount > this.wallet.data.values.amount) {
-                            this.Dialog.setText("You don't have that much cash on hand to transfer!", 1)
+                            this.Dialog.setText("You don't have that much savings on hand to transfer!", 1)
                         } else {
                             this.updateWallet(-amount)
                             this.updateEndowusWallet(amount)
@@ -220,7 +242,7 @@ export default class HUD extends Phaser.Scene
                         }
 
                         if (amount > this.wallet.data.values.amount) {
-                            this.Dialog.setText("You don't have that much cash on hand!", 1)
+                            this.Dialog.setText("You don't have that much savings on hand!", 1)
                         } else {
                             this.recurringInvestment.data.set('amount', amount)
                             this.recurringInvestmentText.setText(this.recurringInvestment.data.get('amount'))
@@ -236,6 +258,9 @@ export default class HUD extends Phaser.Scene
                 case "selectPortfolio":
                     if (isSpace) {
                         this.scriptNumber += 1
+                        // Close More Info Button
+                        this.moreInfoBtn.setVisible(false)
+
                         if (this.script[this.portfolio.name]["script"][this.scriptNumber] != null) {
                             this.Dialog.setText(this.script[this.portfolio.name]["script"][this.scriptNumber], 1)
                         } else {
@@ -249,6 +274,7 @@ export default class HUD extends Phaser.Scene
                     if (isSpace) {
                         this.annualisedReturn = this.script[this.portfolio.name]["annualisedReturn"]
                         this.volatility = this.script[this.portfolio.name]["volatility"]
+                        this.riskTolerance = this.script[this.portfolio.name]["riskTolerance"]
                         this.Dialog.display(false);
 
                         // Start Next Event
@@ -268,8 +294,8 @@ export default class HUD extends Phaser.Scene
                         } else {
                             this.walletPercentage = 50
                             let amount = this.script["event" + this.eventNumber]["amount"]
-                            let cashAmount = Math.round(amount * (this.walletPercentage / 100)), investmentAmount = Math.round(amount * (1 - this.walletPercentage / 100))
-                            this.walletPercentageText.setText("Cash: $" + cashAmount + "    Endowus: $" + investmentAmount)
+                            let savingAmount = Math.round(amount * (this.walletPercentage / 100)), investmentAmount = Math.round(amount * (1 - this.walletPercentage / 100))
+                            this.walletPercentageText.setText("Savings: $" + savingAmount + "    Endowus: $" + investmentAmount)
                             this.walletPercentageText.setVisible(true)
                             
                             this.Dialog.setText(this.script["event" + this.eventNumber]["question"], 3)
@@ -319,20 +345,21 @@ export default class HUD extends Phaser.Scene
                         if (this.script["event" + this.eventNumber]["script"][this.scriptNumber] != null) {
                             this.Dialog.setText(this.script["event" + this.eventNumber]["script"][this.scriptNumber], 1)
                         } else {
-                            // Volatility Events immediately add or remove a portion of invested amount
-                            let amount = this.script["event" + this.eventNumber]["amount"]
-                            this.updateEndowusWallet(amount, "percentage")
-
                             if (this.script["event" + this.eventNumber]["question"] != null) {
+                                // Volatility Events immediately add a portion of invested amount based on Risk Tolerance
+                                this.updateEndowusWallet(-this.riskTolerance, "percentage")
+
                                 // Is a Debit event, ask volatility question
                                 this.Dialog.setText(this.script["event" + this.eventNumber]["question"], 2)
                                 this.dialogEvent = "volatilityQuestion"
                             } else {
+                                // Volatility Events immediately add a portion of invested amount based on Risk Tolerance
+                                this.updateEndowusWallet(this.riskTolerance, "percentage")
+
                                 // Is a Credit event, no further statements needed
-                                this.time.delayedCall(3000, () => eventsCenter.emit('changeEvent'), [], this)
-                                
                                 this.Dialog.display(false);
                                 this.dialogEvent = ""
+                                this.time.delayedCall(3000, () => eventsCenter.emit('changeEvent'), [], this)
                             }
                         }
                     }
@@ -343,11 +370,11 @@ export default class HUD extends Phaser.Scene
                         this.amountInput.setVisible(true)
 
                         this.Dialog.setText("How much would you like to withdraw from your investments?", 1)
+                        this.volatilityWithdraw = true
                         this.dialogEvent = "volatilityAnswer"
                     } else {
-                        this.Dialog.setText("You have chosen to not withdraw your investments.", 1)
-                        this.dialogEvent = ""
-                        this.time.delayedCall(3000, () => eventsCenter.emit('changeEvent'), [], this)
+                        this.Dialog.setText("Would you like to change your recurring investments?", 2)
+                        this.dialogEvent = "volatilityRecurring"
                     }
                     break
 
@@ -359,9 +386,9 @@ export default class HUD extends Phaser.Scene
                         }
 
                         if (amount > this.endowusWallet.data.values.amount) {
-                            this.Dialog.setText("You don't have that much cash in your investments!", 1)
+                            this.Dialog.setText("You don't have that much savings in your investments!", 1)
                         } else {
-                            // Transfer Amount from Investment to Cash
+                            // Transfer Amount from Investment to Savings
                             this.updateWallet(amount)
                             this.updateEndowusWallet(-amount)
 
@@ -374,17 +401,35 @@ export default class HUD extends Phaser.Scene
 
                             this.amountInput.setVisible(false)
 
-                            this.Dialog.setText("You have transferred $" + amount + " from your Investments to your Cash wallet!", 1)
-                            this.dialogEvent = ""
+                            this.Dialog.setText("You have transferred $" + amount + " from your Investments to your Savings wallet! Would you like to change your recurring investments?" , 2)
+                            this.dialogEvent = "volatilityRecurring"
                             this.amountInput.getChildByName("amountInput").value = ""
-
-                            this.time.delayedCall(3000, () => eventsCenter.emit('changeEvent'), [], this)
                         }
+                    }
+                    break
+
+                case "volatilityRecurring":
+                    if (isSpace) {
+                        this.Dialog.display(false)
+                        this.changeRecurringInvestment()
+                    } else {
+                        this.Dialog.display(false)
+                        this.dialogEvent = ""
+                    }
+                    eventsCenter.emit('changeEvent')
+                    break
+
+                case "gameOver":
+                    if (isSpace) {
+                        this.Dialog.setSummaryText(this.summaryText[1].toString(), 1)
+                        this.dialogEvent = ""
                     }
                     break
 
                 default:
                     this.Dialog.display(false);
+                    this.Dialog.displaySummary(false);
+                    this.moreInfoBtn.setVisible(false)
             }
         }
     }
@@ -412,6 +457,9 @@ export default class HUD extends Phaser.Scene
             remaining = endowusWalletAmount + amount
         } else if (type == "percentage") {
             remaining = Math.round(endowusWalletAmount * ((100 + amount)/100))
+            this.endowusWallet.data.values.amount = remaining
+            this.endowusWalletText.setText(this.endowusWallet.data.get('amount'))
+            return
         }
 
         // If EndowusWallet goes below 0, pay remaining with Wallet
@@ -430,7 +478,7 @@ export default class HUD extends Phaser.Scene
         // Only allow change if Dialog Box is not visible
         if (!this.Dialog.visible) {
             this.amountInput.setVisible(true)
-            this.Dialog.setText("How much would you like to transfer from Cash to Investment?", 1)
+            this.Dialog.setText("How much would you like to transfer from Savings to Investment?", 1)
             this.dialogEvent = "changeWallet"
         }
     }
@@ -439,7 +487,7 @@ export default class HUD extends Phaser.Scene
         // Only allow change if Dialog Box is not visible
         if (!this.Dialog.visible) {
             this.amountInput.setVisible(true)
-            this.Dialog.setText("How much would you like to transfer from Investment to Cash?", 1)
+            this.Dialog.setText("How much would you like to transfer from Investment to Savings?", 1)
             this.dialogEvent = "changeEndowusWallet"
         }
     }
@@ -466,7 +514,7 @@ export default class HUD extends Phaser.Scene
             return
         }
 
-        this.Dialog.setText("The year has come to an end...\nBased on your recurring investments, $" + recurringInvestmentAmount + " has been transferred from your Cash wallet to your Investments!", 1)
+        this.Dialog.setText("The year has come to an end...\nBased on your recurring investments, $" + recurringInvestmentAmount + " has been transferred from your Savings wallet to your Investments!", 1)
         this.dialogEvent = "recurringInvestment"
     }
 
@@ -495,8 +543,35 @@ export default class HUD extends Phaser.Scene
     }
 
     gameOver() {
-        this.Dialog.setText("The game has ended. Over the years, your Recurring Investments helped you save an additional $" + this.recurringInvestmentTotal + "! Total interest earned is $" + this.interestEarnedTotal + ".\n\nYou may proceed to close or restart the game. Thanks for playing!", 1)
-        this.dialogEvent = ""
+        let volatilityWithdrawText = ""
+
+        if (this.volatilityWithdraw) {
+            volatilityWithdrawText = "You chose to withdraw your investments during a volatility event! Volatility events do not last forever, as you have seen, markets will tend to recover over time. You may wish to reconsider withdrawing investments in the future."
+        } else {
+            volatilityWithdrawText = "You chose to keep your investments during a volatility event! Volatility events do not last forever, as you have seen, markets will tend to recover over time. Good job!"
+        }
+        
+        this.summaryText = [
+[`Congratulations for completing Endowus Walkthrough! Hope you will now have a better understanding about managing risks and rewards. Now let us review your journey...
+        
+Over the course of the game, your Recurring Investments adds up to a total of $${ this.recurringInvestmentTotal }. Based on the portfolio's return of up to ${ this.annualisedReturn }% per annum, you earned $${ this.interestEarnedTotal } interest.
+        
+${ volatilityWithdrawText }`],
+[`It is so interesting what investment does to help conserve and build your wealth! 
+Here are 3 takeaways as you embark on your journey with Endowus:
+
+1) Time in market beats timing the market. Even when you buy at peaks, historical records show you are still able to outperform investors who time the market.
+2) Allocate a sufficient amount for your expenses & save the rest. Black swan events rarely occur, but when they do, you will be glad to have kept a portion of cash aside to help tide you through your daily lives. 
+3) Discipline. Having the discipline to constantly invest really helps to compound your money & let it grow. 
+
+All the best in your financial journey!`]
+]
+        this.Dialog.setSummaryText(this.summaryText[0].toString(), 1)
+        this.dialogEvent = "gameOver"
+
+        this.moreInfoBtn.setY(440)
+        this.moreInfoBtn.setVisible(true)
+        this.externalURL = "https://endowus.com/flagship"
     }
 
     walletPercentageManager(isUp) {
@@ -507,8 +582,8 @@ export default class HUD extends Phaser.Scene
                 this.walletPercentage -= 10
             }
             let amount = this.script["event" + this.eventNumber]["amount"]
-            let cashAmount = Math.round(amount * (this.walletPercentage / 100)), investmentAmount = Math.round(amount * (1 - this.walletPercentage / 100))
-            this.walletPercentageText.setText("Cash: $" + cashAmount + "    Endowus: $" + investmentAmount)
+            let savingAmount = Math.round(amount * (this.walletPercentage / 100)), investmentAmount = Math.round(amount * (1 - this.walletPercentage / 100))
+            this.walletPercentageText.setText("Savings: $" + savingAmount + "    Endowus: $" + investmentAmount)
         }
     }
 }
