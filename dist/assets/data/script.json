@@ -1,67 +1,137 @@
 {
     "introduction": {
-        "script" : ["Welcome to the world of Endowus, Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,Welcome to the world of Endowus,", "This is a flavour text"]
+        "script" : ["Welcome to the world of Endowus. This game is a simulation in which you will be able to test out different portfolios in mock scenarios, this will allow you to find the portfolio that you are the most comfortable with.", "We all have different risk appetites or risk tolerance. If you invest in a way that is not compatible with the amount of volatility or short-term loss you are comfortable taking, you are setting up for failure when the markets inevitably move against you as you may make investment decisions that go against your long-term financial well-being. ", "As it is a simulation, feel free to restart by refreshing the browser to test out another portfolio!"],
+        "externalURL" : "https://endowus.com/support/360007646114-why-do-i-need-to-choose-my-risk-tolerance-and-how-is-it-understood"
     },
+
     "equities100": {
-        "script": ["A very aggressive portfolio designed for longer term goals that can withstand periods of significant volatility to compound returns over the long term and achieve higher average expected returns."],
+        "description": "100% Equities",
+        "script": ["A very aggressive portfolio designed for longer term goals that can withstand periods of significant volatility to compound returns over the long term and achieve higher average expected returns.", "This portfolio has a High Risk Tolerance of 50%. This means that this portfolio may lose up to 50% in the worst case scenarios, based on historical 12-month percentage loss."],
         "annualisedReturn": 12.18,
-        "volatility": 11.03
+        "volatility": 11.03,
+        "riskTolerance": 50,
+        "externalURL": "https://endowus.com/flagship"
     },
     "equities80": {
-        "script": ["An aggressive portfolio designed for longer term goals that can withstand periods of volatility to compound returns over the long term and achieve higher average expected returns."],
+        "description": "80% Equities\n20% Fixed Income",
+        "script": ["An aggressive portfolio designed for longer term goals that can withstand periods of volatility to compound returns over the long term and achieve higher average expected returns.", "This portfolio has a High Risk Tolerance of 40%. This means that this portfolio may lose up to 40% in the worst case scenarios, based on historical 12-month percentage loss."],
         "annualisedReturn": 10.77,
-        "volatility": 9.27
+        "volatility": 9.27,
+        "riskTolerance": 40,
+        "externalURL": "https://endowus.com/flagship"
     },
     "equities60": {
-        "script": ["A balanced portfolio designed for mid to long term goals and cashflows that can withstand periods of some volatility to compound returns over the long term and achieve higher average risk-adjusted returns."],
+        "description": "60% Equities\n40% Fixed Income",
+        "script": ["A balanced portfolio designed for mid to long term goals and cashflows that can withstand periods of some volatility to compound returns over the long term and achieve higher average risk-adjusted returns.", "This portfolio has a Medium Risk Tolerance of 35%. This means that this portfolio may lose up to 35% in the worst case scenarios, based on historical 12-month percentage loss."],
         "annualisedReturn": 9.31,
-        "volatility": 7.56
+        "volatility": 7.56,
+        "riskTolerance": 35,
+        "externalURL": "https://endowus.com/flagship"
     },
     "equities40": {
-        "script": ["A measured portfolio designed for mid term to long term goals and cashflows that can withstand periods of some volatility to compound returns over the long term to achieve higher average risk-adjusted returns."],
+        "description": "40% Equities\n60% Fixed Income",
+        "script": ["A measured portfolio designed for mid term to long term goals and cashflows that can withstand periods of some volatility to compound returns over the long term to achieve higher average risk-adjusted returns.", "This portfolio has a Medium Risk Tolerance of 30%. This means that this portfolio may lose up to 30% in the worst case scenarios, based on historical 12-month percentage loss."],
         "annualisedReturn": 7.78,
-        "volatility": 5.89
+        "volatility": 5.89,
+        "riskTolerance": 30,
+        "externalURL": "https://endowus.com/flagship"
     },
     "equities20": {
-        "script": ["A conservative portfolio designed for mid term goals and cashflows that are focused on capital preservation with recognition that a small allocation to equities can improve asset class diversification and long term risk-adjusted returns."],
+        "description": "20% Equities\n80% Fixed Income",
+        "script": ["A conservative portfolio designed for mid term goals and cashflows that are focused on capital preservation with recognition that a small allocation to equities can improve asset class diversification and long term risk-adjusted returns.", "This portfolio has a Low Risk Tolerance of 25%. This means that this portfolio may lose up to 25% in the worst case scenarios, based on historical 12-month percentage loss."],
         "annualisedReturn": 6.26,
-        "volatility": 4.58
+        "volatility": 4.58,
+        "riskTolerance": 25,
+        "externalURL": "https://endowus.com/flagship"
     },
     "equities0": {
-        "script": ["A very conservative portfolio designed for short to mid term goals focused on capital preservation and lower volatility in returns, with some long term capital appreciation to compound returns."],
+        "description": "100% Fixed Income",
+        "script": ["A very conservative portfolio designed for short to mid term goals focused on capital preservation and lower volatility in returns, with some long term capital appreciation to compound returns.", "This portfolio has a Low Risk Tolerance of 12%. This means that this portfolio may lose up to 12% in the worst case scenarios, based on historical 12-month percentage loss."],
         "annualisedReturn": 4.72,
-        "volatility": 3.87
+        "volatility": 3.87,
+        "riskTolerance": 12,
+        "externalURL": "https://endowus.com/flagship"
     },
     
     "event1": {
-        "script": ["Congratulations! You have been accepted for an exchange semester at Nabson University in the US."],
-        "question": "You are required to make a payment of $20,000. How would you like to make your payment?",
-        "response": "Payment has been made!",
-        "amount": -20000
+        "script": ["Congraulations, you have been accepted for an exchange semester at Wuhan University in China."],
+        "question": "You are required to make a payment of $8,000. How would you like to make your payment?",
+        "response": "Payment for your exchange has been made!",
+        "amount": -8000
     },
     "event2": {
-        "script": ["Hooray! You have been offered a 6-month internship at MBB & Co. Enjoy your time here & learn as much as possible from your supervisors."],
+        "script": ["You have been offered a 6-month internship at MBB & Co. Enjoy your time here & learn as much as possible from your supervisors."],
         "question": "You have been paid a total of $6,000 over 6 months! How would you like to distribute your salary?",
         "amount": 6000,
         "response": "You have distributed your salary!"
     },
     "event3": {
-        "script": ["Congratulations! You have landed your first job at ShopForward! Be ready for more responsibilities!"],
+        "script": ["Congraulations on landing your first real job at ShopForward! You are ready for more responsibilities! "],
         "question": "You have earned $100,000 over 2 years of working at ShopForward! How would you like to distribute your salary?",
         "amount": 100000,
         "response": "You have distributed your salary!"
     },
     "event4": {
-        "script": ["Hard work pays off! You have been promoted to a manager at ShopForward!"],
+        "script": ["Congrats on your promotion! You have shown that you are able to take on more responsibilities & earn the praises of your bosses. Enjoy your raise, you deserve it."],
         "question": "Your pay has increased to $150,000 over the next 2 years of work! How would you like to distribute your salary?",
         "amount": 150000,
         "response": "You have distributed your salary!"
     },
     "event5": {
-        "script": ["Your new home is now ready! Time to collect your keys and move in!"],
-        "question": "Your new home costs $200,000. How would you like to make your payment?",
+        "script": ["Your new home is now ready! Happy to collect your keys to your brand new home."],
+        "question": "Your new home costs $200,000. How would you like to make your downpayment?",
         "amount": -200000,
-        "response": "Payment has been made!"
+        "response": "Payment for your house has been made!"
+    },
+    "event6": {
+        "script": ["Congratulations on your marriage! Wishing you every happiness together! Wedding bells are ringing and this could be the start of something special."],
+        "question": "The wedding expenses adds up to $50,000. How would you like to make your payment?",
+        "amount": -50000,
+        "response": "Payment for your wedding has been made!"
+    },
+    "event7": {
+        "script": ["BINGO! You have tried your luck and won 1st prize in the latest lottery draw"],
+        "question": "Your earnings for the lottery amounts to $2,000!",
+        "amount": 2000,
+        "response": "You have distributed the earnings"
+    },
+    "event8": {
+        "script": ["Oh no! It has been a few years and the decor you picked out is outdated. There are so many new gadgets such as the projector, adjustable table & Hue LED Lights! Imagine the new vibe of the room!"],
+        "question": "The renovation works amounts to $5,000. How would you like to make your payment?",
+        "amount": -5000,
+        "response": "Payment for the renovation has been made!"
+    },
+    "event9": {
+        "script": ["Yes! You have been recognised by your bosses! This is their 25th anniversary bonus & you are getting a chunk for your years of loyalty and hard work!"],
+        "question": "Your bonus amounts to $100,000. How would you like to distribute it?",
+        "amount": 100000,
+        "response": "You have distributed your bonus!"
+    },
+    "event10": {
+        "script": ["Your children are all grown up! What a journey, they grew up so fast. Its time for the last leg of their education journey before going out to the real world."],
+        "question": "Your children's university fees amounts to about $50,000. How would you like to make your payment?",
+        "amount": -50000,
+        "response": "Payment for your children's university fees has been made!"
+    },
+    "event11": {
+        "script": ["Property market is red hot! Now is the time to downsize to a smaller apartment. Take profits from the larger home. Anyway kids are either renting their own home or at university dorms."],
+        "question": "Your profits from downsizing amounts to $300,000. How would you like to distribute your earnings?",
+        "amount": 300000,
+        "response": "You have distributed your earnings!"
+    },
+    "event12": {
+        "script": ["Your children are adults now, and are giving back to you for having raised them so well."],
+        "question": "Your children provided you with $48,000. How would you like to distribute this allowance?",
+        "amount": 48000,
+        "response": "You have distributed your allowance!"
+    },
+    "event13": {
+        "script": ["Oh no, the world has been hit by a drought! The semiconductor industry is now facing a shortage affecting tech stocks worldwide. Your Endowus portfolio has dipped!"],
+        "question": "Would you like to withdraw your funds from your Endowus wallet? Please keep in mind that doing so will affect your overall returns.",
+        "isVolatilityEvent": true
+    },
+    "event14": {
+        "script": ["The drought is over! The semiconductor industry has gotten back on its feet and is looking as strong as ever. Your Endowus portfolio has recovered!"],
+        "isVolatilityEvent": true
     }
-
 }
