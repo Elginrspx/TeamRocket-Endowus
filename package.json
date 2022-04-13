@@ -51,6 +51,9 @@
 		"regenerator-runtime": "^0.13.9",
 		"signals": "^1.0.0"
 	},
+	"engines": {
+		"node": "^17.3.0"
+	},
 	"parcelCleanPaths": [
 		"dist"
 	],
