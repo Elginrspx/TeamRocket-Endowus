@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import eventsCenter from '../EventsCenter'
+import eventsCenter from '../eventscenter'
 
 export default class HUD extends Phaser.Scene
 {
