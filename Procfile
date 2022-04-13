@@ -1,1 +1,1 @@
-web: parcel src/index.html
+web: sh -c 'npm run start && node src/node.js'
