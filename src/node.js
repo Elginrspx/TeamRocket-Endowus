@@ -4,6 +4,8 @@ const Cors = require("cors");
 const BodyParser = require("body-parser");
 const { request } = require("express");
 
+const PORT = process.env.PORT || 3000;
+
 const client = new MongoClient("mongodb+srv://fyp1:RacH3nBu9ER2NW2o@clusterfyp.dwacg.mongodb.net/test");
 const server = Express();
 
@@ -24,7 +26,7 @@ server.get("/get", async (request, response) => {
 });
 
 //Listen Function
-server.listen("3000", async () => {
+server.listen(PORT, async () => {
     try {
         await client.connect();
         collection = client.db("Game1").collection("user");
