@@ -23,8 +23,6 @@ export default class LoginScene extends Phaser.Scene
     async create()
     {
         this.persona =  this.persona
-        this.personaEvents = this.personaEvents
-
 
         //Set Background Image
         this.add.image(400, 320, 'background')
@@ -60,8 +58,6 @@ export default class LoginScene extends Phaser.Scene
                 }
 
               }
-
-            
  
         }) 
 
@@ -69,7 +65,6 @@ export default class LoginScene extends Phaser.Scene
         try {
             this.dataJSON = await fetch("http://localhost:3000/get")
                 .then(response => response.json());
-        //this.playerPersona = this.dataJSON[0]["lifestage"]
         } catch (e) {
             console.error(e);
         }
