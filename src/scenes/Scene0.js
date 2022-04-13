@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import { WorldProperties, PersonaEvents, SceneEventMapping } from '../settings'
-import eventsCenter from './../EventsCenter'
+import eventsCenter from '../EventsCenter'
 
 export default class Scene0 extends Phaser.Scene
 {
