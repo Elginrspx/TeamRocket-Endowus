@@ -36,7 +36,11 @@ export default class LoginScene extends Phaser.Scene
         this.usernameInput = this.add.dom(400, 300).createFromCache("form").setPerspective(800)
 
         //Create ENTER KEY
-        this.returnKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+        this.returnKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER)
+
+        //Error Msg Upon invalid email
+        this.errorMsg = this.add.text(230, 230, '', { font: '22px Arial', color: 'red' }).setText("Please enter a valid email address.")
+        this.errorMsg.setVisible(false)
 
         //Input Validation
         this.returnKey.on("down", event => {
@@ -46,18 +50,15 @@ export default class LoginScene extends Phaser.Scene
                 if (this.dataJSON[i]["email"] == username.value) {
                     this.persona = this.dataJSON[i]["lifestage"]
                     console.log("Scene Started!")
-
                     this.scene.start("scene-0", {
                         persona : this.persona
                     })
-                    console.log(this.scene)
-
-
                     break
                 }
 
                 else if (this.dataJSON[i]["email"] != username.value) {
-                    console.log("Pls try again")
+                    this.errorMsg.setVisible(true)
+                    document.getElementById('user-input').value = ''
                     break
                 }
 

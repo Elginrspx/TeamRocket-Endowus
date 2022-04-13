@@ -10,14 +10,12 @@ export default class Scene0 extends Phaser.Scene
 	}
 
     init(data) {
+        //From Login Scene
         this.persona = data.persona
     }
 
 	preload()
-    {
-        // From DB
-        this.persona = this.playerPersona
-        //this.persona = "demo"
+    {        
 
         this.load.baseURL = "../assets/"
 
@@ -174,15 +172,6 @@ export default class Scene0 extends Phaser.Scene
                 collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
                 faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
             })
-        }
-
-        //Calling Player's Persona from Game 1 Mongo DB
-        try {
-            this.playerJSON = await fetch("http://localhost:3000/get")
-                .then(response => response.json());
-           this.playerPersona = this.playerJSON[0]["lifestage"]
-        } catch (e) {
-            console.error(e);
         }
     }
     
