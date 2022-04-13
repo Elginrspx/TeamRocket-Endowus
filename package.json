@@ -1,8 +1,9 @@
 {
 	"name": "phaser3-parcel-template",
 	"version": "1.0.0",
-	"engine": {
-		"node": "14.x"
+	"engines": {
+		"node": "14.x",
+		"npm": "6.x"
 	},
 	"description": "A template project for Phaser 3 using Parceljs",
 	"scripts": {
