@@ -546,25 +546,25 @@ export default class HUD extends Phaser.Scene
         let volatilityWithdrawText = ""
 
         if (this.volatilityWithdraw) {
-            volatilityWithdrawText = "You chose to withdraw your investments during a volatility event! Volatility events do not last forever, as you have seen, markets will tend to recover over time. You may wish to reconsider withdrawing investments in the future."
+            volatilityWithdrawText = "You chose to withdraw your investments during a Volatility Event! As shown, volatility events only lasts in the short term and markets tend to recover over time. You may wish to reconsider withdrawing your investments in future volatility events."
         } else {
-            volatilityWithdrawText = "You chose to keep your investments during a volatility event! Volatility events do not last forever, as you have seen, markets will tend to recover over time. Good job!"
+            volatilityWithdrawText = "You chose to keep your investments during a Volatility Event! As shown, volatility events only lasts in the short term and markets tend to recover over time. Great job!"
         }
         
         this.summaryText = [
-[`Congratulations for completing Endowus Walkthrough! Hope you will now have a better understanding about managing risks and rewards. Now let us review your journey...
+[`Congratulations on completing the Endowus Simulator! We hope you've gained a better understanding of managing risks and rewards. Now, let us review your investment journey...
         
-Over the course of the game, your Recurring Investments adds up to a total of $${ this.recurringInvestmentTotal }. Based on the portfolio's return of up to ${ this.annualisedReturn }% per annum, you earned $${ this.interestEarnedTotal } interest.
+Your Recurring Investments adds up to a total of $${ this.recurringInvestmentTotal }. Based on the portfolio's return of up to ${ this.annualisedReturn }% per annum, you earned $${ this.interestEarnedTotal } interest.
 
-Volatility Events affects your portfolio differently based on the portfolio's Risk Tolerance. Riskier Portfolios will dip to a greater extent compared to Less Risky Portfolios. Based on the selected portfolio, your portfolio dipped ${ this.riskTolerance }%.
+Volatility Events affects your portfolio differently based on the portfolio's Risk Tolerance. Riskier Portfolios will dip to a greater extent compared to Less Risky Portfolios. Based on the selected portfolio, your portfolio dipped by ${ this.riskTolerance }%.
 
 ${ volatilityWithdrawText }`],
-[`It is so interesting what investment does to help conserve and build your wealth! 
-Here are 3 takeaways as you embark on your journey with Endowus:
+[`Investing is a great way to conserve and build your wealth! 
+Here are 3 takeaways for your to bring on your journey with Endowus:
 
-1) Time in market beats timing the market. Even when you buy at peaks, historical records show you are still able to outperform investors who time the market.
-2) Allocate a sufficient amount for your expenses & save the rest. Black swan events rarely occur, but when they do, you will be glad to have kept a portion of cash aside to help tide you through your daily lives. 
-3) Discipline. Having the discipline to constantly invest really helps to compound your money & let it grow. 
+1) Time in market beats timing the market. You could try buying low and selling high, but records show that consistent investing always outperforms those who time the market.
+2) Allocate a sufficient amount for your expenses & save the rest. Black Swan Events rarely occur, but when they do, you'll be glad to have a portion of cash aside to help tide you through. 
+3) Stay disciplined. Set aside a sum to invest every month and stay within your financial goals to unlock the true benefits of compound growth. 
 
 All the best in your financial journey!`]
 ]
