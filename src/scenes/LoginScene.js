@@ -10,8 +10,44 @@ export default class LoginScene extends Phaser.Scene
 	preload()
     {
         this.load.baseURL = "../assets/"
-        this.load.html("form", "form/form.html")
+
+        // Preload Map
+        this.load.image('World Of Solaria', 'tilemaps/World Of Solaria.png')
+        this.load.image('Animated', 'tilemaps/Animated.png')
+        this.load.tilemapTiledJSON('scene0Tilemap', 'tilemaps/scene-0.json')
+        this.load.tilemapTiledJSON('scene1Tilemap', 'tilemaps/scene-1.json')
+        this.load.tilemapTiledJSON('scene2Tilemap', 'tilemaps/scene-2.json')
+        this.load.tilemapTiledJSON('scene3Tilemap', 'tilemaps/scene-3.json')
+        
+        // Preload Plugin for Animated Tileset
+        this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');
+
+        // Preload Character and NPCs
+        this.load.atlas('player', 'characters/player.png', 'characters/player.json')
+        this.load.atlas('npc-1', 'characters/npc-1.png', 'characters/npc-1.json')
+        this.load.atlas('npc-2', 'characters/npc-2.png', 'characters/npc-2.json')
+        this.load.atlas('npc-3', 'characters/npc-3.png', 'characters/npc-3.json')
+        this.load.atlas('npc-4', 'characters/npc-4.png', 'characters/npc-4.json')
+        this.load.atlas('npc-5', 'characters/npc-5.png', 'characters/npc-5.json')
+
+        // Preload Miscellaneous Assets
+        this.load.atlas('questMarker', 'images/questMarker.png', 'images/questMarker.json')
+        this.load.image('wallet', 'images/money.png')
+        this.load.image('endowusWallet', 'images/endowus.png')
+        this.load.image('recurringInvestment', 'images/recurringInvestment.png')
+        this.load.image('moreInfoBtn', 'images/moreInfoBtn.png')
         this.load.image('background', 'images/background.jpg')
+
+        // Preload Audio
+        this.load.audio("gameTheme1", "music/ambience-cave.wav");
+        this.load.audio("gameTheme2", "music/adventures-in-adventureland.wav");
+
+        // Preload Email + Input Form
+        this.load.html("form", "form/form.html")
+        this.load.html("amountInput", "form/amountInput.html");
+
+        // Preload Scripts for event dialog
+        this.load.json('script', 'data/script.json');
     }   
 
     async create()
