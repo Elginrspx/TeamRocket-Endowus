@@ -73,6 +73,7 @@ export default class HUD extends Phaser.Scene
     }
 
     dialogManager(isSpace) {
+        console.log(this.dialogEvent)
         if (this.Dialog.visible) {
             switch(this.dialogEvent) {
                 case "introduction":
@@ -251,6 +252,11 @@ export default class HUD extends Phaser.Scene
                             this.amountInput.setVisible(false)
                             this.dialogEvent = ""
                             this.amountInput.getChildByName("amountInput").value = ""
+
+                            if (this.volatilityRecurringChangeInvestment == true) {
+                                this.time.delayedCall(3000, () => eventsCenter.emit('changeEvent'), [], this)
+                                this.volatilityRecurringChangeInvestment = false
+                            }
                         }
                     }
                     break
@@ -412,11 +418,12 @@ export default class HUD extends Phaser.Scene
                     if (isSpace) {
                         this.Dialog.display(false)
                         this.changeRecurringInvestment()
+                        this.volatilityRecurringChangeInvestment = true
                     } else {
                         this.Dialog.display(false)
                         this.dialogEvent = ""
+                        this.time.delayedCall(3000, () => eventsCenter.emit('changeEvent'), [], this)
                     }
-                    eventsCenter.emit('changeEvent')
                     break
 
                 case "gameOver":
