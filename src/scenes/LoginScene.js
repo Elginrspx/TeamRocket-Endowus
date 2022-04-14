@@ -7,11 +7,6 @@ export default class LoginScene extends Phaser.Scene
 		super('LoginScene')
 	}
 
-    init() 
-    {
-
-    }
-
 	preload()
     {
         this.load.baseURL = "../assets/"
@@ -21,8 +16,6 @@ export default class LoginScene extends Phaser.Scene
 
     async create()
     {
-        this.persona =  this.persona
-
         //Set Background Image
         this.add.image(400, 320, 'background')
     
@@ -42,8 +35,8 @@ export default class LoginScene extends Phaser.Scene
             for (let i = 0; i < this.dataJSON.length; i++) {
 
                 if (this.dataJSON[i]["email"] == username.value) {
-                    this.persona = this.dataJSON[i]["lifestage"]
-                    console.log("Scene Started!")
+                    // this.persona = this.dataJSON[i]["lifestage"]
+                    this.persona = "demo"
                     this.scene.start("scene-0", {
                         persona : this.persona
                     })
@@ -55,9 +48,7 @@ export default class LoginScene extends Phaser.Scene
                     document.getElementById('user-input').value = ''
                     break
                 }
-
               }
- 
         }) 
 
         //Calling Game 1 Database from Mongo DB
@@ -69,11 +60,4 @@ export default class LoginScene extends Phaser.Scene
         }
 
     }
-    
-    update() 
-    {
-
-    }
-
-    
 }
