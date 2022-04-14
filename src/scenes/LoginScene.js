@@ -67,23 +67,20 @@ export default class LoginScene extends Phaser.Scene
 
         //Input Validation
         this.returnKey.on("down", event => {
-            let username = this.usernameInput.getChildByName("username");
-            for (let i = 0; i < this.dataJSON.length; i++) {
+            var username = this.usernameInput.getChildByName("username").value;
 
-                if (this.dataJSON[i]["email"] == username.value) {
+            for (let i = 0; i < this.dataJSON.length; i++) {
+                if (this.dataJSON[i]["email"] == username) {
                     this.persona = this.dataJSON[i]["lifestage"]
                     this.scene.start("scene-0", {
                         persona : this.persona
                     })
                     break
                 }
-
-                else if (this.dataJSON[i]["email"] != username.value) {
-                    this.errorMsg.setVisible(true)
-                    document.getElementById('user-input').value = ''
-                    break
-                }
-              }
+            }
+            // No Valid Email found, show error message, reset value
+            this.errorMsg.setVisible(true)
+            this.usernameInput.getChildByName("username").value = ''
         }) 
 
         //Calling Game 1 Database from Mongo DB
@@ -93,6 +90,5 @@ export default class LoginScene extends Phaser.Scene
         } catch (e) {
             console.error(e);
         }
-
     }
 }
