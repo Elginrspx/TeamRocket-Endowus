@@ -54,7 +54,7 @@
     },
     
     "event1": {
-        "script": ["Congraulations, you have been accepted for an exchange semester at Busan University in South Korea."],
+        "script": ["Congratulations, you have been accepted for an exchange semester at Busan University in South Korea."],
         "question": "You are required to make a payment of $8,000. How would you like to make your payment?",
         "response": "Payment for your exchange has been made!",
         "amount": -8000
@@ -66,7 +66,7 @@
         "response": "You have distributed your salary!"
     },
     "event3": {
-        "script": ["Congraulations on landing your first job at ShopForward! You are ready for more responsibilities! "],
+        "script": ["Congratulations on landing your first job at ShopForward! You are ready for more responsibilities! "],
         "question": "You have earned $100,000 over 2 years of working at ShopForward! How would you like to distribute your salary?",
         "amount": 100000,
         "response": "You have distributed your salary!"
