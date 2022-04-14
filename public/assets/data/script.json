@@ -54,37 +54,37 @@
     },
     
     "event1": {
-        "script": ["Congraulations, you have been accepted for an exchange semester at Wuhan University in China."],
+        "script": ["Congraulations, you have been accepted for an exchange semester at Busan University in South Korea."],
         "question": "You are required to make a payment of $8,000. How would you like to make your payment?",
         "response": "Payment for your exchange has been made!",
         "amount": -8000
     },
     "event2": {
-        "script": ["You have been offered a 6-month internship at MBB & Co. Enjoy your time here & learn as much as possible from your supervisors."],
+        "script": ["You have been offered a 6-month internship at MBB & Co. Enjoy your time here & learn from your supervisors."],
         "question": "You have been paid a total of $6,000 over 6 months! How would you like to distribute your salary?",
         "amount": 6000,
         "response": "You have distributed your salary!"
     },
     "event3": {
-        "script": ["Congraulations on landing your first real job at ShopForward! You are ready for more responsibilities! "],
+        "script": ["Congraulations on landing your first job at ShopForward! You are ready for more responsibilities! "],
         "question": "You have earned $100,000 over 2 years of working at ShopForward! How would you like to distribute your salary?",
         "amount": 100000,
         "response": "You have distributed your salary!"
     },
     "event4": {
-        "script": ["Congrats on your promotion! You have shown that you are able to take on more responsibilities & earn the praises of your bosses. Enjoy your raise, you deserve it."],
+        "script": ["You've been promoted! Your talent and grit have earned the praise of your boss and colleagues. Enjoy your raise!"],
         "question": "Your pay has increased to $150,000 over the next 2 years of work! How would you like to distribute your salary?",
         "amount": 150000,
         "response": "You have distributed your salary!"
     },
     "event5": {
-        "script": ["Your new home is now ready! Happy to collect your keys to your brand new home."],
+        "script": ["Your new home is now ready! Collect your keys to your brand new home."],
         "question": "Your new home costs $200,000. How would you like to make your downpayment?",
         "amount": -200000,
         "response": "Payment for your house has been made!"
     },
     "event6": {
-        "script": ["Congratulations on your marriage! Wishing you every happiness together! Wedding bells are ringing and this could be the start of something special."],
+        "script": ["Congratulations on your marriage! Wedding bells are ringing and signalling the beginning of a new journey. Wishing you both everlasting happiness!"],
         "question": "The wedding expenses adds up to $50,000. How would you like to make your payment?",
         "amount": -50000,
         "response": "Payment for your wedding has been made!"
@@ -96,13 +96,13 @@
         "response": "You have distributed the earnings"
     },
     "event8": {
-        "script": ["Oh no! It has been a few years and the decor you picked out is outdated. There are so many new gadgets such as the projector, adjustable table & Hue LED Lights! Imagine the new vibe of the room!"],
+        "script": ["Oh no! It's been a few years and your home decor is now outdated. Time for a renovation, imagine the new vibe of the room!"],
         "question": "The renovation works amounts to $5,000. How would you like to make your payment?",
         "amount": -5000,
         "response": "Payment for the renovation has been made!"
     },
     "event9": {
-        "script": ["Yes! You have been recognised by your bosses! This is their 25th anniversary bonus & you are getting a chunk for your years of loyalty and hard work!"],
+        "script": ["You have been recognised for your efforts at work! This is the company's 25th anniversary bonus & you are getting a chunk for your years of loyalty and hard work!"],
         "question": "Your bonus amounts to $100,000. How would you like to distribute it?",
         "amount": 100000,
         "response": "You have distributed your bonus!"
@@ -114,7 +114,7 @@
         "response": "Payment for your children's university fees has been made!"
     },
     "event11": {
-        "script": ["Property market is red hot! Now is the time to downsize to a smaller apartment. Take profits from the larger home. Anyway kids are either renting their own home or at university dorms."],
+        "script": ["Property market is red hot! Now is the time to take profits from your larger home and downsize to a smaller apartment. ."],
         "question": "Your profits from downsizing amounts to $300,000. How would you like to distribute your earnings?",
         "amount": 300000,
         "response": "You have distributed your earnings!"
