@@ -555,7 +555,9 @@ export default class HUD extends Phaser.Scene
 [`Congratulations for completing Endowus Walkthrough! Hope you will now have a better understanding about managing risks and rewards. Now let us review your journey...
         
 Over the course of the game, your Recurring Investments adds up to a total of $${ this.recurringInvestmentTotal }. Based on the portfolio's return of up to ${ this.annualisedReturn }% per annum, you earned $${ this.interestEarnedTotal } interest.
-        
+
+Volatility Events affects your portfolio differently based on the portfolio's Risk Tolerance. Riskier Portfolios will dip to a greater extent compared to Less Risky Portfolios. Based on the selected portfolio, your portfolio dipped ${ this.riskTolerance }%.
+
 ${ volatilityWithdrawText }`],
 [`It is so interesting what investment does to help conserve and build your wealth! 
 Here are 3 takeaways as you embark on your journey with Endowus:

@@ -7,7 +7,7 @@
 	},
 	"description": "A template project for Phaser 3 using Parceljs",
 	"scripts": {
-		"start": "parcel src/index.html & node src/node.js",
+		"start": "parcel src/index.html && node src/node.js",
 		"build": "parcel build src/index.html --out-dir dist",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},

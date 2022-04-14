@@ -71,8 +71,7 @@ export default class LoginScene extends Phaser.Scene
             for (let i = 0; i < this.dataJSON.length; i++) {
 
                 if (this.dataJSON[i]["email"] == username.value) {
-                    // this.persona = this.dataJSON[i]["lifestage"]
-                    this.persona = "demo"
+                    this.persona = this.dataJSON[i]["lifestage"]
                     this.scene.start("scene-0", {
                         persona : this.persona
                     })
