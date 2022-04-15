@@ -114,7 +114,7 @@
         "response": "Payment for your children's university fees has been made!"
     },
     "event11": {
-        "script": ["Property market is red hot! Now is the time to take profits from your larger home and downsize to a smaller apartment. ."],
+        "script": ["Property market is red hot! Now is the time to take profits from your larger home and downsize to a smaller apartment."],
         "question": "Your profits from downsizing amounts to $300,000. How would you like to distribute your earnings?",
         "amount": 300000,
         "response": "You have distributed your earnings!"
