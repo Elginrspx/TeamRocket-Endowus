@@ -12,7 +12,7 @@ export const PersonaEvents = {
     "student": [1, 2, 13, 3, 4, 14, 5],
     "fresh_grad": [3, 4, 13, 5, 6, 14, 7],
     "bachelor": [4, 5, 13, 7, 8, 14, 9],
-    "married_man": [5, 6, 13, 8, 9, 14, 11],
+    "married_man": [6, 7, 13, 8, 9, 14, 11],
     "family_man": [8, 9, 13, 10, 11, 14, 12]
 }
 

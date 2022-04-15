@@ -100,8 +100,8 @@ export default class HUD extends Phaser.Scene
                 case "setWallet":
                     if (isSpace) {
                         var amount = parseInt(this.amountInput.getChildByName("amountInput").value)
-                        if (isNaN(amount) || amount < 1000) {
-                            this.Dialog.setText("Please set an amount above $1,000!")
+                        if (isNaN(amount) || amount < 10000) {
+                            this.Dialog.setText("Please set an amount above $10,000!")
                         } else {
                             // Create Wallet
                             this.wallet = this.add.image(670, 40, 'wallet')
