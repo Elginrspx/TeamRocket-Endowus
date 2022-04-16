@@ -79,7 +79,7 @@
     },
     "event5": {
         "script": ["Your new home is now ready! Collect your keys to your brand new home."],
-        "question": "Your new home costs $30,000. How would you like to make your downpayment?",
+        "question": "The downpayment for your new home costs $30,000. How would you like to make your downpayment?",
         "amount": -30000,
         "response": "Payment for your house has been made!"
     },
@@ -133,5 +133,17 @@
     "event14": {
         "script": ["The drought is over! The semiconductor industry has gotten back on its feet and is looking as strong as ever. Your Endowus portfolio has recovered!"],
         "isVolatilityEvent": true
+    },
+    "event15": {
+        "script": ["Congratulations! You've been promoted to Department Chief at work! Your talent and grit have earned high praises from your boss and colleagues. Enjoy your raise!"],
+        "question": "Your pay has increased to a sum of $250,000 over the next 2 years of work! How would you like to distribute your salary?",
+        "amount": 250000,
+        "response": "You have distributed your salary!"
+    },
+    "event16": {
+        "script": ["Your new home is now ready! Collect your keys and start a new journey with your family."],
+        "question": "The inital cost of your new home is $70,000. How would you like to make your payment?",
+        "amount": -70000,
+        "response": "Payment for your house has been made!"
     }
 }
