@@ -1,1 +1,1 @@
-web:npm run start && node src/node.js
+web:npm start && node src/node.js
