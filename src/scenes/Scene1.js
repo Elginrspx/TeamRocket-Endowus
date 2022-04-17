@@ -126,27 +126,6 @@ export default class Scene1 extends Phaser.Scene
                 faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
             })
         }
-
-        
-        try {
-            // if (this.player.username && this.player.score) {
-            //     await fetch("http://localhost:3000/create", {
-            //         "method": "POST",
-            //         "headers": {
-            //             "content-type": "application/json"
-            //         },
-            //         "body": JSON.stringify(this.player)
-            //     });
-            // }
-    
-            this.playerPersona = await fetch("http://localhost:3000/get")
-                .then(response => response.json());
-            console.log(this,this.playerPersona)
-    
-        } catch (e) {
-            console.error(e);
-        }
-        
         
 
     }
