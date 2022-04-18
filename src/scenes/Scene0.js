@@ -135,7 +135,7 @@ export default class Scene0 extends Phaser.Scene
             MapObjectsLayer.renderDebug(debugGraphics, {
                 tileColor: null,
                 collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-                faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+                faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edge
             })
         }
     }
