@@ -174,7 +174,7 @@ export default class HUD extends Phaser.Scene
                             // Remove stated amount from Savings Wallet
                             this.updateWallet(-amount)
 
-                            this.Dialog.setText("Make Investing a habit by setting up Recurring Investments! At the end of every game event, the amount will be automatically transferred from your savings wallet to your investments!", 1)
+                            this.Dialog.setText("Make Investing a habit by setting up Recurring Investments! For this simulation, the amount will be automatically transferred from your savings wallet to your investments at the end of every event!", 1)
                             this.dialogEvent = "setRecurring"
                             this.amountInput.getChildByName("amountInput").value = ""
                         }
@@ -582,7 +582,7 @@ export default class HUD extends Phaser.Scene
         this.summaryText = [
 [`Congratulations on completing the Endowus Simulator! We hope you've gained a better understanding of managing risks and rewards. Now, let us review your investment journey...
         
-Your Recurring Investments adds up to a total of $${ this.recurringInvestmentTotal }. Based on the portfolio's return of up to ${ this.annualisedReturn }% per annum, you earned $${ this.interestEarnedTotal } interest.
+Your Recurring Investments adds up to a total of $${ this.recurringInvestmentTotal }. Based on the portfolio's return of up to ${ this.annualisedReturn }% per annum, you earned $${ this.interestEarnedTotal }.
 
 Volatility Events affects your portfolio differently based on the portfolio's Risk Tolerance. Riskier Portfolios will dip to a greater extent compared to Less Risky Portfolios. Based on the selected portfolio, your portfolio dipped by ${ this.riskTolerance }%.
 
