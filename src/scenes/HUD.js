@@ -260,7 +260,11 @@ export default class HUD extends Phaser.Scene
                     if (isSpace) {
                         var amount = parseInt(this.amountInput.getChildByName("amountInput").value)
                         if (isNaN(amount)) {
-                            amount = 0
+                            this.Dialog.display(false);
+                            this.amountInput.setVisible(false)
+                            this.dialogEvent = ""
+                            this.amountInput.getChildByName("amountInput").value = ""
+                            break
                         }
 
                         if (amount > this.wallet.data.values.amount) {
