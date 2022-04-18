@@ -54,7 +54,7 @@
     },
     
     "event1": {
-        "script": ["Congratulations, you have been accepted for an exchange semester at Busan University in South Korea."],
+        "script": ["2 years have passed... ", "Congratulations, you have been accepted for an exchange semester at Busan University in South Korea."],
         "question": "You are required to make a payment of $8,000. How would you like to make your payment?",
         "response": "Payment for your exchange has been made!",
         "amount": -8000
