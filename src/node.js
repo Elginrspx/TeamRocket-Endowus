@@ -4,7 +4,7 @@ const Cors = require("cors");
 const BodyParser = require("body-parser");
 const { request } = require("express");
 
-const PORT = 3000 || process.env.PORT;
+const PORT = process.env.PORT || 3000;
 console.log(PORT)
 
 const client = new MongoClient("mongodb+srv://fyp1:RacH3nBu9ER2NW2o@clusterfyp.dwacg.mongodb.net/test");
