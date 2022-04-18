@@ -19,7 +19,7 @@ var collection = client.db("Game1").collection("user");
 server.get("/get", async (request, response) => {
     try {
         let result = await collection.find({}).toArray();
-        response.send(result);
+        response.send("Status OK");
     } catch (e) {
         response.status(500).send({ message: e.message });
     }
@@ -30,6 +30,7 @@ server.listen(PORT, async () => {
     try {
         await client.connect();
         collection = client.db("Game1").collection("user");
+        console.log("Server Started at", process.env.PORT || 3000);
     } catch (e) {
         console.error(e);
     }
