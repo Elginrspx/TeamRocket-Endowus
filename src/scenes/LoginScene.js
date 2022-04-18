@@ -85,7 +85,7 @@ export default class LoginScene extends Phaser.Scene
 
         //Calling Game 1 Database from Mongo DB
         try {
-            this.dataJSON = await fetch("http://localhost:3000/get")
+            this.dataJSON = await fetch("http://localhost:8080/get")
                 .then(response => response.json());
         } catch (e) {
             console.error(e);
