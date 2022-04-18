@@ -70,20 +70,49 @@
     "wrap-ansi": "^7.0.0",
     "write-file-atomic": "^3.0.3",
     "xdg-basedir": "^4.0.0",
-    "yallist": "^4.0.0"
+    "yallist": "^4.0.0", 
+		"core-js": "^3.21.1",
+		"mongodb": "^4.4.1",
+		"node": "^17.3.0",
+		"parcel-bundler": "^1.12.5",
+		"phaser": "^3.55.2",
+		"regenerator-runtime": "^0.13.9",
+		"signals": "^1.0.0"
   },
   "scripts": {
     "start": "node src/node.js",
+    "build": "parcel build src/index.html --out-dir dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Elginrspx/TeamRocket-Endowus.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "supertommy",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Elginrspx/TeamRocket-Endowus/issues"
   },
-  "homepage": "https://github.com/Elginrspx/TeamRocket-Endowus#readme"
+  "homepage": "https://endowusgame.netlify.app/", 
+  "devDependencies": {
+		"@babel/core": "^7.10.5",
+		"@babel/plugin-proposal-class-properties": "^7.10.4",
+		"babel-core": "^6.26.3",
+		"babel-eslint": "^10.1.0",
+		"babel-loader": "^8.2.3",
+		"babel-polyfill": "^6.26.0",
+		"babel-preset-es2015": "^6.24.1",
+		"babel-preset-stage-0": "^6.24.1",
+		"eslint": "^6.8.0",
+		"minimist": ">=1.2.2",
+		"parcel-plugin-clean-easy": "^1.0.2",
+		"parcel-plugin-static-files-copy": "^2.4.3"
+	},
+  "parcelCleanPaths": [
+		"dist"
+	],
+	"staticFiles": {
+		"staticPath": "public",
+		"watcherGlob": "**"
+	}
 }
