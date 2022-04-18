@@ -34,6 +34,7 @@ export default class HUD extends Phaser.Scene
         this.dialogVisible = false
 
         // Setup Event Listeners
+        eventsCenter.on('introduction', this.introductionEvent, this)
         eventsCenter.on('selectPortfolio', this.selectPortfolio, this)
         eventsCenter.on('playEvent', this.playEvent, this)
         eventsCenter.on('gameOver', this.gameOver, this)
@@ -48,7 +49,8 @@ export default class HUD extends Phaser.Scene
         this.volatilityWithdraw = false
 
         // HUD scene is launched with Scene 0, run Introduction Event on launch
-        this.introductionEvent()
+        // this.introductionEvent()
+        eventsCenter.emit('HUDReady')
     }
 
     update() {
@@ -58,8 +60,28 @@ export default class HUD extends Phaser.Scene
         }
     }
 
-    introductionEvent() {
-        this.Dialog.setText(this.script["introduction"]["script"][0], 1)
+    introductionEvent(persona) {
+        switch(persona) {
+            case "student":
+                persona = "Student"
+                break
+            case "fresh_grad":
+                persona = "Fresh Graduate"
+                break
+            case "bachelor":
+                persona = "Bachelor"
+                break
+            case "married_man":
+                persona = "Married Man"
+                break
+            case "family_man":
+                persona = "Family Man"
+                break
+            case "demo":
+                persona = "Demo Account"
+                break
+        }
+        this.Dialog.setText("Welcome! You will be playing as a " + persona + ". To move around, use the Arrow keys. For Dialog, use either the Spacebar or Shift keys as indicated.", 1)
         this.dialogEvent = "introduction", this.scriptNumber = 0
         
     }
@@ -73,14 +95,13 @@ export default class HUD extends Phaser.Scene
     }
 
     dialogManager(isSpace) {
-        console.log(this.dialogEvent)
         if (this.Dialog.visible) {
             switch(this.dialogEvent) {
                 case "introduction":
                     if (isSpace) {
-                        this.scriptNumber += 1
                         if (this.script["introduction"]["script"][this.scriptNumber] != null) {
                             this.Dialog.setText(this.script["introduction"]["script"][this.scriptNumber], 1)
+                            this.scriptNumber += 1
                         } else {
                             this.amountInput.setVisible(true)
                             this.Dialog.setText("Set the total amount of savings you have on hand")
@@ -88,7 +109,7 @@ export default class HUD extends Phaser.Scene
                         }
 
                         // Only show more info button at 2nd script
-                        if (this.scriptNumber == 1) {
+                        if (this.scriptNumber == 2) {
                             this.moreInfoBtn.setVisible(true)
                             this.externalURL = this.script["introduction"]["externalURL"]
                         } else {

@@ -119,6 +119,7 @@ export default class Scene0 extends Phaser.Scene
         this.scene.launch('HUD')
 
         // Setup Event Listeners
+        eventsCenter.on('HUDReady', () => eventsCenter.emit('introduction', this.persona))
         eventsCenter.on('changeEvent', this.changeEvent , this)
         eventsCenter.on('reenableObject', this.reenableObject, this)
         eventsCenter.on('dialogVisible', (isDialogVisible) => this.dialogVisible = isDialogVisible)
