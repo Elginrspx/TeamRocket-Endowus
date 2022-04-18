@@ -21,8 +21,7 @@ export default class Scene1 extends Phaser.Scene
         this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');
     }
 
-    async create()
-    {
+    async create() {
         // Scene Fade In Effect
         this.cameras.main.fadeIn(1000, 0, 0, 0)
 
@@ -126,8 +125,6 @@ export default class Scene1 extends Phaser.Scene
                 faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
             })
         }
-        
-
     }
 
     // Update polls at 60 times a second
