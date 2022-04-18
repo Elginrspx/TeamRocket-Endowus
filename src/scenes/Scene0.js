@@ -112,7 +112,7 @@ export default class Scene0 extends Phaser.Scene
 
         // Play Game Theme
         this.gameTheme1 = this.sound.add("gameTheme1", { loop: true });
-        this.gameTheme2 = this.sound.add("gameTheme2", { loop: true });
+        this.gameTheme2 = this.sound.add("gameTheme2", { loop: true, volume: 0.25 });
         this.gameTheme1.play()
 
         // Launch HUD scene to run in parallel
