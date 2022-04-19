@@ -115,7 +115,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 				this.dialogBox.command.setText('Spacebar: Yes    Shift: No');
 				break;
 			case 3:
-				this.dialogBox.command.setText('Spacebar: Continue    Up: Savings    Down: Investment');
+				this.dialogBox.command.setText('Spacebar: Continue    Up Key: Savings    Down Key: Investment');
 				break;
 		}
 	}
@@ -223,7 +223,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 				this.summaryDialogBox.command.setText('Spacebar: Yes    Shift: No');
 				break;
 			case 3:
-				this.summaryDialogBox.command.setText('Spacebar: Continue    Up: Savings    Down: Investment');
+				this.summaryDialogBox.command.setText('Spacebar: Continue    Up Key: Savings    Down Key: Investment');
 				break;
 		}
 	}
