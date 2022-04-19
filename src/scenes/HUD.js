@@ -26,6 +26,14 @@ export default class HUD extends Phaser.Scene
             .setVisible(false)
         this.moreInfoBtn.on('pointerup', () => window.open(this.externalURL), this)
 
+        this.replayBtn = this.add.image(725, 575, 'replayBtn')
+            .setInteractive( { useHandCursor: true } )
+            .setScrollFactor(0, 0)
+            .setDepth(1010)
+            .setScale(0.5, 0.5)
+            .setVisible(false)
+        this.replayBtn.on('pointerup', () => window.open(this.externalURL2), this)
+
         // For Wallet Percentage Dialog
         this.walletPercentageText = this.add.text(20, 565, '', { font: '18px pressstart' })
             .setScrollFactor(0, 0)
@@ -603,6 +611,14 @@ All the best in your financial journey!`]
 ]
         this.Dialog.setSummaryText(this.summaryText[0].toString(), 1)
         this.dialogEvent = "gameOver"
+
+        this.moreInfoBtn.setY(440)
+        this.moreInfoBtn.setVisible(true)
+        this.externalURL = "https://endowus.com/flagship"
+
+        this.replayBtn.setY(440)
+        this.replayBtn.setVisible(true)
+        this.externalURL2 = "https://endowusgame.netlify.app/"
     }
 
     walletPercentageManager(isUp) {
