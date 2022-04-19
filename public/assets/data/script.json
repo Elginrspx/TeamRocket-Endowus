@@ -61,7 +61,7 @@
     },
     "event2": {
         "script": ["2 years have passed... ", "You have been offered a 6-month internship at MBB & Co. Enjoy your time here & learn from your supervisors."],
-        "question": "You have been paid a total of $6,000 over 6 months! How would you like to distribute your salary?",
+        "question": "You have been paid a total of $6,000 over 6 months! ($1000/Month) How would you like to distribute your salary?",
         "amount": 6000,
         "response": "You have distributed your salary!"
     },
