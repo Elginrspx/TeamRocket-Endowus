@@ -186,6 +186,17 @@
                  "width":0,
                  "x":607,
                  "y":513
+                }, 
+                {
+                 "height":0,
+                 "id":22,
+                 "name":"event16",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":688.194265047791,
+                 "y":495.995866701111
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -194,7 +205,7 @@
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":22,
+ "nextobjectid":23,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.2",
