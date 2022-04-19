@@ -182,7 +182,7 @@ export default class HUD extends Phaser.Scene
                             // Remove stated amount from Savings Wallet
                             this.updateWallet(-amount)
 
-                            this.Dialog.setText("Make Investing a habit by setting up Recurring Investments! For this simulation, the amount will be automatically transferred from your savings wallet to your investments at the end of every event!", 1)
+                            this.Dialog.setText("Make Investing a habit by setting up Recurring Investments! For this simulation, the amount will be automatically transferred from your savings wallet to your investments at the end of every event, which equals to a time skip of 2 years!", 1)
                             this.dialogEvent = "setRecurring"
                             this.amountInput.getChildByName("amountInput").value = ""
                         }
@@ -462,7 +462,7 @@ export default class HUD extends Phaser.Scene
                         this.moreInfoBtn.setVisible(true)
                         this.externalURL = "https://endowus.com/flagship"
                 
-                        this.replayBtn.setY(440).setX(350)
+                        this.replayBtn.setY(440).setX(600)
                         this.replayBtn.setVisible(true)
                         this.externalURL2 = "https://endowusgame.netlify.app/"
 
