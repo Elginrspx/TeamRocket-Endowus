@@ -33,6 +33,7 @@ export default class LoginScene extends Phaser.Scene
         this.load.image('recurringInvestment', 'images/recurringInvestment.png')
         this.load.image('moreInfoBtn', 'images/moreInfoBtn.png')
         this.load.image('background', 'images/background.jpg')
+        this.load.image('replayBtn', 'images/moreInfoBtn.png')
 
         // Preload Audio
         this.load.audio("gameTheme1", "music/ambience-cave.wav");
