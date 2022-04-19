@@ -15,6 +15,11 @@ export default class Scene3 extends Phaser.Scene
 
 	preload()
     {
+        this.load.baseURL = "../assets/"
+        
+        // Preload Map
+        this.load.tilemapTiledJSON('scene3Tilemap', 'tilemaps/scene-3.json')
+
         // Preload Plugin for Animated Tileset
         this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');
     }

@@ -2,8 +2,6 @@ import Phaser from 'phaser'
 import { WorldProperties, SceneEventMapping } from '../settings'
 import eventsCenter from '../eventscenter'
 
-
-
 export default class Scene1 extends Phaser.Scene
 {
 	constructor()
@@ -17,6 +15,11 @@ export default class Scene1 extends Phaser.Scene
 
 	preload()
     {
+        this.load.baseURL = "../assets/"
+        
+        // Preload Map
+        this.load.tilemapTiledJSON('scene1Tilemap', 'tilemaps/scene-1.json')
+
         // Preload Plugin for Animated Tileset
         this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');
     }

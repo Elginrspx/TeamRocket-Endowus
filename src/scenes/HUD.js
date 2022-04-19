@@ -264,7 +264,6 @@ export default class HUD extends Phaser.Scene
                             this.amountInput.setVisible(false)
                             this.dialogEvent = ""
                             this.amountInput.getChildByName("amountInput").value = ""
-                            break
                         }
 
                         if (amount > this.wallet.data.values.amount) {
@@ -277,11 +276,11 @@ export default class HUD extends Phaser.Scene
                             this.amountInput.setVisible(false)
                             this.dialogEvent = ""
                             this.amountInput.getChildByName("amountInput").value = ""
-
-                            if (this.volatilityRecurringChangeInvestment == true) {
-                                this.time.delayedCall(3000, () => eventsCenter.emit('changeEvent'), [], this)
-                                this.volatilityRecurringChangeInvestment = false
-                            }
+                        }
+                        
+                        if (this.volatilityRecurringChangeInvestment == true) {
+                            this.time.delayedCall(3000, () => eventsCenter.emit('changeEvent'), [], this)
+                            this.volatilityRecurringChangeInvestment = false
                         }
                     }
                     break
