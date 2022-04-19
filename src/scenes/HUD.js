@@ -214,7 +214,7 @@ export default class HUD extends Phaser.Scene
                                 .setDepth(100)
                                 .setText(this.recurringInvestment.data.get('amount'))
                                 
-                            this.Dialog.setText("To adjust Recurring Investments, click the Icon on the top-left!\nBefore you begin, the game will automatically end when both wallets reach $0! Funds will be transferred across wallets as needed", 1)
+                            this.Dialog.setText("To adjust Recurring Investments, click the Icon on the top-left!\nYou can also transfer money between the Savings and Endowus Wallets by clicking on their respective icons at the top-right\nThe game will end when both wallets reach $0 OR when you have completed all events in the game.", 1)
                             this.amountInput.setVisible(false)
                             this.dialogEvent = ""
                             this.amountInput.getChildByName("amountInput").value = ""
