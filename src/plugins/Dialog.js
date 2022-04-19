@@ -115,7 +115,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 				this.dialogBox.command.setText('Spacebar: Yes    Shift: No');
 				break;
 			case 3:
-				this.dialogBox.command.setText('Spacebar: Continue    Up Key: Savings    Down Key: Investment');
+				this.dialogBox.command.setText('Spacebar: Continue   Up Key: Savings   Down Key: Investment');
 				break;
 		}
 	}
@@ -176,7 +176,7 @@ export class Dialog extends Phaser.Plugins.ScenePlugin {
 	// Creates text holder within the dialog window
 	_drawCommand() {
 		let dimensions = this._calculateWindowDimensions();
-		let x = dimensions.x + (this.padding * 0.5) + 360;
+		let x = dimensions.x + (this.padding * 0.5) + 310;
 		let y = dimensions.y + (this.padding * 0.5) + 105;
 		let command = '';
 	   
