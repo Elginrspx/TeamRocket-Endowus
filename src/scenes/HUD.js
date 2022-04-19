@@ -608,7 +608,7 @@ ${ volatilityWithdrawText }`],
 Here are 3 takeaways for your to bring on your journey with Endowus:
 
 1) Time in market beats timing the market. You could try buying low and selling high, but records show that consistent investing always outperforms those who time the market.
-2) Allocate a sufficient amount for your expenses & save the rest. Black Swan Events rarely occur, but when they do, you'll be glad to have a portion of cash aside to help tide you through. 
+2) Allocate a sufficient amount for your expenses & invest the rest. Volatility Events rarely occur, but when they do, you'll be glad to have a portion of cash aside to help tide you through. 
 3) Stay disciplined. Set aside a sum to invest every month and stay within your financial goals to unlock the true benefits of compound growth. 
 
 All the best in your financial journey!`]
