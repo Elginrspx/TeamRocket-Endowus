@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="60" height="47" tilewidth="16" tileheight="16" infinite="0" nextlayerid="20" nextobjectid="26">
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="60" height="47" tilewidth="16" tileheight="16" infinite="0" nextlayerid="20" nextobjectid="28">
  <editorsettings>
   <export target="scene-3.json" format="json"/>
  </editorsettings>
@@ -66438,5 +66438,6 @@
   <object id="22" name="event6" x="203" y="256"/>
   <object id="23" name="event9" x="751" y="592"/>
   <object id="24" name="event12" x="387" y="570"/>
+  <object id="27" name="event15" x="223.229" y="201.661"/>
  </objectgroup>
 </map>
