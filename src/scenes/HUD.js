@@ -32,7 +32,7 @@ export default class HUD extends Phaser.Scene
             .setDepth(1010)
             .setScale(0.5, 0.5)
             .setVisible(false)
-        this.replayBtn.on('pointerup', () => window.open(this.externalURL2), this)
+        this.replayBtn.on('pointerup', () => window.location.reload(), this)
 
         // For Wallet Percentage Dialog
         this.walletPercentageText = this.add.text(20, 565, '', { font: '18px pressstart' })
@@ -464,7 +464,6 @@ export default class HUD extends Phaser.Scene
                 
                         this.replayBtn.setY(440).setX(600)
                         this.replayBtn.setVisible(true)
-                        this.externalURL2 = "https://endowusgame.netlify.app/"
 
                         this.Dialog.setSummaryText(this.summaryText[1].toString(), 1)
                         this.dialogEvent = ""
