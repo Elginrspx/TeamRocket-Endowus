@@ -450,6 +450,10 @@ export default class HUD extends Phaser.Scene
 
                 case "gameOver":
                     if (isSpace) {
+                        this.moreInfoBtn.setY(440)
+                        this.moreInfoBtn.setVisible(true)
+                        this.externalURL = "https://endowus.com/flagship"
+
                         this.Dialog.setSummaryText(this.summaryText[1].toString(), 1)
                         this.dialogEvent = ""
                     }
@@ -599,10 +603,6 @@ All the best in your financial journey!`]
 ]
         this.Dialog.setSummaryText(this.summaryText[0].toString(), 1)
         this.dialogEvent = "gameOver"
-
-        this.moreInfoBtn.setY(440)
-        this.moreInfoBtn.setVisible(true)
-        this.externalURL = "https://endowus.com/flagship"
     }
 
     walletPercentageManager(isUp) {
