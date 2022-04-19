@@ -103,8 +103,8 @@
     },
     "event9": {
         "script": ["2 years have passed... ", "You have been recognised for your efforts at work! This is the company's 25th anniversary bonus & you are getting a chunk for your years of loyalty and hard work!"],
-        "question": "Your bonus amounts to $100,000. How would you like to distribute it?",
-        "amount": 100000,
+        "question": "Your bonus amounts to $120,000. How would you like to distribute it?",
+        "amount": 120000,
         "response": "You have distributed your bonus!"
     },
     "event10": {
@@ -142,8 +142,8 @@
     },
     "event16": {
         "script": ["2 years have passed... ", "Your new home is now ready! Collect your keys and start a new journey with your family."],
-        "question": "The inital cost of your new home is $70,000. How would you like to make your payment?",
-        "amount": -70000,
+        "question": "The inital cost of your new home is $100,000. How would you like to make your payment?",
+        "amount": -100000,
         "response": "Payment for your house has been made!"
     }
 }
