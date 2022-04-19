@@ -147,7 +147,7 @@ export default class HUD extends Phaser.Scene
                                 .setDepth(100)
                                 .setText(this.wallet.data.get('amount'))
     
-                            this.Dialog.setText("Out of the total amount of savings you have on hand, how much do you plan to set aside in your investments? You may transfer funds between the two wallets at any time by clicking on the relevant wallet!", 1)
+                            this.Dialog.setText("Out of the total amount of savings you have on hand, how much do you plan to set aside in your investments? You may transfer funds between the two wallets at any time by clicking on the relevant wallet Icons at the top-right!", 1)
                             this.dialogEvent = "setEndowusWallet"
                             this.amountInput.getChildByName("amountInput").value = ""
                         }
@@ -214,7 +214,7 @@ export default class HUD extends Phaser.Scene
                                 .setDepth(100)
                                 .setText(this.recurringInvestment.data.get('amount'))
                                 
-                            this.Dialog.setText("To adjust Recurring Investments, click the Icon on the top-left!\nYou can also transfer money between the Savings and Endowus Wallets by clicking on their respective Icons at the top-right\nThe game will end when both wallets reach $0 OR when you have completed all events in the game.", 1)
+                            this.Dialog.setText("To adjust Recurring Investments, click the Icon on the top-left!\nThe game will end when both wallets reach $0 OR when you have completed all events in the game.", 1)
                             this.amountInput.setVisible(false)
                             this.dialogEvent = ""
                             this.amountInput.getChildByName("amountInput").value = ""
