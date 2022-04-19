@@ -264,9 +264,7 @@ export default class HUD extends Phaser.Scene
                             this.amountInput.setVisible(false)
                             this.dialogEvent = ""
                             this.amountInput.getChildByName("amountInput").value = ""
-                        }
-
-                        if (amount > this.wallet.data.values.amount) {
+                        } else if (amount > this.wallet.data.values.amount) {
                             this.Dialog.setText("You don't have that much savings on hand!", 1)
                         } else {
                             this.recurringInvestment.data.set('amount', amount)
