@@ -461,6 +461,10 @@ export default class HUD extends Phaser.Scene
                         this.moreInfoBtn.setY(440)
                         this.moreInfoBtn.setVisible(true)
                         this.externalURL = "https://endowus.com/flagship"
+                
+                        this.replayBtn.setY(440)
+                        this.replayBtn.setVisible(true)
+                        this.externalURL2 = "https://endowusgame.netlify.app/"
 
                         this.Dialog.setSummaryText(this.summaryText[1].toString(), 1)
                         this.dialogEvent = ""
@@ -612,13 +616,6 @@ All the best in your financial journey!`]
         this.Dialog.setSummaryText(this.summaryText[0].toString(), 1)
         this.dialogEvent = "gameOver"
 
-        this.moreInfoBtn.setY(440)
-        this.moreInfoBtn.setVisible(true)
-        this.externalURL = "https://endowus.com/flagship"
-
-        this.replayBtn.setY(440)
-        this.replayBtn.setVisible(true)
-        this.externalURL2 = "https://endowusgame.netlify.app/"
     }
 
     walletPercentageManager(isUp) {
