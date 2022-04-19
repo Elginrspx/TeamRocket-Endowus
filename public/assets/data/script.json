@@ -67,14 +67,15 @@
     },
     "event3": {
         "script": ["2 years have passed... ", "Congratulations on landing your first job at ShopForward! You are ready for more responsibilities! "],
-        "question": "You have earned $100,000 over 2 years of working at ShopForward! How would you like to distribute your salary?",
+        "question": "You have earned $100,000 over 2 years ($4200/Month) of working at ShopForward ! How would you like to distribute your salary?",
         "amount": 100000,
+        "NewAmount": 100800,
         "response": "You have distributed your salary!"
     },
     "event4": {
         "script": ["2 years have passed... ", "You've been promoted! Your talent and grit have earned the praise of your boss and colleagues. Enjoy your raise!"],
-        "question": "Your pay has increased to $150,000 over the next 2 years of work! How would you like to distribute your salary?",
-        "amount": 150000,
+        "question": "Your pay has increased to $132,000 over the next 2 years ($5500/Month) of work! How would you like to distribute your salary?",
+        "amount": 132000,
         "response": "You have distributed your salary!"
     },
     "event5": {
@@ -97,19 +98,19 @@
     },
     "event8": {
         "script": ["2 years have passed... ", "Oh no! It's been a few years and your home decor is now outdated. Time for a renovation, imagine the new vibe of the room!"],
-        "question": "The renovation works amounts to $5,000. How would you like to make your payment?",
-        "amount": -5000,
+        "question": "The renovation works amounts to $8,000. How would you like to make your payment?",
+        "amount": -8000,
         "response": "Payment for the renovation has been made!"
     },
     "event9": {
         "script": ["2 years have passed... ", "You have been recognised for your efforts at work! This is the company's 25th anniversary bonus & you are getting a chunk for your years of loyalty and hard work!"],
-        "question": "Your bonus amounts to $120,000. How would you like to distribute it?",
-        "amount": 120000,
+        "question": "Your bonus amounts to $150,000 ($6000/Month over 2 years + a Bonus!). How would you like to distribute it?",
+        "amount": 150000,
         "response": "You have distributed your bonus!"
     },
     "event10": {
         "script": ["2 years have passed... ", "Your children are all grown up! What a journey, they grew up so fast. Its time for the last leg of their education journey before going out to the real world."],
-        "question": "Your children's university fees amounts to about $50,000. How would you like to make your payment?",
+        "question": "Your children's university fees amounts to about $50,000 ($25,000/Year). How would you like to make your payment?",
         "amount": -50000,
         "response": "Payment for your children's university fees has been made!"
     },
@@ -136,7 +137,7 @@
     },
     "event15": {
         "script": ["2 years have passed... ", "Congratulations! You've been promoted to Department Chief at work! Your talent and grit have earned high praises from your boss and colleagues. Enjoy your raise!"],
-        "question": "Your pay has increased to a sum of $250,000 over the next 2 years of work! How would you like to distribute your salary?",
+        "question": "Your pay has increased to a sum of $250,000 over the next 2 years of work ($10,400/Month)! How would you like to distribute your salary?",
         "amount": 250000,
         "response": "You have distributed your salary!"
     },
