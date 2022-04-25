@@ -197,6 +197,17 @@
                  "width":0,
                  "x":387,
                  "y":570
+                }, 
+                {
+                 "height":0,
+                 "id":27,
+                 "name":"event15",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":223.228728566807,
+                 "y":201.660735468565
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -205,7 +216,7 @@
          "y":0
         }],
  "nextlayerid":20,
- "nextobjectid":26,
+ "nextobjectid":28,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.2",

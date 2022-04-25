@@ -14,10 +14,6 @@ export default class LoginScene extends Phaser.Scene
         // Preload Map
         this.load.image('World Of Solaria', 'tilemaps/World Of Solaria.png')
         this.load.image('Animated', 'tilemaps/Animated.png')
-        this.load.tilemapTiledJSON('scene0Tilemap', 'tilemaps/scene-0.json')
-        this.load.tilemapTiledJSON('scene1Tilemap', 'tilemaps/scene-1.json')
-        this.load.tilemapTiledJSON('scene2Tilemap', 'tilemaps/scene-2.json')
-        this.load.tilemapTiledJSON('scene3Tilemap', 'tilemaps/scene-3.json')
         
         // Preload Plugin for Animated Tileset
         this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');
@@ -37,6 +33,7 @@ export default class LoginScene extends Phaser.Scene
         this.load.image('recurringInvestment', 'images/recurringInvestment.png')
         this.load.image('moreInfoBtn', 'images/moreInfoBtn.png')
         this.load.image('background', 'images/background.jpg')
+        this.load.image('replayBtn', 'images/replayBtn.png')
 
         // Preload Audio
         this.load.audio("gameTheme1", "music/ambience-cave.wav");
@@ -85,7 +82,7 @@ export default class LoginScene extends Phaser.Scene
 
         //Calling Game 1 Database from Mongo DB
         try {
-            this.dataJSON = await fetch("http://localhost:8080/get")
+            this.dataJSON = await fetch("https://endowus-portfolio-simulator.herokuapp.com/get")
                 .then(response => response.json());
         } catch (e) {
             console.error(e);

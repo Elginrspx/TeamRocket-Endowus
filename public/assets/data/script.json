@@ -1,6 +1,6 @@
 {
     "introduction": {
-        "script" : ["Welcome to the world of Endowus. This game is a simulation in which you will be able to test out different portfolios in mock scenarios, this will allow you to find the portfolio that you are the most comfortable with.", "We all have different risk appetites or risk tolerance. If you invest in a way that is not compatible with the amount of volatility or short-term loss you are comfortable taking, you are setting up for failure when the markets inevitably move against you as you may make investment decisions that go against your long-term financial well-being. ", "As it is a simulation, feel free to restart by refreshing the browser to test out another portfolio!"],
+        "script" : ["Welcome to the world of Endowus. This game is a simulation in which you will be able to test out different portfolios in mock scenarios, this will allow you to find the portfolio that you are the most comfortable with.", "We all have different risk appetites or risk tolerance. If your investments do not align with the volatility risks or short-term losses that you are comfortable with taking, you are setting yourself up for failure when the markets inevitably move against you. ", "Now that that's out of the way, feel free to restart by refreshing the browser to test out another portfolio!\nDISCLAIMER: The following simulation is for education purposes ONLY and should NOT be taken as financial advice."],
         "externalURL" : "https://endowus.com/support/360007646114-why-do-i-need-to-choose-my-risk-tolerance-and-how-is-it-understood"
     },
 
@@ -54,73 +54,74 @@
     },
     
     "event1": {
-        "script": ["Congratulations, you have been accepted for an exchange semester at Busan University in South Korea."],
+        "script": ["2 years have passed... ", "Congratulations, you have been accepted for an exchange semester at Busan University in South Korea."],
         "question": "You are required to make a payment of $8,000. How would you like to make your payment?",
         "response": "Payment for your exchange has been made!",
         "amount": -8000
     },
     "event2": {
-        "script": ["You have been offered a 6-month internship at MBB & Co. Enjoy your time here & learn from your supervisors."],
-        "question": "You have been paid a total of $6,000 over 6 months! How would you like to distribute your salary?",
+        "script": ["2 years have passed... ", "You have been offered a 6-month internship at MBB & Co. Enjoy your time here & learn from your supervisors."],
+        "question": "You have been paid a total of $6,000 over 6 months! ($1000/Month) How would you like to distribute your salary?",
         "amount": 6000,
         "response": "You have distributed your salary!"
     },
     "event3": {
-        "script": ["Congratulations on landing your first job at ShopForward! You are ready for more responsibilities! "],
-        "question": "You have earned $100,000 over 2 years of working at ShopForward! How would you like to distribute your salary?",
+        "script": ["2 years have passed... ", "Congratulations on landing your first job at ShopForward! You are ready for more responsibilities! "],
+        "question": "You have earned $100,000 over 2 years ($4200/Month) of working at ShopForward ! How would you like to distribute your salary?",
         "amount": 100000,
+        "NewAmount": 100800,
         "response": "You have distributed your salary!"
     },
     "event4": {
-        "script": ["You've been promoted! Your talent and grit have earned the praise of your boss and colleagues. Enjoy your raise!"],
-        "question": "Your pay has increased to $150,000 over the next 2 years of work! How would you like to distribute your salary?",
-        "amount": 150000,
+        "script": ["2 years have passed... ", "You've been promoted! Your talent and grit have earned the praise of your boss and colleagues. Enjoy your raise!"],
+        "question": "Your pay has increased to $132,000 over the next 2 years ($5500/Month) of work! How would you like to distribute your salary?",
+        "amount": 132000,
         "response": "You have distributed your salary!"
     },
     "event5": {
-        "script": ["Your new home is now ready! Collect your keys to your brand new home."],
+        "script": ["2 years have passed... ", "Your new home is now ready! Collect your keys to your brand new home."],
         "question": "The downpayment for your new home costs $30,000. How would you like to make your downpayment?",
         "amount": -30000,
         "response": "Payment for your house has been made!"
     },
     "event6": {
-        "script": ["Congratulations on your marriage! Wedding bells are ringing and signalling the beginning of a new journey. Wishing you both everlasting happiness!"],
+        "script": ["2 years have passed... ", "Congratulations on your marriage! Wedding bells are ringing and signalling the beginning of a new journey. Wishing you both everlasting happiness!"],
         "question": "The wedding expenses adds up to $40,000. How would you like to make your payment?",
         "amount": -40000,
         "response": "Payment for your wedding has been made!"
     },
     "event7": {
-        "script": ["BINGO! You have tried your luck and won 1st prize in the latest lottery draw"],
+        "script": ["2 years have passed... ", "BINGO! You have tried your luck and won 1st prize in the latest lottery draw"],
         "question": "Your earnings for the lottery amounts to $2,000!",
         "amount": 2000,
         "response": "You have distributed the earnings"
     },
     "event8": {
-        "script": ["Oh no! It's been a few years and your home decor is now outdated. Time for a renovation, imagine the new vibe of the room!"],
-        "question": "The renovation works amounts to $5,000. How would you like to make your payment?",
-        "amount": -5000,
+        "script": ["2 years have passed... ", "Oh no! It's been a few years and your home decor is now outdated. Time for a renovation, imagine the new vibe of the room!"],
+        "question": "The renovation works amounts to $8,000. How would you like to make your payment?",
+        "amount": -8000,
         "response": "Payment for the renovation has been made!"
     },
     "event9": {
-        "script": ["You have been recognised for your efforts at work! This is the company's 25th anniversary bonus & you are getting a chunk for your years of loyalty and hard work!"],
-        "question": "Your bonus amounts to $100,000. How would you like to distribute it?",
-        "amount": 100000,
+        "script": ["2 years have passed... ", "You have been recognised for your efforts at work! This is the company's 25th anniversary bonus & you are getting a chunk for your years of loyalty and hard work!"],
+        "question": "Your bonus amounts to $150,000 ($6000/Month over 2 years + a Bonus!). How would you like to distribute it?",
+        "amount": 150000,
         "response": "You have distributed your bonus!"
     },
     "event10": {
-        "script": ["Your children are all grown up! What a journey, they grew up so fast. Its time for the last leg of their education journey before going out to the real world."],
-        "question": "Your children's university fees amounts to about $50,000. How would you like to make your payment?",
+        "script": ["2 years have passed... ", "Your children are all grown up! What a journey, they grew up so fast. Its time for the last leg of their education journey before going out to the real world."],
+        "question": "Your children's university fees amounts to about $50,000 ($25,000/Year). How would you like to make your payment?",
         "amount": -50000,
         "response": "Payment for your children's university fees has been made!"
     },
     "event11": {
-        "script": ["Property market is red hot! Now is the time to take profits from your larger home and downsize to a smaller apartment."],
+        "script": ["2 years have passed... ", "Property market is red hot! Now is the time to take profits from your larger home and downsize to a smaller apartment."],
         "question": "Your profits from downsizing amounts to $300,000. How would you like to distribute your earnings?",
         "amount": 300000,
         "response": "You have distributed your earnings!"
     },
     "event12": {
-        "script": ["Your children are adults now, and are giving back to you for having raised them so well."],
+        "script": ["2 years have passed... ", "Your children are adults now, and are giving back to you for having raised them so well."],
         "question": "Your children provided you with $48,000. How would you like to distribute this allowance?",
         "amount": 48000,
         "response": "You have distributed your allowance!"
@@ -135,15 +136,15 @@
         "isVolatilityEvent": true
     },
     "event15": {
-        "script": ["Congratulations! You've been promoted to Department Chief at work! Your talent and grit have earned high praises from your boss and colleagues. Enjoy your raise!"],
-        "question": "Your pay has increased to a sum of $250,000 over the next 2 years of work! How would you like to distribute your salary?",
+        "script": ["2 years have passed... ", "Congratulations! You've been promoted to Department Chief at work! Your talent and grit have earned high praises from your boss and colleagues. Enjoy your raise!"],
+        "question": "Your pay has increased to a sum of $250,000 over the next 2 years of work ($10,400/Month)! How would you like to distribute your salary?",
         "amount": 250000,
         "response": "You have distributed your salary!"
     },
     "event16": {
-        "script": ["Your new home is now ready! Collect your keys and start a new journey with your family."],
-        "question": "The inital cost of your new home is $70,000. How would you like to make your payment?",
-        "amount": -70000,
+        "script": ["2 years have passed... ", "Your new home is now ready! Collect your keys and start a new journey with your family."],
+        "question": "The inital cost of your new home is $100,000. How would you like to make your payment?",
+        "amount": -100000,
         "response": "Payment for your house has been made!"
     }
 }

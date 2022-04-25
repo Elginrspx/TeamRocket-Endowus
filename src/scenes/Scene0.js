@@ -15,7 +15,12 @@ export default class Scene0 extends Phaser.Scene
     }
 
 	preload()
-    {        
+    {       
+        this.load.baseURL = "../assets/"
+
+        // Preload Map
+        this.load.tilemapTiledJSON('scene0Tilemap', 'tilemaps/scene-0.json')
+
         // Preload Plugin for Animated Tileset
         this.load.scenePlugin('AnimatedTiles', 'https://raw.githubusercontent.com/nkholski/phaser-animated-tiles/master/dist/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');
     }
@@ -112,13 +117,14 @@ export default class Scene0 extends Phaser.Scene
 
         // Play Game Theme
         this.gameTheme1 = this.sound.add("gameTheme1", { loop: true });
-        this.gameTheme2 = this.sound.add("gameTheme2", { loop: true });
+        this.gameTheme2 = this.sound.add("gameTheme2", { loop: true, volume: 0.25 });
         this.gameTheme1.play()
 
         // Launch HUD scene to run in parallel
         this.scene.launch('HUD')
 
         // Setup Event Listeners
+        eventsCenter.on('HUDReady', () => eventsCenter.emit('introduction', this.persona))
         eventsCenter.on('changeEvent', this.changeEvent , this)
         eventsCenter.on('reenableObject', this.reenableObject, this)
         eventsCenter.on('dialogVisible', (isDialogVisible) => this.dialogVisible = isDialogVisible)
